@@ -11,7 +11,7 @@ class Programador:
         self.__horasAProgramar = horasAProgramar
  
     def horasEvento(self, evento):
-        # verifica que horaF sea entero mayor que horaI
+        # verifica que horaF sea entero mayor que hora    
         # verifica que diaF sea entero mayor que diaI
         # Cuenta el numero de horas en el rango
         # Cuenta el numero de dias en el rango descontando sabados, domingos y festivos
@@ -45,9 +45,7 @@ class Programador:
         print(rangoDiasHabiles)
         return rangoDiasHabiles
     
-    # Presenta en consola el resultado de la programacion    
-    def resultado(self):
-        promedioHorasPorFicha = self.__horasAProgramar // len(self.__listaEventos) 
+    def capacidadBrutaHoras(self):
         capacidadBrutaHoras = 0
         for i in range(0,len(self.__listaEventos)):
             horasEvento = self.__listaEventos[i].getHoraF()-self.__listaEventos[i].getHoraI()
@@ -56,6 +54,12 @@ class Programador:
             diasLaborales = DiasLaborables(self.__mes)
             diasLaborablesEvento = list(set(diasCorrientesEvento) & set(diasLaborales.diasLaborables()))
             capacidadBrutaHoras += horasEvento * len(diasLaborablesEvento)
+        return capacidadBrutaHoras
+    
+    # Presenta en consola el resultado de la programacion    
+    def resultado(self):
+        promedioHorasPorFicha = self.__horasAProgramar // len(self.__listaEventos) 
+        capacidadBrutaHoras = self.capacidadBrutaHoras()
         print(capacidadBrutaHoras)
        
 
