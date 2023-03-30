@@ -18,21 +18,19 @@ class DiasLaborables:
                     }
     
     def __init__(self, mes):
-        self.mes = mes
+        self.__mes = mes
 
     #Devuelve la lista de los dias laborables del mes
-    def diasLaborables(self):
-
-        # se crea un obejto de la Clase Calendar
+    def diasLaborablesMes(self):
         calendario = calendar.Calendar()
 
         # se crean las tuplas de (dia mes, dia semana) del mes
-        listDiasMes = [x for x in calendario.itermonthdays2(2023, self.mes)]
+        listDiasMes = [x for x in calendario.itermonthdays2(2023, self.__mes)]
 
         #se elminan los sabados y domingos y se crea la lista de dias --eliminando los ceros de relleno
         listTuplasMes = list(filter(lambda x: x[1] not in [5,6] and x[0]!= 0, listDiasMes))
        
         #return listaDiasLaborables eliminando los festivos del mes
-        return list(filter(lambda y: y not in DiasLaborables.FESTIVOS[self.mes], [x[0] for x in listTuplasMes]))
+        return list(filter(lambda x: x not in DiasLaborables.FESTIVOS[self.__mes], [x[0] for x in listTuplasMes]))
 
 
