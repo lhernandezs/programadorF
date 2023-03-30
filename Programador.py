@@ -3,72 +3,78 @@ from DiasLaborables import DiasLaborables
 from dateutil.relativedelta import relativedelta
 import datetime
 
-
 class Programador:
     def __init__(self, listaEventos, mes, horasAProgramar):
         self.__listaEventos = listaEventos
         self.__mes = mes
         self.__horasAProgramar = horasAProgramar
- 
-    def horasEvento(self, evento):
-        # verifica que horaF sea entero mayor que hora    
-        # verifica que diaF sea entero mayor que diaI
-        # Cuenta el numero de horas en el rango
-        # Cuenta el numero de dias en el rango descontando sabados, domingos y festivos
-        # retorn la multiplicacion de horas x dias
-        pass
 
-    #Devuelve una lista con el diaI y el diaF propuesto de acuerdo a las horas estimadas y el los dias laborables
-    #Debe verificar que no se crucen los horarios y los dias, para ello deber ordenar la lista de eventos por la horaI
-    #Utiliza los dias laborales
-    def proponerDias(self):
-        pass
+    # este metodo retorna True si el evento está en el Dia y la Hora pasado como parametros
 
-    # Construye una lista de horas equitativas por cada evento
-    def promediarHorasEvento(self):
-        #calcula la cantidad de fichas
-        #calcula la cantidad de horas en los n eventos de la ficha
-        #distribuye horas por cada evento tratando de ser equitativo segun las horas a programar
-        #setea las horas estimadas n
-        pass
+    def eventoEnDiaHora(self, evento, i, j):
+#      print(evento.getFechaI(), " ", evento.getFechaF(), " ", i, " ", j)
+        dia = i
+        if (datetime.date(2023,self.__mes,1) + relativedelta(day=31)).day >= dia:
+#            print("Entro", datetime.date(2023,self.__mes,1) + relativedelta(31))
+            if evento.getFechaI() <= datetime.date(2023, self.__mes, dia) and datetime.date(2023, self.__mes, dia) <= evento.getFechaF() \
+                and evento.getHoraI() <= j and j < evento.getHoraF(): 
+#                print(" Adicionar .....", evento.getFechaI(), " ", evento.getFechaF(), " ", i, " ", j )
+                return True
+        return False
+            
+    # este metodo retorna una lista de igual longitud a la lista de eventos, con tuplas (horaI, horaF, diaI, diaF) de los eventos depurando que los cruces. Los cruces se resolveran tratando de colocar horas "similares" a todas
+    def cruceDeEventos(self):
+        programacionBruta = [[[] for j in range(24)] for i in range(1,32)]
+        for e in range(len(self.__listaEventos)):
+            for i in range(1,32):
+                for j in range(24):
+                    if self.eventoEnDiaHora(self.__listaEventos[e], i, j) and i in DiasLaborables(self.__mes).diasLaborablesMes():
+                        programacionBruta[i][j].append(e)
 
-    def diasHabilesPorEvento(self, mes, fechaI, fechaF):
-        rangoDiasHabiles = []
-        if (fechaI < datetime.date(2023, mes, 1)):
-            rangoDiasHabiles.append(1)
+        for i in range(31):
+            for j in range(24):
+                print("[",i,",",j,"]...", programacionBruta[i][j])
+
+    def diasLaborablesEvento(self, fechaI, fechaF):
+        rangoDiasCorrientes = []
+        if (fechaI < datetime.date(2023, self.__mes, 1)):
+            rangoDiasCorrientes.append(1)
         else:
-            rangoDiasHabiles.append(fechaI.day)
-        if ((datetime.date(2023, mes, 1) + relativedelta(day=31)) < fechaF):
-            rangoDiasHabiles.append((datetime.date(2023, mes, 1) + relativedelta(day=31)).day)
+            rangoDiasCorrientes.append(fechaI.day)
+        if ((datetime.date(2023, self.__mes, 1) + relativedelta(day=31)) < fechaF):
+            rangoDiasCorrientes.append((datetime.date(2023, self.__mes, 1) + relativedelta(day=31)).day)
         else:
-            rangoDiasHabiles.append(fechaF.day)
-        print(rangoDiasHabiles)
-        return rangoDiasHabiles
+            rangoDiasCorrientes.append(fechaF.day)
+        diasCorrientesEvento = [x for x in range(rangoDiasCorrientes[0],rangoDiasCorrientes[1]+1)]
+        diasLaborablesEvento = list(set(diasCorrientesEvento) & set(DiasLaborables(self.__mes).diasLaborablesMes()))
+        print(diasLaborablesEvento)       
+        return diasLaborablesEvento
     
     def capacidadBrutaHoras(self):
         capacidadBrutaHoras = 0
-        for i in range(0,len(self.__listaEventos)):
-            horasEvento = self.__listaEventos[i].getHoraF()-self.__listaEventos[i].getHoraI()
-            rangoDiasHabiles = self.diasHabilesPorEvento(self.__mes, self.__listaEventos[i].getFechaI(), self.__listaEventos[i].getFechaF())
-            diasCorrientesEvento = [x for x in range(rangoDiasHabiles[0],rangoDiasHabiles[1]+1)]
-            diasLaborales = DiasLaborables(self.__mes)
-            diasLaborablesEvento = list(set(diasCorrientesEvento) & set(diasLaborales.diasLaborables()))
-            capacidadBrutaHoras += horasEvento * len(diasLaborablesEvento)
+        for evento in self.__listaEventos:
+            horasEvento = evento.getHoraF() - evento.getHoraI()
+            diasLaborablesEvento = self.diasLaborablesEvento(evento.getFechaI(), evento.getFechaF())
+            capacidadBrutaHoras += horasEvento * len(diasLaborablesEvento)      
+        if capacidadBrutaHoras < self.__horasAProgramar:
+            print("hay que crear eventos")
+        else:
+            print("en teoria los eventos actuales alcanzan pero hay que revisar que no se crucen")
         return capacidadBrutaHoras
     
     # Presenta en consola el resultado de la programacion    
     def resultado(self):
-        promedioHorasPorFicha = self.__horasAProgramar // len(self.__listaEventos) 
-        capacidadBrutaHoras = self.capacidadBrutaHoras()
-        print(capacidadBrutaHoras)
+#        capacidadBrutaHoras = self.capacidadBrutaHoras()
+        self.cruceDeEventos()
        
-
-evento1 = Evento(123456, 6, 8, datetime.date(2023,3,1), datetime.date(2023,3,31))
-evento2 = Evento(123456, 8, 10, datetime.date(2023,1,12), datetime.date(2023,3,15))
-evento3 = Evento(123457, 10, 12, datetime.date(2023,3,11), datetime.date(2023,3,20))
-evento4 = Evento(123458, 12, 13, datetime.date(2023,3,1), datetime.date(2023,3,31))
+evento1 = Evento(123456, 6, 9, datetime.date(2023,3,1), datetime.date(2023,3,3))
+evento2 = Evento(123456, 8, 10, datetime.date(2023,3,12), datetime.date(2023,3,15))
+evento3 = Evento(123457, 8, 12, datetime.date(2023,3,11), datetime.date(2023,3,20))
+evento4 = Evento(123458, 11, 13, datetime.date(2023,3,1), datetime.date(2023,3,5))
                 
-listaEventos = [evento1, evento2, evento3, evento4]
-programador = Programador(listaEventos, 3, 160)
+#listaEventos = [evento1]
+listaEventos = [evento1, evento2, evento3]
+#listaEventos = [evento1, evento2, evento3, evento4]
+programador = Programador(listaEventos, 3, 80)
 programador.resultado()
         

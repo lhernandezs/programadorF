@@ -1,6 +1,13 @@
-import datetime
+from datetime import date   
 
 class Evento:
+    def __init__(self):
+        self.__ficha = 00000
+        self.__horaI = 0
+        self.__horaF = 0
+        self.__fechaI = date.today()   
+        self.__fechaF = date.today()
+
     def __init__(self, ficha, horaI, horaF, fechaI, fechaF):
         self.__ficha = ficha
         self.__horaI = horaI
