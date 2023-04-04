@@ -1,49 +1,77 @@
-from datetime import date   
+from datetime import datetime, date   
 
 class Evento:
     def __init__(self):
-        self.__ficha = 00000
-        self.__horaI = 0
-        self.__horaF = 0
-        self.__fechaI = date.today()   
-        self.__fechaF = date.today()
+        self._ficha = 00000
+        self._horaI = 0
+        self._horaF = 0
+        self._fechaI = date.today()   
+        self._fechaF = date.today()
+        self._fechaICruce
+        self._fechaFCruce
 
     def __init__(self, ficha, horaI, horaF, fechaI, fechaF):
-        self.__ficha = ficha
-        self.__horaI = horaI
-        self.__horaF = horaF
-        self.__fechaI = fechaI
-        self.__fechaF = fechaF
+        self._ficha = ficha
+        self._horaI = horaI
+        self._horaF = horaF
+        self._fechaI = fechaI
+        self._fechaF = fechaF
 
-    def setFicha(self, ficha):
-        self.__ficha = ficha
+    @property
+    def ficha(self):
+        return self._ficha
+
+    @ficha.setter
+    def ficha(self, ficha):
+        self._ficha = ficha
+        
+    @property 
+    def horaI(self): 
+        return self._horaI 
     
-    def getFicha(self):
-        return self.__ficha
+    @horaI.setter 
+    def horaI(self, horaI): 
+        self._horaI = horaI 
 
-    def setHoraI(self, horaI):
-        self.__horaI = horaI
+    @property 
+    def horaF(self): 
+        return self._horaF 
+
+    @horaF.setter 
+    def horaF(self, horaF): 
+        self._horaF = horaF  
+
+    @property 
+    def fechaI(self): 
+        return self._fechaI  
+
+    @fechaI.setter 
+    def fechaI(self, fechaI): 
+        self._fechaI = fechaI  
+
+    @property 
+    def fechaF(self): 
+        return self._fechaF  
+
+    @fechaF.setter 
+    def fechaF(self, fechaF): 
+        self._fechaF = fechaF  
     
-    def getHoraI(self):
-        return self.__horaI
+    @property 
+    def fechaICruce(self): 
+        return self._fechaICruce  
 
-    def setHoraF(self, horaF):
-        self.__horaF = horaF
+    @fechaICruce.setter 
+    def fechaICruce(self, fechaICruce): 
+        self._fechaICruce = fechaICruce  
+
+    @property 
+    def fechaFCruce(self): 
+        return self._fechaFCruce  
+
+    @fechaFCruce.setter 
+    def fechaFCruce(self, fechaFCruce): 
+        self._fechaFCruce = fechaFCruce   
     
-    def getHoraF(self):
-        return self.__horaF
-
-    def setFechaI(self, fechaI):
-        self.__fechaI = fechaI
-    
-    def getFechaI(self):
-        return self.__fechaI
-
-    def setFechaF(self, fechaF):
-        self.__fechaF = fechaF
-    
-    def getFechaF(self):
-        return self.__fechaF
-
     def __str__(self):
-        return str(self.__ficha) + ", " + str(self.__horaI) + ", " + str(self.__horaF) + ", " + str(self.__fechaI) + ", " + str(self.__fechaF)
+        return f"ficha: {self._ficha}, horaI: {self._horaI}, horaF: {self._horaF}, fechaI: {self._fechaI}, fechaF: {self._fechaF}, fechaICruce: {self._fechaICruce}, fechaFCruce: {self._fechaFCruce}"
