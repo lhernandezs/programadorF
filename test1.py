@@ -2,10 +2,10 @@
 lista =[x for x in range(1,32)]
 for i in range(1,32):
     print(i, " - ", lista[i-1], ";", end="")
-
+print("********************")
 lista1 = [[j for j in range(24)] for i in range(1, 31)]
 print(lista1)
-
+print("********************")
 class prueba:
     def __init__(self):
         self.__cedula
@@ -41,9 +41,12 @@ def decorador(f):
         print("Funcionalidad extra")
         f()
     return funcion_nueva
-
+print("********************")
 @decorador
 def funcion_inicial():
     print("Funcionalidad inicial")
 
 funcion_inicial()
+print("********************")
+for i in range(28,30):
+    print(i)

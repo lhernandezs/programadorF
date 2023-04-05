@@ -25,18 +25,21 @@ class Programador:
                         eventosPorDiaHora[i][j].append(e)
         return eventosPorDiaHora
 
-    # retorna una arreglo con tres listas: [0]dias Laborales del evento, [1]dias laborables evento antes de cruce
-    #[2]dias laboralbes eventos despues de cruce
+    # retorna una arreglo con tres listas: [0] dias Laborales del evento, [1] dias laborables del evento antes de cruce
+    #[2] dias laborables del evento despues de cruce
     def listaDiasLaborablesEvento(self, evento):
         diaInicio = 1 if (evento.fechaI < Mes(self._mes).primerDia()) else evento.fechaI.day
         diaFin = Mes(self._mes).ultimoDia().day if (Mes(self._mes).ultimoDia() < evento.fechaF) else evento.fechaF.day
-        return [list(set([x for x in range(diaInicio, diaFin+1)]) & set(Mes(self._mes).listaDiasLaborables())),
-                list(set([] if evento.fechaICruce is None else [x for x in range(diaInicio, evento.fechaICruce.day)]) & set(Mes(self._mes).listaDiasLaborables())),
-                list(set([] if evento.fechaFCruce is None else [x for x in range(evento.fechaFCruce.day, diaFin)]) & set(Mes(self._mes).listaDiasLaborables()))]
+        listaDiasInicioFinEvento = [x for x in range(diaInicio, diaFin+1)]
+        listaDiasAntesDeCruce = listaDiasInicioFinEvento if evento.fechaICruce is None else [x for x in range(diaInicio, evento.fechaICruce.day)] 
+        listaDiasDespuesDeCruce = [] if evento.fechaFCruce is None else [x for x in range(evento.fechaFCruce.day+1, diaFin)]
+        return [list(set(listaDiasInicioFinEvento) & set(Mes(self._mes).listaDiasLaborables())),
+                list(set(listaDiasAntesDeCruce) & set(Mes(self._mes).listaDiasLaborables())),
+                list(set(listaDiasDespuesDeCruce) & set(Mes(self._mes).listaDiasLaborables()))]
     
     # retorna la capacidad en horas brutas y horas cruzadas de un evento y setea la fecha Inicial y Final de cruces del evento   
     def horasProgramablesEvento(self, e):
-        horasCruzadasBrutas = horasCruzadasNetas = horasCruzadasNetasIniciales = horasCruzadasNetasFinales = 0
+        horasCruzadasBrutas = 0
         eventosPorDiaHora = self.eventosPorDiaHora()
         diaMinCruce = diaMaxCruce = None
         for i in range(Mes(self._mes).ultimoDia().day):
@@ -52,8 +55,8 @@ class Programador:
             "ficha": (self._listaEventos[e].ficha), \
             "horasBrutas" : horasDelEvento * len(self.listaDiasLaborablesEvento(self._listaEventos[e])[0]), \
             "horasCruzadasBrutas" : horasCruzadasBrutas, \
-            "horasNoCruzadasNetasIniciales" : horasDelEvento * len(self.listaDiasLaborablesEvento(self._listaEventos[e])[1]), \
-            "horasNoCruzadasNetasFinales" : horasDelEvento * len(self.listaDiasLaborablesEvento(self._listaEventos[e])[2]) \
+            "horasNoCruzadasNetasI" : horasDelEvento * len(self.listaDiasLaborablesEvento(self._listaEventos[e])[1]), \
+            "horasNoCruzadasNetasF" : horasDelEvento * len(self.listaDiasLaborablesEvento(self._listaEventos[e])[2]) \
         }
     
     # retorna un diccionario de las fichas con sus respectivos datos de horas brutas y horas cruzadas 
@@ -64,11 +67,11 @@ class Programador:
             horasPorFicha[ficha] = [0,0,0,0]
         for e in range(len(self._listaEventos)):            
             horasEvento = self.horasProgramablesEvento(e)
-            print(f"evento {e:2d}: horas brutas: {horasEvento['horasBrutas']:2d}, horas cruzadas brutas: {horasEvento['horasCruzadasBrutas']:2d}, horas no cruzadas netas iniciales : {horasEvento['horasNoCruzadasNetasIniciales']:2d}, horas no cruzadas netas finales : {horasEvento['horasNoCruzadasNetasFinales']:2d},")
             horasPorFicha[horasEvento['ficha']][0] += horasEvento['horasBrutas']  
             horasPorFicha[horasEvento['ficha']][1] += horasEvento['horasCruzadasBrutas']
-            horasPorFicha[horasEvento['ficha']][2] += horasEvento['horasNoCruzadasNetasIniciales']
-            horasPorFicha[horasEvento['ficha']][3] += horasEvento['horasNoCruzadasNetasFinales']
+            horasPorFicha[horasEvento['ficha']][2] += horasEvento['horasNoCruzadasNetasI']
+            horasPorFicha[horasEvento['ficha']][3] += horasEvento['horasNoCruzadasNetasF']
+            print(f"evento: {e:2d}:, horas brutas: {horasEvento['horasBrutas']:2d}, horas cruzadas brutas: {horasEvento['horasCruzadasBrutas']:2d}, horas no cruzadas netas iniciales : {horasEvento['horasNoCruzadasNetasI']:2d}, horas no cruzadas netas finales : {horasEvento['horasNoCruzadasNetasF']:2d}")
         return horasPorFicha
 
     # Presenta en consola el resultado de la programacion    
@@ -79,7 +82,7 @@ class Programador:
                 if len(eventosPorDiaHora[i][j]) > 0:
                     print(f"[dia: {i+1:2d}, horas: {j:2d} a {j+1:2d}]...Eventos:", eventosPorDiaHora[i][j])
         print("****************")
-        print(self.horasProgramablesFicha())
+        self.horasProgramablesFicha()
         for evento in listaEventos:
             print(evento)
         
