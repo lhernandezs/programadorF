@@ -74,4 +74,4 @@ class Evento:
         self._fechaFCruce = fechaFCruce   
     
     def __str__(self):
-        return f"ficha: {self._ficha}, horaI: {self._horaI}, horaF: {self._horaF}, fechaI: {self._fechaI}, fechaF: {self._fechaF}, fechaICruce: {self._fechaICruce}, fechaFCruce: {self._fechaFCruce}"
+        return f"ficha: {self._ficha}, horaI: {self._horaI:2d}, horaF: {self._horaF:2d}, fechaI: {self._fechaI}, fechaF: {self._fechaF}, fechaICruce: {str(self._fechaICruce).ljust(10, ' ')}, fechaFCruce: {str(self._fechaFCruce).ljust(10,' ')}"

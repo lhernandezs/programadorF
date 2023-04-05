@@ -1,6 +1,7 @@
 from Evento import Evento
 from Mes import Mes
 from datetime import datetime, timedelta, date
+import pprint
 
 class Programador:
     # constructor de la clase
@@ -71,43 +72,41 @@ class Programador:
             horasPorFicha[horasEvento['ficha']][1] += horasEvento['horasCruzadasBrutas']
             horasPorFicha[horasEvento['ficha']][2] += horasEvento['horasNoCruzadasNetasI']
             horasPorFicha[horasEvento['ficha']][3] += horasEvento['horasNoCruzadasNetasF']
-            print(f"evento: {e:2d}:, horas brutas: {horasEvento['horasBrutas']:2d}, horas cruzadas brutas: {horasEvento['horasCruzadasBrutas']:2d}, horas no cruzadas netas iniciales : {horasEvento['horasNoCruzadasNetasI']:2d}, horas no cruzadas netas finales : {horasEvento['horasNoCruzadasNetasF']:2d}")
         return horasPorFicha
 
     # Presenta en consola el resultado de la programacion    
     def resultado(self):
-        eventosPorDiaHora = self.eventosPorDiaHora()    
+        eventosPorDiaHora = self.eventosPorDiaHora()   
         for i in range(Mes(self._mes).ultimoDia().day):
             for j in range(24):
-                if len(eventosPorDiaHora[i][j]) > 0:
+                if len(eventosPorDiaHora[i][j]) > 1:
                     print(f"[dia: {i+1:2d}, horas: {j:2d} a {j+1:2d}]...Eventos:", eventosPorDiaHora[i][j])
         print("****************")
-        self.horasProgramablesFicha()
-        for evento in listaEventos:
-            print(evento)
+        
+        dhpf = self.horasProgramablesFicha() 
+        for e in  dhpf:
+            print(f"ficha: {e}, H_brutas: {dhpf[e][0]:2d}, H_N_C_I: {dhpf[e][1]:2d}, H_N_C_F: {dhpf[e][2]:2d}")
+        print("****************")
+
+        self.horasProgramablesFicha() 
+        i = 0
+        for evento in self._listaEventos:
+            print(f"evento: {i:2d}, {evento}")
+            i += 1
+        
         
 # principal       
-evento0 = Evento(2675758, 6, 7, date(2023,4,1), date(2023,4,30))
-evento1 = Evento(2675759, 7, 8, date(2023,4,1), date(2023,4,30))
-evento2 = Evento(2626937, 12, 14, date(2023,4,1), date(2023,4,30))
-evento3 = Evento(2626938, 7, 9, date(2023,4,1), date(2023,4,30))
-evento4 = Evento(2626939, 9, 11, date(2023,4,1), date(2023,4,30))
-evento5 = Evento(2626940, 7, 8, date(2023,4,1), date(2023,4,30))
-evento6 = Evento(2675911, 12, 13, date(2023,4,1), date(2023,4,30))
-evento7 = Evento(2675912, 20, 22, date(2023,4,1), date(2023,4,30))
-evento8 = Evento(2675758, 13, 16, date(2023,4,1), date(2023,4,30))
-evento9 = Evento(2675759, 0, 0, date(2023,4,1), date(2023,4,30))
-evento10 = Evento(2626937, 22, 23, date(2023,4,1), date(2023,4,30))
-evento11 = Evento(2626938, 6, 7, date(2023,4,1), date(2023,4,30))
-evento12 = Evento(2626939, 8, 9, date(2023,4,1), date(2023,4,30))
-evento13 = Evento(2626940, 8, 10, date(2023,4,1), date(2023,4,30))
-evento14 = Evento(2675911, 6, 7, date(2023,4,1), date(2023,4,30))
-evento15 = Evento(2675912, 0, 0, date(2023,4,1), date(2023,4,30))
+evento0 = Evento(1, 6, 8, date(2023,4,1), date(2023,4,30))
+evento1 = Evento(1, 10, 11, date(2023,4,9), date(2023,4,20))
+evento2 = Evento(2, 6, 7, date(2023,4,10), date(2023,4,26))
+evento3 = Evento(2, 8, 9, date(2023,4,1), date(2023,4,28))
+evento4 = Evento(3, 9, 11, date(2023,4,1), date(2023,4,23))
+evento5 = Evento(3, 12, 13, date(2023,4,10), date(2023,4,28))
 
 #listaEventos = [evento0]
 #listaEventos = [evento0, evento1, evento2]
 #listaEventos = [evento0, evento1, evento2, evento3]
-listaEventos = [evento0, evento1, evento2, evento3, evento4, evento5, evento6, evento7, evento8, evento9, evento10, evento11, evento12, evento13, evento14, evento15]
+listaEventos = [evento0, evento1, evento2, evento3, evento4, evento5]
 
 programador = Programador(listaEventos, 4, 160)
 programador.resultado()
