@@ -5,10 +5,10 @@ class Evento:
         self._ficha = 00000
         self._horaI = 0
         self._horaF = 0
-        self._fechaI = date.today()   
-        self._fechaF = date.today()
-        self._fechaICruce
-        self._fechaFCruce
+        self._fechaI = None   
+        self._fechaF = None
+        self._fechaICruce = None
+        self._fechaFCruce = None
 
     def __init__(self, ficha, horaI, horaF, fechaI, fechaF):
         self._ficha = ficha
