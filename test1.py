@@ -1,3 +1,10 @@
+        # eventosPorDiaHora = self.eventosPorDiaHora()   
+        # for i in range(Mes(self._mes).ultimoDia().day):
+        #     for j in range(24):
+        #         if len(eventosPorDiaHora[i][j]) > 1:
+        #             print(f"[dia: {i+1:2d}, horas: {j:2d} a {j+1:2d}]...Eventos:", eventosPorDiaHora[i][j])
+        # print("****************")
+
 
 lista =[x for x in range(1,32)]
 for i in range(1,32):
@@ -50,3 +57,4 @@ funcion_inicial()
 print("********************")
 for i in range(28,30):
     print(i)
+
