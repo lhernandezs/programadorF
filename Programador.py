@@ -9,7 +9,9 @@ class Programador:
         self._mes = mes
         self._horasAProgramar = horasAProgramar
         self._tolerancia = tolerancia
-        self._promedioHorasPorFicha = None
+        self._promedioHorasPorFicha = self._horasAProgramar // len (self.listaFichas())
+        self._minimoHorasAProgramarPorFicha = self._promedioHorasPorFicha * (1-(self._tolerancia/100))
+        self._maximoHorasAProgramarPorFicha = self._promedioHorasPorFicha * (1+(self._tolerancia/100))
         self._matrizDeEventosPorDiaHora = None
         self._saldoDeHorasAProgramar = horasAProgramar
         self._ultimaFecMes = Mes(self._mes).ultimoDia()
@@ -20,12 +22,15 @@ class Programador:
     def estaElEventoEnDiaHora(self, evento, x, y):
         fecha = date(2023, self._mes, x)
         return True if evento.fechaI <= fecha and fecha <= evento.fechaF and evento.horaI <= y and y < evento.horaF else False
+    
+    # devuelve una lista de eventos sin programar
+    def listaEventosSinProgramar(self):
+        return list(filter(lambda e: not e._fichaYaProgramada ,self._listaEventos))
 
     # setea la matriz de los eventos sin programar por cada dia y la hora del mes  
     def matrizEventosPorDiaHora(self):
         matrizDeEventosPorDiaHora = [[[] for j in range(24)] for i in range(self._diasDelMes)]
-        listaEventosSinProgramar = list(filter(lambda e: not e._fichaYaProgramada ,self._listaEventos))
-        for evento in listaEventosSinProgramar:
+        for evento in self.listaEventosSinProgramar():
             for i in range(self._diasDelMes):
                 for j in range(24):
                     if self.estaElEventoEnDiaHora(evento, i+1, j) and i+1 in self._listaDiasLaborablesMes:
@@ -34,11 +39,12 @@ class Programador:
 
     # setea las listas de dias laborables, dias antes de cruce y dias luego de cruce de los eventos sin programar   
     def analisisDiasEventos(self):
+        self.matrizEventosPorDiaHora()
         conjuntoDiasLaborablesMes = set(self._listaDiasLaborablesMes)
-        for evento in self._listaEventos:
-            diaIniEvento = 1 if (evento.fechaI < Mes(self._mes).primerDia()) else evento.fechaI.day
+        for evento in self.listaEventosSinProgramar():
+            diaIniEvento = 1 if (evento.fechaI < date(2023, self._mes, 1)) else evento.fechaI.day
             diaFinEvento = self._diasDelMes if (self._ultimaFecMes < evento.fechaF) else evento.fechaF.day
-            listaDiasIniFinEvento = [x for x in range(diaIniEvento, diaFinEvento+1)]
+            listaDiasIniFinEvento = [dia for dia in range(diaIniEvento, diaFinEvento+1)]
             fecIniCruce = fecFinCruce = None
             for i in range(self._diasDelMes):
                 for j in range(24):
@@ -56,46 +62,35 @@ class Programador:
     def listaFichas(self):        
         return list(set([evento.ficha for evento in self._listaEventos]))
 
-    # Presenta en consola el resultado de la programacion    
-    def resultado(self):
-        self.matrizEventosPorDiaHora()
-        self.analisisDiasEventos()
-
-        # 1. calcular y setear el promedio de horas por ficha
-        self._promedioHorasPorFicha = self._horasAProgramar // len (self.listaFichas())
-
-        for evento in self._listaEventos:
-            if not evento.fichaYaProgramada:
+    # 1. iterar
+    #   se asigna horas en los eventos que tengan dias antes o luego del cruce suficientes para cumplir entre el -x% y +x% del promedio de horas por ficha
+    #   si es posible el paso anterior, la ficha queda programada, se retiran los eventos de la ficha en la matriz y se baja el numero de horas a programar
+    #   se vuelve a iterar hasta que no sea posible asignar mas horas a las fichas 
+    def programarEventosSinCruces(self):
+        bandera = True
+        while bandera:
+            bandera = False
+            self.analisisDiasEventos()
+            for evento in self.listaEventosSinProgramar():
                 horasEvento = evento.horaF - evento.horaI 
                 listaDiasMasLarga =  evento.listaDiasAntesCruce if len(evento.listaDiasAntesCruce) > len(evento.listaDiasLuegoCruce) else evento.listaDiasLuegoCruce
-                if (horasEvento * len(listaDiasMasLarga)) > self._promedioHorasPorFicha * (1-(self._tolerancia/100)):
-                    limiteHorasAProgramar = self._promedioHorasPorFicha * (1+(self._tolerancia/100))
-                    horasAcumuladas = 0
+                if (horasEvento * len(listaDiasMasLarga)) > self._minimoHorasAProgramarPorFicha:
+                    bandera = True
                     listaDiasAProgramar = []
+                    horasCargadasEnEvento = 0
                     for dia in listaDiasMasLarga:
-                        if horasAcumuladas < limiteHorasAProgramar:
+                        if horasCargadasEnEvento < self._maximoHorasAProgramarPorFicha and self._saldoDeHorasAProgramar > 0:
                             listaDiasAProgramar.append(dia)
-                            horasAcumuladas += horasEvento
+                            horasCargadasEnEvento += horasEvento
+                            self._saldoDeHorasAProgramar -= horasEvento
                         else:
                             break
                     for eve in self._listaEventos:
                         if evento.ficha == eve.ficha:
                             self._listaEventos[eve.id].fichaYaProgramada = True
                     self._listaEventos[evento.id].listaDiasAProgramar = listaDiasAProgramar
-                    self._saldoDeHorasAProgramar -= horasEvento * len(self._listaEventos[evento.id].listaDiasAProgramar)
-                    # retirar los eventos de la matriz
-
-        for evento in self._listaEventos:
-            print(evento)
-        print(self._saldoDeHorasAProgramar)
-                    
-
 
         # 2. iterar
-        #   se asigna horas en el primer evento que tenga dias antes o luego del cruce suficientes para cumplir entre el -x% y +x% del promedio de horas por ficha
-        #   si es posible el paso anterior, la ficha queda programada, se retiran los eventos de la ficha en la matriz y se baja el numero de horas a programar
-        #   se vuelve a iterar hasta que no sea posible asignar mas horas a las fichas
-        # 3. iterar
         #   se resuelven los cruces priorizando los eventos en que se pueda asignar entre el -20% y +20% del promedio de horas por ficha. 
         #   se retiran todos los eventos de la ficha en la matriz y se baja el numero de horas a programar
         #   se ejecuta toda el ciclo 2.
@@ -112,6 +107,9 @@ Evento(5, 3, 12, 13, date(2023,4,10), date(2023,4,28)), \
 ]
 
 programador = Programador(listaEventos, 4, 60, 50)
+programador.programarEventosSinCruces()
 
-programador.resultado()
+for evento in programador._listaEventos:
+    print(evento)
+print(programador._saldoDeHorasAProgramar)
 #print(programador.listaFichas())
