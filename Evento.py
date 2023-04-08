@@ -24,7 +24,7 @@ class Evento:
         self._listaDiasLaborables = None
         self._listaDiasAntesCruce = None
         self._listaDiasLuegoCruce = None
-        self._listaDiasAProgramar = []
+        self._listaDiasAProgramar = None
         self._fichaYaProgramada = False
 
     @property
