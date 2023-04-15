@@ -38,6 +38,7 @@ class Programador:
                         matrizDeEventos[d][h].append(evento.id)
         self._matrizDeEventos = matrizDeEventos  
 
+
     # setea las listas de dias laborables, dias antes de cruce y dias luego de cruce de los eventos sin programar   
     def analisisDiasEventos(self):
         self.matrizDeEventos()
@@ -65,6 +66,11 @@ class Programador:
         for e in todosLosEventosDeLaFicha:
             self._listaEventos[e.id]._fichaYaProgramada = True
 
+    def capacidadEvento(self, evento):
+        horasEvento = evento.horaF - evento.horaI
+        diasEvento = len(evento.listaDiasAntesCruce)+len(evento.listaDiasLuegoCruce)
+        return horasEvento * diasEvento 
+
     # El mejor evento programable es: 1. tiene la capacidad mas grande descontando los cruces 2. en caso de empate, tiene la hora de inicio mas temprano. 3. 
     # Si se acaban los eventos programables sin cruce se revisan los eventos que tengan dos cruces solamente...... - en contruccion ---    
     # Nota: todos los eventos programables deben tener capacidad de al menos el 50% del monimo de horas a programar por ficha
@@ -81,7 +87,19 @@ class Programador:
             return eventosProgramables[0] 
         else:
             # se procesan los eventos que comparten con solo otro evento en el cruce. -- en construcion
-            return None
+            print("inicio de pares cruzados")
+            listaDeParesCruzados = list(filter(lambda item: len(item) == 2,[self._matrizDeEventos[i][j] for j in range(24) for i in range(self._diasDelMes)]))
+            if listaDeParesCruzados:
+                print(listaDeParesCruzados)
+                cruceMasRepetido = max(listaDeParesCruzados, key=listaDeParesCruzados.count)
+                print("el cruce mas repetitido es: ", cruceMasRepetido, " repetido ", listaDeParesCruzados.count(cruceMasRepetido) ,"veces")
+                capacidad1erEvento = self.capacidadEvento(self._listaEventos[cruceMasRepetido[0]])
+                capacidad2doEvento = self.capacidadEvento(self._listaEventos[cruceMasRepetido[1]])
+                tupla1 = (self._listaEventos[cruceMasRepetido[0]], capacidad1erEvento, self._listaEventos[cruceMasRepetido[0]].horaI, self._listaEventos[cruceMasRepetido[0]].listaDiasLaborables, (self._listaEventos[cruceMasRepetido[0]].horaF - self._listaEventos[cruceMasRepetido[0]].horaI))
+                tupla2 = (self._listaEventos[cruceMasRepetido[1]], capacidad1erEvento, self._listaEventos[cruceMasRepetido[1]].horaI, self._listaEventos[cruceMasRepetido[1]].listaDiasLaborables, (self._listaEventos[cruceMasRepetido[1]].horaF - self._listaEventos[cruceMasRepetido[1]].horaI))
+                return  tupla1 if capacidad1erEvento >= capacidad2doEvento else tupla2
+            else:
+                return None
 
     # 1. iterar
     #   se asignan horas al mejor evento programable
@@ -122,10 +140,10 @@ Evento(4, 3, 9, 11, date(2023,4,1), date(2023,4,23)), \
 Evento(5, 3, 12, 13, date(2023,4,10), date(2023,4,28)), \
 ]
 
-programador = Programador(listaEventos, 4, 60, 15)
+programador = Programador(listaEventos, 4, 60, 10)
 programador.programarEventos()
 
 for evento in programador._listaEventos:
     print(evento)
-print(programador._saldoDeHorasAProgramar)
+print("Saldo de horas a Programar: ", programador._saldoDeHorasAProgramar)
 print(programador._diccionarioFichas)

@@ -80,7 +80,22 @@
 
 # print('Out of loop')
 
-datos = [ (3, 1, 2), (2, 3, 1), (3, 2, 0), (1, 2, 3), (4, 1, 4), (4, 2, 1), (3, 3, 0)]
-print(sorted(sorted(datos, key=lambda x: x[2]), key=lambda x: -x[1]))
-# datos =[]
-# print(sorted(datos, key=lambda x: -x[1]))
+# datos = [ (3, 1, 2), (2, 3, 1), (3, 2, 0), (1, 2, 3), (4, 1, 4), (4, 2, 1), (3, 3, 0)]
+# print(sorted(sorted(datos, key=lambda x: x[2]), key=lambda x: -x[1]))
+# # datos =[]
+# # print(sorted(datos, key=lambda x: -x[1]))
+
+from collections import Counter
+
+a = [[[1],[1,1],[2],[2,2],[3,1]], [[1,1],[1,1],[1],[2,2],[3]], [[1,1],[1,1],[2,1],[2,2],[3,1]]]
+
+print(list(filter(lambda item: len(item) == 1, [a[i][j] for j in range(5) for i in range(3)])))
+
+#counter = Counter(a)
+#print(max(a, key=a.count),"repetido ",a.count(max(a, key=a.count)))
+
+# first, second, *_, last = counter.most_common()
+
+# print(first, second, last)
+# print(counter.most_common(1))
+
