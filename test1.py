@@ -85,11 +85,11 @@
 # # datos =[]
 # # print(sorted(datos, key=lambda x: -x[1]))
 
-from collections import Counter
+# from collections import Counter
 
-a = [[[1],[1,1],[2],[2,2],[3,1]], [[1,1],[1,1],[1],[2,2],[3]], [[1,1],[1,1],[2,1],[2,2],[3,1]]]
+# a = [[[1],[1,1],[2],[2,2],[3,1]], [[1,1],[1,1],[1],[2,2],[3]], [[1,1],[1,1],[2,1],[2,2],[3,1]]]
 
-print(list(filter(lambda item: len(item) == 1, [a[i][j] for j in range(5) for i in range(3)])))
+# print(list(filter(lambda item: len(item) == 1, [a[i][j] for j in range(5) for i in range(3)])))
 
 #counter = Counter(a)
 #print(max(a, key=a.count),"repetido ",a.count(max(a, key=a.count)))
@@ -99,3 +99,24 @@ print(list(filter(lambda item: len(item) == 1, [a[i][j] for j in range(5) for i 
 # print(first, second, last)
 # print(counter.most_common(1))
 
+# class Prueba:
+#     def __init__(self):
+#         self._a = 0
+#         self._b = 1
+
+#     def mandaTupla(self):
+#         datos = ( 1, 2, 3 )
+#         return datos
+        
+#     def utilizaTupla(self):
+#         ( x, y , z) = self.mandaTupla()
+#         print(z)
+
+# prueba = Prueba()
+# prueba.utilizaTupla()
+
+# lista = (3,2,1)
+# lista1 = sorted(lista)
+# print(lista1)
+
+print("SI" if 3 > None else None)
