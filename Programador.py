@@ -127,7 +127,10 @@ class Programador:
                 else:                        
                     listaDiasAProgramar.append(dia)
                     self._saldoDeHorasAProgramar -= horasEvento
-                    self._diccionarioFichas[evento.ficha] += horasEvento              
+                    self._diccionarioFichas[evento.ficha] += horasEvento
+                    saldoDeHorasAProgramarDeLaFicha = self._minimoHorasAProgramarPorFicha - self._diccionarioFichas[evento.ficha]
+                    if  self._saldoDeHorasAProgramar < horasEvento or saldoDeHorasAProgramarDeLaFicha < horasEvento:
+                        self.marcarEventosDeLaFichaProgramada(evento)           
             evento.listaDiasAProgramar = listaDiasAProgramar
             self.analisisDiasEventos()
             (evento, listaDias, horasEvento) = self.buscarMejorEventoProgramable()
