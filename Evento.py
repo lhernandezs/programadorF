@@ -12,6 +12,7 @@ class Evento:
         self._listaDiasAntesCruce = None
         self._listaDiasLuegoCruce = None
         self._listaDiasAProgramar = None
+        self._listaDiasPorProgram = None
         self._fichaYaProgramada = False
 
     def __init__(self, id, ficha, horaI, horaF, fechaI, fechaF):
@@ -25,6 +26,7 @@ class Evento:
         self._listaDiasAntesCruce = None
         self._listaDiasLuegoCruce = None
         self._listaDiasAProgramar = None
+        self._listaDiasPorProgram = None        
         self._fichaYaProgramada = False
 
     @property
@@ -98,6 +100,13 @@ class Evento:
         self._listaDiasAProgramar = listaDiasAProgramar
 
     @property 
+    def listaDiasPorProgram(self): 
+        return self._listaDiasPorProgram
+    @listaDiasPorProgram.setter 
+    def listaDiasPorProgram(self, listaDiasPorProgram): 
+        self._listaDiasPorProgram = listaDiasPorProgram
+
+    @property 
     def fichaYaProgramada(self): 
         return self._fichaYaProgramada 
     @fichaYaProgramada.setter 
@@ -105,5 +114,5 @@ class Evento:
         self._fichaYaProgramada = fichaYaProgramada
 
     def __str__(self):
-        return f"evento: {self.id}, ficha: {self.ficha}, horas: [{self.horaI:2d} a {self.horaF:2d}] fechas: [{self.fechaI.day:2d} a {self.fechaF.day:2d}], \n dias laborables     : {self.listaDiasLaborables}, \n dias antes del cruce: {self.listaDiasAntesCruce}, \n dias luego del cruce: {self.listaDiasLuegoCruce}, \n dias a programar: {self.listaDiasAProgramar},\n la ficha ya esta programada: {self.fichaYaProgramada}"
+        return f"evento: {self.id}, ficha: {self.ficha}, horas: [{self.horaI:2d} a {self.horaF:2d}] fechas: [{self.fechaI.day:2d} a {self.fechaF.day:2d}], \n dias laborables     : {self.listaDiasLaborables}, \n dias antes del cruce: {self.listaDiasAntesCruce}, \n dias luego del cruce: {self.listaDiasLuegoCruce}, \n dias a programar: {self.listaDiasAProgramar}, \n dias Por programar: {self.listaDiasPorProgram},\n la ficha ya esta programada: {self.fichaYaProgramada}"
 

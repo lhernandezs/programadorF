@@ -132,8 +132,20 @@ class Programador:
                     if  self._saldoDeHorasAProgramar < horasEvento or saldoDeHorasAProgramarDeLaFicha < horasEvento:
                         self.marcarEventosDeLaFichaProgramada(evento)           
             evento.listaDiasAProgramar = listaDiasAProgramar
+            evento.listaDiasPorProgram = list(set(listaDias) - set(listaDiasAProgramar))
             self.analisisDiasEventos()
             (evento, listaDias, horasEvento) = self.buscarMejorEventoProgramable()
+        for evento in list(filter(lambda e: not e.listaDiasPorProgram is None, self._listaEventos)):
+            listaDiasPorProgramar = evento.listaDiasPorProgram[:]
+            for dia in listaDiasPorProgramar:
+                horasEvento = evento.horaF - evento.horaI
+                saldoDeHorasAProgramarDeLaFicha = self._maximoHorasAProgramarPorFicha - self._diccionarioFichas[evento.ficha]
+                if  not (self._saldoDeHorasAProgramar < horasEvento or saldoDeHorasAProgramarDeLaFicha < horasEvento):
+                    evento.listaDiasAProgramar.append(dia)
+                    evento.listaDiasPorProgram.remove(dia)
+                    self._saldoDeHorasAProgramar -= horasEvento
+                    self._diccionarioFichas[evento.ficha] += horasEvento
+
         
 # principal 
 listaEventos = [ \
@@ -145,7 +157,7 @@ Evento(4, 3, 9, 11, date(2023,4,1), date(2023,4,23)), \
 Evento(5, 3, 12, 13, date(2023,4,10), date(2023,4,28)), \
 ]
 
-programador = Programador(listaEventos, 4, 60, 10)
+programador = Programador(listaEventos, 4, 60, 20)
 programador.programarEventos()
 
 for evento in programador._listaEventos:
