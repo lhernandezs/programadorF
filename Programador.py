@@ -77,7 +77,7 @@ class Programador:
         else:
             listaDias = evento.listaDiasAntesCruce if len(evento.listaDiasAntesCruce) > len(evento.listaDiasLuegoCruce) else evento.listaDiasLuegoCruce
             capacidad = horasEvento * len(listaDias)
-        return (capacidad, listaDias, horasEvento)
+        return (evento, capacidad, listaDias, horasEvento)
     
     # devuelve True si la capacidad del eventos es el 50% del monimo de horas a programar por ficha o False en caso contrario
     def tieneCapacidadMinima(self, capacidad):
@@ -89,7 +89,7 @@ class Programador:
     def buscarMejorEventoProgramable(self):
         eventosProgramables = []
         for evento in self.listaEventosSinProgramar():
-            (capacidad, listaDias, horasEvento) = self.capacidadEvento(evento, False)
+            (e, capacidad, listaDias, horasEvento) = self.capacidadEvento(evento, False)
             if self.tieneCapacidadMinima(capacidad):
                 eventosProgramables.append((evento, capacidad, evento.horaI, listaDias, horasEvento))
         if len(eventosProgramables) > 0:
@@ -97,16 +97,32 @@ class Programador:
             return (eventosProgramablesOrdenados[0][0], eventosProgramablesOrdenados[0][3], eventosProgramablesOrdenados[0][4])
         else:
             # se procesan los eventos que comparten con solo otro evento en el cruce.
-            listaDeParesCruzados = list(filter(lambda item: len(item) == 2,[self._matrizDeEventos[i][j] for j in range(24) for i in range(self._diasDelMes)]))
-            if listaDeParesCruzados:
-                cruceMasRepetido = max(listaDeParesCruzados, key=listaDeParesCruzados.count)
-                evento0 = self._listaEventos[cruceMasRepetido[0]]
-                evento1 = self._listaEventos[cruceMasRepetido[1]]
-                (capacidad0, listaDias0, horasEvento0) = self.capacidadEvento(evento0, True)
-                (capacidad1, listaDias1, horasEvento1) = self.capacidadEvento(evento1, True)  
-                tupla0 = (evento0, listaDias0, horasEvento0) if self.tieneCapacidadMinima(capacidad0) else (None, None, None)
-                tupla1 = (evento1, listaDias1, horasEvento1) if self.tieneCapacidadMinima(capacidad1) else (None, None, None)
-                return  tupla0 if capacidad0 >= capacidad1 else tupla1
+            for l in range(2, len(self._listaEventos)):
+                listaDeEventosCruzados = list(filter(lambda item: len(item) == l,[self._matrizDeEventos[i][j] for j in range(24) for i in range(self._diasDelMes)]))
+                if listaDeEventosCruzados:
+                    cruceMasRepetido = max(listaDeEventosCruzados, key=listaDeEventosCruzados.count)
+                    eventos = []
+                    listaTuplas = []
+                    for id in cruceMasRepetido:
+                        eventos.append(self._listaEventos[id])
+                        listaTuplas.append(self.capacidadEvento(self._listaEventos[id], True))
+                    mejorTupla = sorted(listaTuplas, key=lambda t: -t[1])
+                    retorno = (mejorTupla[0][0], mejorTupla[0][2], mejorTupla[0][3])
+                    return retorno 
+                # evento0 = self._listaEventos[cruceMasRepetido[0]]
+                # evento1 = self._listaEventos[cruceMasRepetido[1]]
+                # (e0, capacidad0, listaDias0, horasEvento0) = self.capacidadEvento(evento0, True)
+                # (e1, capacidad1, listaDias1, horasEvento1) = self.capacidadEvento(evento1, True) 
+                
+                # tuplas = filter(lambda tupla: self.tieneCapacidadMinima(tupla[0]),list(map(lambda e: self.capacidadEvento(evento, True), cruceMasRepetido)))
+
+                # mayorCapacidad = sorted(tuplas, key = lambda t: -t[0])
+
+                # print(mayorCapacidad) 
+
+                # tupla0 = (evento0, listaDias0, horasEvento0) if self.tieneCapacidadMinima(capacidad0) else (None, None, None)
+                # tupla1 = (evento1, listaDias1, horasEvento1) if self.tieneCapacidadMinima(capacidad1) else (None, None, None)
+                # return  tupla0 if capacidad0 >= capacidad1 else tupla1
             else:
                 return (None, None, None)
 
@@ -132,7 +148,7 @@ class Programador:
                     if  self._saldoDeHorasAProgramar < horasEvento or saldoDeHorasAProgramarDeLaFicha < horasEvento:
                         self.marcarEventosDeLaFichaProgramada(evento)           
             evento.listaDiasAProgramar = listaDiasAProgramar
-            evento.listaDiasPorProgram = list(set(listaDias) - set(listaDiasAProgramar))
+            evento.listaDiasPorProgram = list(set(listaDias) - set(listaDiasAProgramar)) if len(listaDias) != len(listaDiasAProgramar) else []
             self.analisisDiasEventos()
             (evento, listaDias, horasEvento) = self.buscarMejorEventoProgramable()
         for evento in list(filter(lambda e: not e.listaDiasPorProgram is None, self._listaEventos)):
@@ -157,7 +173,7 @@ Evento(4, 3, 9, 11, date(2023,4,1), date(2023,4,23)), \
 Evento(5, 3, 12, 13, date(2023,4,10), date(2023,4,28)), \
 ]
 
-programador = Programador(listaEventos, 4, 60, 20)
+programador = Programador(listaEventos, 4, 60, 2)
 programador.programarEventos()
 
 for evento in programador._listaEventos:
