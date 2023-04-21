@@ -13,11 +13,11 @@ class Programador:
         self._promedioHorasPorFicha = self._horasAProgramar // len(self._diccionarioFichas)
         self._minimoHorasAProgramarPorFicha = self._promedioHorasPorFicha * (1-(self._tolerancia/100))
         self._maximoHorasAProgramarPorFicha = self._promedioHorasPorFicha * (1+(self._tolerancia/100))
-        self._matrizDeEventos = None
-        self._saldoDeHorasAProgramar = horasAProgramar
         self._ultimaFecMes = Mes(self._mes).ultimoDia()
         self._diasDelMes = self._ultimaFecMes.day
         self._listaDiasLaborablesMes = Mes(self._mes).listaDiasLaborables()
+        self._matrizDeEventos = self.matrizDeEventos()
+        self._saldoDeHorasAProgramar = horasAProgramar
 
     # retorna True si el evento está en el Dia y la Hora pasado como parametros o False en caso contrario
     def estaElEventoEnDiaHora(self, evento, dia, hora):
@@ -61,10 +61,10 @@ class Programador:
     
     # setea en True el atributo fichaYaProgramada de todos los eventos que tiene la misma ficha el evento
     def marcarEventosDeLaFichaProgramada(self, evento):
-        for e in list(filter(lambda e: evento.ficha == e.ficha, self._listaEventos)):
-            e._fichaYaProgramada = True
-#            print(e)
-#        map(lambda e: e.fichaYaProgramada(True), list(filter(lambda e: evento.ficha == e.ficha, self._listaEventos)))
+        lista = list(filter(lambda e: evento.ficha == e.ficha, self._listaEventos))
+        for e in lista:
+            e.fichaYaProgramada = True
+ #       map(lambda even: even.fichaYaProgramada(True), lista)
 
     # recibe un evento y un boleano que indica si el evento esta cruzado o no; devuelve una tupla con la capacidad de horas a programar en el evento, 
     # la lista mas larga de dias programables y la duracion en horas del Eveto
@@ -98,7 +98,7 @@ class Programador:
         else:
             # se procesan los eventos que comparten con solo otro evento en el cruce.
             for l in range(2, len(self._listaEventos)):
-                listaDeEventosCruzados = list(filter(lambda item: len(item) == l,[self._matrizDeEventos[i][j] for j in range(24) for i in range(self._diasDelMes)]))
+                listaDeEventosCruzados = list(filter(lambda item: len(item) == l, [self._matrizDeEventos[i][j] for j in range(24) for i in range(self._diasDelMes)]))
                 if listaDeEventosCruzados:
                     cruceMasRepetido = max(listaDeEventosCruzados, key=listaDeEventosCruzados.count)
                     eventos = []
@@ -173,7 +173,7 @@ Evento(4, 3, 9, 11, date(2023,4,1), date(2023,4,23)), \
 Evento(5, 3, 12, 13, date(2023,4,10), date(2023,4,28)), \
 ]
 
-programador = Programador(listaEventos, 4, 60, 2)
+programador = Programador(listaEventos, 4, 60, 7)
 programador.programarEventos()
 
 for evento in programador._listaEventos:
