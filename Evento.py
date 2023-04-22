@@ -2,116 +2,116 @@ from datetime import datetime
 
 class Evento:
     def __init__(self):
-        self._id = 0
-        self._ficha = 0
-        self._horaI = 0
-        self._horaF = 0
-        self._fechaI = None   
-        self._fechaF = None
-        self._listaDiasLaborables = None
-        self._listaDiasAntesCruce = None
-        self._listaDiasLuegoCruce = None
-        self._listaDiasAProgramar = None
-        self._listaDiasPorProgram = None
-        self._fichaYaProgramada = False
+        self.__id = 0
+        self.__ficha = 0
+        self.__horaI = 0
+        self.__horaF = 0
+        self.__fechaI = None   
+        self.__fechaF = None
+        self.__listaDiasLaborables = None
+        self.__listaDiasAntesCruce = None
+        self.__listaDiasLuegoCruce = None
+        self.__listaDiasAProgramar = None
+        self.__listaDiasPorProgram = None
+        self.__fichaYaProgramada = False
 
     def __init__(self, id, ficha, horaI, horaF, fechaI, fechaF):
-        self._id = id
-        self._ficha = ficha
-        self._horaI = horaI
-        self._horaF = horaF
-        self._fechaI = fechaI
-        self._fechaF = fechaF
-        self._listaDiasLaborables = None
-        self._listaDiasAntesCruce = None
-        self._listaDiasLuegoCruce = None
-        self._listaDiasAProgramar = None
-        self._listaDiasPorProgram = None        
-        self._fichaYaProgramada = False
+        self.__id = id
+        self.__ficha = ficha
+        self.__horaI = horaI
+        self.__horaF = horaF
+        self.__fechaI = fechaI
+        self.__fechaF = fechaF
+        self.__listaDiasLaborables = None
+        self.__listaDiasAntesCruce = None
+        self.__listaDiasLuegoCruce = None
+        self.__listaDiasAProgramar = None
+        self.__listaDiasPorProgram = None        
+        self.__fichaYaProgramada = False
 
     @property
     def id(self):
-        return self._id
+        return self.__id
     @id.setter
     def evento(self, id):
-        self._id = id
+        self.__id = id
         
     @property 
     def ficha(self): 
-        return self._ficha 
+        return self.__ficha 
     @ficha.setter 
     def ficha(self, ficha): 
-        self._ficha = ficha 
+        self.__ficha = ficha 
 
     @property 
     def horaI(self): 
-        return self._horaI 
+        return self.__horaI 
     @horaI.setter 
     def horaI(self, horaI): 
-        self._horaI = horaI
+        self.__horaI = horaI
 
     @property 
     def horaF(self): 
-        return self._horaF 
+        return self.__horaF 
     @horaF.setter 
     def horaF(self, horaF): 
-        self._horaF = horaF
+        self.__horaF = horaF
 
     @property 
     def fechaI(self): 
-        return self._fechaI 
+        return self.__fechaI 
     @fechaI.setter 
     def fechaI(self, fechaI): 
-        self._fechaI = fechaI
+        self.__fechaI = fechaI
 
     @property 
     def fechaF(self): 
-        return self._fechaF 
+        return self.__fechaF 
     @fechaF.setter 
     def fecahF(self, fechaF): 
-        self._fechaF = fechaF
+        self.__fechaF = fechaF
 
     @property 
     def listaDiasLaborables(self): 
-        return self._listaDiasLaborables 
+        return self.__listaDiasLaborables 
     @listaDiasLaborables.setter 
     def listaDiasLaborables(self, listaDiasLaborables): 
-        self._listaDiasLaborables = listaDiasLaborables
+        self.__listaDiasLaborables = listaDiasLaborables
 
     @property 
     def listaDiasAntesCruce(self): 
-        return self._listaDiasAntesCruce 
+        return self.__listaDiasAntesCruce 
     @listaDiasAntesCruce.setter 
     def listaDiasAntesCruce(self, listaDiasAntesCruce): 
-        self._listaDiasAntesCruce = listaDiasAntesCruce
+        self.__listaDiasAntesCruce = listaDiasAntesCruce
 
     @property 
     def listaDiasLuegoCruce(self): 
-        return self._listaDiasLuegoCruce 
+        return self.__listaDiasLuegoCruce 
     @listaDiasLuegoCruce.setter 
     def listaDiasLuegoCruce(self, listaDiasLuegoCruce): 
-        self._listaDiasLuegoCruce = listaDiasLuegoCruce
+        self.__listaDiasLuegoCruce = listaDiasLuegoCruce
 
     @property 
     def listaDiasAProgramar(self): 
-        return self._listaDiasAProgramar
+        return self.__listaDiasAProgramar
     @listaDiasAProgramar.setter 
     def listaDiasAProgramar(self, listaDiasAProgramar): 
-        self._listaDiasAProgramar = listaDiasAProgramar
+        self.__listaDiasAProgramar = listaDiasAProgramar
 
     @property 
     def listaDiasPorProgram(self): 
-        return self._listaDiasPorProgram
+        return self.__listaDiasPorProgram
     @listaDiasPorProgram.setter 
     def listaDiasPorProgram(self, listaDiasPorProgram): 
-        self._listaDiasPorProgram = listaDiasPorProgram
+        self.__listaDiasPorProgram = listaDiasPorProgram
 
     @property 
     def fichaYaProgramada(self): 
-        return self._fichaYaProgramada 
+        return self.__fichaYaProgramada 
     @fichaYaProgramada.setter 
     def fichaYaProgramada(self, fichaYaProgramada): 
-        self._fichaYaProgramada = fichaYaProgramada
+        self.__fichaYaProgramada = fichaYaProgramada
 
     def __str__(self):
         return f"evento: {self.id}, ficha: {self.ficha}, horas: [{self.horaI:2d} a {self.horaF:2d}] fechas: [{self.fechaI.day:2d} a {self.fechaF.day:2d}], \n dias laborables     : {self.listaDiasLaborables}, \n dias antes del cruce: {self.listaDiasAntesCruce}, \n dias luego del cruce: {self.listaDiasLuegoCruce}, \n dias a programar: {self.listaDiasAProgramar}, \n dias Por programar: {self.listaDiasPorProgram},\n la ficha ya esta programada: {self.fichaYaProgramada}"

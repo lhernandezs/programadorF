@@ -62,69 +62,52 @@ class Programador:
     # setea en True el atributo fichaYaProgramada de todos los eventos que tiene la misma ficha el evento
     def marcarEventosDeLaFichaProgramada(self, evento):
         lista = list(filter(lambda e: evento.ficha == e.ficha, self._listaEventos))
-        for e in lista:
-            e.fichaYaProgramada = True
- #       map(lambda even: even.fichaYaProgramada(True), lista)
+        map(lambda e: e.fichaYaProgramada(True), lista)
+        # for e in lista:
+        #     e.fichaYaProgramada = True
 
-    # recibe un evento y un boleano que indica si el evento esta cruzado o no; devuelve una tupla con la capacidad de horas a programar en el evento, 
-    # la lista mas larga de dias programables y la duracion en horas del Eveto
+    # recibe un evento y un boleano que indica si el evento esta cruzado o no
+    # devuelve una tupla con el evento, la capacidad de horas a programar en el evento, la lista mas larga de dias programables y la duracion en horas
     def capacidadEvento(self, evento, cruzado):
         horasEvento = evento.horaF - evento.horaI
         if cruzado:
             listaDias = [evento.listaDiasLaborables]
-#            capacidad = horasEvento * (len(evento.listaDiasAntesCruce)+len(evento.listaDiasLuegoCruce))
             capacidad = horasEvento * len(evento.listaDiasLaborables)
+            return (evento, capacidad, listaDias, horasEvento)
         else:
-            listaDias = evento.listaDiasAntesCruce if len(evento.listaDiasAntesCruce) > len(evento.listaDiasLuegoCruce) else evento.listaDiasLuegoCruce
+            listaDias = lA if len(lA := evento.listaDiasAntesCruce) > len(lL := evento.listaDiasLuegoCruce) else lL
             capacidad = horasEvento * len(listaDias)
-        return (evento, capacidad, listaDias, horasEvento)
+            return (capacidad, listaDias, horasEvento)
     
-    # devuelve True si la capacidad del eventos es el 50% del monimo de horas a programar por ficha o False en caso contrario
+    # devuelve True si la capacidad del evento es al menos el 50% del mínimo de horas a programar por ficha o False en caso contrario
     def tieneCapacidadMinima(self, capacidad):
         return True if capacidad >= self._minimoHorasAProgramarPorFicha // 2 else False
     
-    # el mejor evento programable es: 
-    # 1. Tiene la capacidad mas grande descontando los cruces; en caso de empate, tiene la hora de inicio mas temprano. 
-    # 2. Si se acaban los eventos programables sin cruce se revisan los eventos que tengan dos cruces solamente.   
+    # devuelve el evento, la lista de dias a programar y las horas del mejor evento programable, que se define: 
+    # 1. Tiene la capacidad mas grande revisando las lista de dias que no se cruzan; en caso de empate, tiene la hora de inicio mas temprano. 
+    # 2. Si se acaban los eventos anteriores, se revisan los eventos cruzados de menos a mas cardinalidad.   
     def buscarMejorEventoProgramable(self):
-        eventosProgramables = []
+        eventosProgramables = [] # 1.
         for evento in self.listaEventosSinProgramar():
-            (e, capacidad, listaDias, horasEvento) = self.capacidadEvento(evento, False)
-            if self.tieneCapacidadMinima(capacidad):
-                eventosProgramables.append((evento, capacidad, evento.horaI, listaDias, horasEvento))
+            (capacidad, listaDias, horasEvento) = self.capacidadEvento(evento, False)
+            eventosProgramables.append((evento, capacidad, evento.horaI, listaDias, horasEvento)) if self.tieneCapacidadMinima(capacidad) else None                
         if len(eventosProgramables) > 0:
-            eventosProgramablesOrdenados = sorted(sorted(eventosProgramables, key=lambda x: x[2]), key=lambda x: -x[1])
-            return (eventosProgramablesOrdenados[0][0], eventosProgramablesOrdenados[0][3], eventosProgramablesOrdenados[0][4])
+            eventosProgramablesOrdenados = (list(sorted(sorted(eventosProgramables, key=lambda x: x[2]), key=lambda x: -x[1])))[0]
+            return (eventosProgramablesOrdenados[0], eventosProgramablesOrdenados[3], eventosProgramablesOrdenados[4])
         else:
-            # se procesan los eventos que comparten con solo otro evento en el cruce.
+            # 2.
             for l in range(2, len(self._listaEventos)):
                 listaDeEventosCruzados = list(filter(lambda item: len(item) == l, [self._matrizDeEventos[i][j] for j in range(24) for i in range(self._diasDelMes)]))
                 if listaDeEventosCruzados:
                     cruceMasRepetido = max(listaDeEventosCruzados, key=listaDeEventosCruzados.count)
-                    eventos = []
                     listaTuplas = []
                     for id in cruceMasRepetido:
-                        eventos.append(self._listaEventos[id])
                         listaTuplas.append(self.capacidadEvento(self._listaEventos[id], True))
-                    mejorTupla = sorted(listaTuplas, key=lambda t: -t[1])
-                    retorno = (mejorTupla[0][0], mejorTupla[0][2], mejorTupla[0][3])
+                    (evento, capacidad, listaDias, horasEvento)= (list(sorted(listaTuplas, key=lambda t: -t[1])))[0]
+                    retorno = (evento, listaDias, horasEvento)
                     return retorno 
-                # evento0 = self._listaEventos[cruceMasRepetido[0]]
-                # evento1 = self._listaEventos[cruceMasRepetido[1]]
-                # (e0, capacidad0, listaDias0, horasEvento0) = self.capacidadEvento(evento0, True)
-                # (e1, capacidad1, listaDias1, horasEvento1) = self.capacidadEvento(evento1, True) 
-                
-                # tuplas = filter(lambda tupla: self.tieneCapacidadMinima(tupla[0]),list(map(lambda e: self.capacidadEvento(evento, True), cruceMasRepetido)))
-
-                # mayorCapacidad = sorted(tuplas, key = lambda t: -t[0])
-
-                # print(mayorCapacidad) 
-
-                # tupla0 = (evento0, listaDias0, horasEvento0) if self.tieneCapacidadMinima(capacidad0) else (None, None, None)
-                # tupla1 = (evento1, listaDias1, horasEvento1) if self.tieneCapacidadMinima(capacidad1) else (None, None, None)
-                # return  tupla0 if capacidad0 >= capacidad1 else tupla1
-            else:
-                return (None, None, None)
+                else:
+                    return (None, None, None)
 
     # 1. iterar
     #   se asignan horas al mejor evento programable
