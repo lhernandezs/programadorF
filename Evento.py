@@ -114,5 +114,16 @@ class Evento:
         self.__fichaYaProgramada = fichaYaProgramada
 
     def __str__(self):
-        return f"evento: {self.id}, ficha: {self.ficha}, horas: [{self.horaI:2d} a {self.horaF:2d}] fechas: [{self.fechaI.day:2d} a {self.fechaF.day:2d}], \n dias laborables     : {self.listaDiasLaborables}, \n dias antes del cruce: {self.listaDiasAntesCruce}, \n dias luego del cruce: {self.listaDiasLuegoCruce}, \n dias a programar: {self.listaDiasAProgramar}, \n dias Por programar: {self.listaDiasPorProgram},\n la ficha ya esta programada: {self.fichaYaProgramada}"
+        dLa = self.listaDiasLaborables
+        dAc = self.listaDiasAntesCruce
+        dLc = self.listaDiasLuegoCruce
+        dAp = self.listaDiasAProgramar
+        dPp = self.listaDiasPorProgram
+        diasLaborables = f"{dLa[0]:2d} a {dLa[len(dLa)-1]:2d}" if len(dLa)> 0 else f"[   a   ]"
+        diasAntesCruce = f"{dAc[0]:2d} a {dAc[len(dAc)-1]:2d}" if len(dAc)> 0 else f"[   a   ]"
+        diasLuegoCruce = f"{dLc[0]:2d} a {dLc[len(dLc)-1]:2d}" if len(dLc)> 0 else f"[   a   ]"
+        diasAProgramar = "        " # f"{dAp[0]:2d} a {dAp[len(dAp)-1]:2d}" if len(dAp)> 0 else f"[   a   ]"
+        diasPorProgram = f"{dPp[0]:2d} a {dPp[len(dPp)-1]:2d}" if len(dPp)> 0 else f"[   a   ]"
+
+        return f"|    {self.id}    |    {self.ficha}    | [{self.horaI:2d} a {self.horaF:2d}] | [{self.fechaI.day:2d} a {self.fechaF.day:2d}]|{diasLaborables}| {diasAntesCruce}|{diasLuegoCruce}|{diasAProgramar}|{diasPorProgram}|{self.fichaYaProgramada}|"
 

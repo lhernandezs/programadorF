@@ -92,8 +92,8 @@ class Programador:
             (capacidad, listaDias, horasEvento) = self.capacidadEvento(evento, False)
             eventosProgramables.append((evento, capacidad, evento.horaI, listaDias, horasEvento)) if self.tieneCapacidadMinima(capacidad) else None                
         if len(eventosProgramables) > 0:
-            eventosProgramablesOrdenados = (list(sorted(sorted(eventosProgramables, key=lambda x: x[2]), key=lambda x: -x[1])))[0]
-            return (eventosProgramablesOrdenados[0], eventosProgramablesOrdenados[3], eventosProgramablesOrdenados[4])
+            (evento, capacidad, horaI, listaDias, horasEvento) = (list(sorted(sorted(eventosProgramables, key=lambda x: x[2]), key=lambda x: -x[1])))[0]
+            return (evento, listaDias, horasEvento)
         else:
             # 2.
             for l in range(2, len(self._listaEventos)):
@@ -104,8 +104,7 @@ class Programador:
                     for id in cruceMasRepetido:
                         listaTuplas.append(self.capacidadEvento(self._listaEventos[id], True))
                     (evento, capacidad, listaDias, horasEvento)= (list(sorted(listaTuplas, key=lambda t: -t[1])))[0]
-                    retorno = (evento, listaDias, horasEvento)
-                    return retorno 
+                    return (evento, listaDias, horasEvento)
                 else:
                     return (None, None, None)
 
@@ -113,8 +112,9 @@ class Programador:
     #   se asignan horas al mejor evento programable
     #   si la ficha queda programada (al menos el minimo de horas a programar por ficha), se retiran los eventos de la ficha en la matriz y se baja el numero de horas a programar
     #   se vuelve a iterar hasta que no sea posible asignar mas horas a las fichas 
+    # 2.
     def programarEventos(self):
-        self.analisisDiasEventos()
+        self.analisisDiasEventos() # 1.
         (evento, listaDias, horasEvento) = self.buscarMejorEventoProgramable()
         while evento:
             listaDiasAProgramar = []
@@ -144,7 +144,6 @@ class Programador:
                     evento.listaDiasPorProgram.remove(dia)
                     self._saldoDeHorasAProgramar -= horasEvento
                     self._diccionarioFichas[evento.ficha] += horasEvento
-
         
 # principal 
 listaEventos = [ \
@@ -156,10 +155,13 @@ Evento(4, 3, 9, 11, date(2023,4,1), date(2023,4,23)), \
 Evento(5, 3, 12, 13, date(2023,4,10), date(2023,4,28)), \
 ]
 
-programador = Programador(listaEventos, 4, 60, 7)
+programador = Programador(listaEventos, 4, 60, 10)
 programador.programarEventos()
-
+print(" ------------------------------------------------------------------------------------------------------ ")
+print("| Evento  |  Ficha  |   Horas   |   Dias   |  D lab  |  D A Cru | D L Cru | D A Pro | D P Pro | Ya Prog | ")
+print(" ------------------------------------------------------------------------------------------------------ ")
 for evento in programador._listaEventos:
     print(evento)
+    print(" ------------------------------------------------------------------------------------------------------ ")
 print("Saldo de horas a Programar: ", programador._saldoDeHorasAProgramar)
 print(programador._diccionarioFichas)
