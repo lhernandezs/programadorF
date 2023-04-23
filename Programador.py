@@ -71,7 +71,7 @@ class Programador:
     def capacidadEvento(self, evento, cruzado):
         horasEvento = evento.horaF - evento.horaI
         if cruzado:
-            listaDias = [evento.listaDiasLaborables]
+            listaDias = evento.listaDiasLaborables
             capacidad = horasEvento * len(evento.listaDiasLaborables)
             return (evento, capacidad, listaDias, horasEvento)
         else:
@@ -157,11 +157,12 @@ Evento(5, 3, 12, 13, date(2023,4,10), date(2023,4,28)), \
 
 programador = Programador(listaEventos, 4, 60, 10)
 programador.programarEventos()
-print(" ------------------------------------------------------------------------------------------------------ ")
-print("| Evento  |  Ficha  |   Horas   |   Dias   |  D lab  |  D A Cru | D L Cru | D A Pro | D P Pro | Ya Prog | ")
-print(" ------------------------------------------------------------------------------------------------------ ")
+print()
+print(f"  H a programar: {programador._horasAProgramar} - H por Programar:{programador._saldoDeHorasAProgramar:3d} - Dicionario: {programador._diccionarioFichas}  - Mes: {programador._mes}  - Tolerancia: {programador._tolerancia}%" )
+print(" -------------------------------------------------------------------------------------------------------------- ")
+print("|  Evento  |   Ficha  |   Horas   |  D In Fi | D labor  | D A Cruz | D L Cruz | D A Prog | D P Prog | Ya Progr | ")
+print(" -------------------------------------------------------------------------------------------------------------- ")
 for evento in programador._listaEventos:
     print(evento)
-    print(" ------------------------------------------------------------------------------------------------------ ")
-print("Saldo de horas a Programar: ", programador._saldoDeHorasAProgramar)
-print(programador._diccionarioFichas)
+    print(" -------------------------------------------------------------------------------------------------------------- ")
+print()

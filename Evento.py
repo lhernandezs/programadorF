@@ -119,11 +119,11 @@ class Evento:
         dLc = self.listaDiasLuegoCruce
         dAp = self.listaDiasAProgramar
         dPp = self.listaDiasPorProgram
-        diasLaborables = f"{dLa[0]:2d} a {dLa[len(dLa)-1]:2d}" if len(dLa)> 0 else f"[   a   ]"
-        diasAntesCruce = f"{dAc[0]:2d} a {dAc[len(dAc)-1]:2d}" if len(dAc)> 0 else f"[   a   ]"
-        diasLuegoCruce = f"{dLc[0]:2d} a {dLc[len(dLc)-1]:2d}" if len(dLc)> 0 else f"[   a   ]"
-        diasAProgramar = "        " # f"{dAp[0]:2d} a {dAp[len(dAp)-1]:2d}" if len(dAp)> 0 else f"[   a   ]"
-        diasPorProgram = f"{dPp[0]:2d} a {dPp[len(dPp)-1]:2d}" if len(dPp)> 0 else f"[   a   ]"
+        diasLaborables = f"  {dLa[0]:2d} a {dLa[len(dLa)-1]:2d} " if len(dLa)> 0 else f"          "
+        diasAntesCruce = f"  {dAc[0]:2d} a {dAc[len(dAc)-1]:2d} " if len(dAc)> 0 else f"          "
+        diasLuegoCruce = f"  {dLc[0]:2d} a {dLc[len(dLc)-1]:2d} " if len(dLc)> 0 else f"          "
+        diasAProgramar = f"  {dAp[0]:2d} a {dAp[len(dAp)-1]:2d} " if len(dAp)> 0 else f"          "
+        diasPorProgram = f"  {dPp[0]:2d} a {dPp[len(dPp)-1]:2d} " if len(dPp)> 0 else f"          "
 
-        return f"|    {self.id}    |    {self.ficha}    | [{self.horaI:2d} a {self.horaF:2d}] | [{self.fechaI.day:2d} a {self.fechaF.day:2d}]|{diasLaborables}| {diasAntesCruce}|{diasLuegoCruce}|{diasAProgramar}|{diasPorProgram}|{self.fichaYaProgramada}|"
+        return f"|    {self.id:2d}    |  {self.ficha:7d} |  {self.horaI:2d} - {self.horaF:2d} |  {self.fechaI.day:2d} a {self.fechaF.day:2d} |{diasLaborables}| {diasAntesCruce}|{diasLuegoCruce}|{diasAProgramar}|{diasPorProgram}|{'    Si    ' if self.fichaYaProgramada else '    No    '}|"
 
