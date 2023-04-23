@@ -117,8 +117,8 @@ class Evento:
         dLa = self.listaDiasLaborables
         dAc = self.listaDiasAntesCruce
         dLc = self.listaDiasLuegoCruce
-        dAp = self.listaDiasAProgramar
-        dPp = self.listaDiasPorProgram
+        dAp = self.listaDiasAProgramar if not self.listaDiasAProgramar is None else []
+        dPp = self.listaDiasPorProgram if not self.listaDiasPorProgram is None else []
         diasLaborables = f"  {dLa[0]:2d} a {dLa[len(dLa)-1]:2d} " if len(dLa)> 0 else f"          "
         diasAntesCruce = f"  {dAc[0]:2d} a {dAc[len(dAc)-1]:2d} " if len(dAc)> 0 else f"          "
         diasLuegoCruce = f"  {dLc[0]:2d} a {dLc[len(dLc)-1]:2d} " if len(dLc)> 0 else f"          "

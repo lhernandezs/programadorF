@@ -62,9 +62,9 @@ class Programador:
     # setea en True el atributo fichaYaProgramada de todos los eventos que tiene la misma ficha el evento
     def marcarEventosDeLaFichaProgramada(self, evento):
         lista = list(filter(lambda e: evento.ficha == e.ficha, self._listaEventos))
-        map(lambda e: e.fichaYaProgramada(True), lista)
-        # for e in lista:
-        #     e.fichaYaProgramada = True
+    #    map(lambda e: e.fichaYaProgramada(True), lista)
+        for e in lista:
+            e.fichaYaProgramada = True
 
     # recibe un evento y un boleano que indica si el evento esta cruzado o no
     # devuelve una tupla con el evento, la capacidad de horas a programar en el evento, la lista mas larga de dias programables y la duracion en horas
@@ -155,7 +155,7 @@ Evento(4, 3, 9, 11, date(2023,4,1), date(2023,4,23)), \
 Evento(5, 3, 12, 13, date(2023,4,10), date(2023,4,28)), \
 ]
 
-programador = Programador(listaEventos, 4, 60, 10)
+programador = Programador(listaEventos, 4, 160, 30)
 programador.programarEventos()
 print()
 print(f"  H a programar: {programador._horasAProgramar} - H por Programar:{programador._saldoDeHorasAProgramar:3d} - Dicionario: {programador._diccionarioFichas}  - Mes: {programador._mes}  - Tolerancia: {programador._tolerancia}%" )
