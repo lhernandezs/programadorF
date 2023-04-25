@@ -160,6 +160,8 @@
 # o = Prueba()
 # print(o.b)
 
-lista = [1, 3, 5, 6, 1, 5, 1]
-print(max(lista, key=lista.count))
-print(sorted(lista, key=lista.count))
+# lista = [1, 3, 5, 6, 1, 5, 1]
+# print(max(lista, key=lista.count))
+# print(sorted(lista, key=lista.count))
+dic = {1: "a", 2: "b", 3: "c"}
+print(list(dic.keys()))
