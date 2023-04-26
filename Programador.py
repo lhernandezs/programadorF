@@ -117,14 +117,33 @@ class Programador:
     
     # setea una matriz que tiene las 24 horas del dia y en cada hora uno o varios rangos de dias (disyuntos) que no tienen programaciòn
     def matrizDiasNoProgramdos(self):
-        matrizDiasNoProgramados = [[1 for h in range(24)] for d in range(self._diasDelMes)]
+        matrizDiasNoProgramados = [[" " for h in range(24)] for d in range(self._diasDelMes)]
         for evento in self._listaEventos:
             for d in range(self._diasDelMes):
                 for h in range(24):
                     if self.estaProgramadoElEventoEnDiaHora(evento, d+1, h):
-                        matrizDiasNoProgramados[d][h] = 0
+                        matrizDiasNoProgramados[d][h] = str(f"{evento.id:2d}")
+                    if  d+1 not in self._listaDiasLaborablesMes:
+                        matrizDiasNoProgramados[d][h] = "NL"
         self._matrizDiasNoProgramados = matrizDiasNoProgramados  
 
+    def buscarMejorCapacidadDiasNoProgramados(self):
+        capacidadDiasNoProgramados = []
+        cap = 0
+        for h in range(24):
+            diaI = diaF = None
+            for d in range(self._diasDelMes):
+                if self._matrizDiasNoProgramados[d][h] == " ":
+                    if diaI is None:
+                        diaI = d
+                        diaF = d
+                    else:
+                        diaF = d
+                    cap += 1
+                else:
+                    break
+            capacidadDiasNoProgramados.append([h, diaI, diaF, cap])
+        return sorted(capacidadDiasNoProgramados, key=lambda l: -l[3])       
     # 1. iterar
     #   se asignan horas al mejor evento programable
     #   si la ficha queda programada (al menos el minimo de horas a programar por ficha), se retiran los eventos de la ficha en la matriz y se baja el numero de horas a programar
@@ -171,6 +190,9 @@ class Programador:
         fichasNoProgramadas = list(filter(lambda item: item[1] < self._minimoHorasAProgramarPorFicha ,self._diccionarioFichas.items()))
         self.matrizDiasNoProgramdos()
         print(fichasNoProgramadas)
+        print(self.buscarMejorCapacidadDiasNoProgramados())
+        print()
+
 # principal 
 listaEventos = [ \
 # Evento(0, 1, 6, 8, date(2023,4,1), date(2023,4,30)), \
@@ -212,13 +234,13 @@ print()
 
 print("| hora |", end="")
 for i in range(programador._diasDelMes):
-    print(f"{i+1:2d}", end=" | ")
+    print((f"{i+1}").center(4), end="|")
 print()
 hora = 0
 for h in range(24):
-    print(f"|  {hora+1:2d}  |", end="")
+    print(f"|  {hora:2d}  |", end="")
     for d in range(programador._diasDelMes):
-        print(f"{programador._matrizDiasNoProgramados[d][h]:2d}", end=" | ")
+        print((f"{programador._matrizDiasNoProgramados[d][h]}").center(4), end="|")
     print()
     hora += 1
 
