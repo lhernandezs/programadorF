@@ -112,7 +112,6 @@ class Programador:
     
     # retorna True si el evento está en el Dia y la Hora pasado como parametros o False en caso contrario
     def estaProgramadoElEventoEnDiaHora(self, evento, dia, hora):
-
         return True if not evento.listaDiasAProgramar is None and dia in evento.listaDiasAProgramar and evento.horaI <= hora and hora < evento.horaF else False
     
     # setea una matriz que tiene las 24 horas del dia y en cada hora uno o varios rangos de dias (disyuntos) que no tienen programaciòn
@@ -135,14 +134,15 @@ class Programador:
             for d in range(self._diasDelMes):
                 if self._matrizDiasNoProgramados[d][h] == " ":
                     if diaI is None:
-                        diaI = d
-                        diaF = d
+                        diaI = d+1
+                        diaF = d+1
                     else:
-                        diaF = d
+                        diaF = d+1
                     cap += 1
                 else:
-                    break
+                    continue
             capacidadDiasNoProgramados.append([h, diaI, diaF, cap])
+            cap = 0
         return sorted(capacidadDiasNoProgramados, key=lambda l: -l[3])       
     # 1. iterar
     #   se asignan horas al mejor evento programable
@@ -190,6 +190,8 @@ class Programador:
         fichasNoProgramadas = list(filter(lambda item: item[1] < self._minimoHorasAProgramarPorFicha ,self._diccionarioFichas.items()))
         self.matrizDiasNoProgramdos()
         print(fichasNoProgramadas)
+        # l = self.buscarMejorCapacidadDiasNoProgramados()
+        # map(lambda c: print(c), [l[h] for h in range(24)])
         print(self.buscarMejorCapacidadDiasNoProgramados())
         print()
 
@@ -223,14 +225,14 @@ Evento(15, 2675912, 20, 22, date(2023,4,1), date(2023,4,30)), \
 programador = Programador(listaEventos, 4, 160, 20)
 programador.programarEventos()
 print()
-print(f"  H a programar: {programador._horasAProgramar} - H por Programar:{programador._saldoDeHorasAProgramar:3d} - Dicionario: {programador._diccionarioFichas}  - Mes: {programador._mes}  - Tolerancia: {programador._tolerancia}%" )
-print(" -------------------------------------------------------------------------------------------------------------- ")
-print("|  Evento  |   Ficha  |   Horas   |  D In Fi | D labor  | D A Cruz | D L Cruz | D A Prog | D P Prog | Ya Progr | ")
-print(" -------------------------------------------------------------------------------------------------------------- ")
-for evento in programador._listaEventos:
-    print(evento)
-    print(" -------------------------------------------------------------------------------------------------------------- ")
-print()
+# print(f"  H a programar: {programador._horasAProgramar} - H por Programar:{programador._saldoDeHorasAProgramar:3d} - Dicionario: {programador._diccionarioFichas}  - Mes: {programador._mes}  - Tolerancia: {programador._tolerancia}%" )
+# print(" -------------------------------------------------------------------------------------------------------------- ")
+# print("|  Evento  |   Ficha  |   Horas   |  D In Fi | D labor  | D A Cruz | D L Cruz | D A Prog | D P Prog | Ya Progr | ")
+# print(" -------------------------------------------------------------------------------------------------------------- ")
+# for evento in programador._listaEventos:
+#     print(evento)
+#     print(" -------------------------------------------------------------------------------------------------------------- ")
+# print()
 
 print("| hora |", end="")
 for i in range(programador._diasDelMes):

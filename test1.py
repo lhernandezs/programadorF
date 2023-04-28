@@ -163,5 +163,11 @@
 # lista = [1, 3, 5, 6, 1, 5, 1]
 # print(max(lista, key=lista.count))
 # print(sorted(lista, key=lista.count))
-dic = {1: "a", 2: "b", 3: "c"}
-print(list(dic.keys()))
+# 
+lista = [[1,2,5],[2,4,4],[3,6,2],[4,5,7]]
+orden2 = [5,6,2,4]
+listaO = sorted(lista, key=lambda l: -l[2])
+lista.sort(key=lambda l: -l[2])
+lista.sort(orden2)
+print("original ordenada:", lista)
+print("copia ordinada   :", listaO)
