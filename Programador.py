@@ -133,17 +133,23 @@ class Programador:
             diaI = diaF = None
             for d in range(self._diasDelMes):
                 if self._matrizDiasNoProgramados[d][h] == " ":
-                    if diaI is None:
-                        diaI = d+1
-                        diaF = d+1
-                    else:
-                        diaF = d+1
+                    if diaI is None: 
+                        diaI = d + 1
+                    diaF = d + 1
                     cap += 1
                 else:
                     continue
-            capacidadDiasNoProgramados.append([h, diaI, diaF, cap])
+            if cap >= self._minimoHorasAProgramarPorFicha:
+                capacidadDiasNoProgramados.append([h, diaI, diaF, cap])
             cap = 0
-        return sorted(capacidadDiasNoProgramados, key=lambda l: -l[3])       
+        cdnph = sorted(capacidadDiasNoProgramados, key=lambda l: -l[3])
+        # capacidadDiasNoProgramadosOrdenadosPorHora.append(c)
+        capacidadDiasNoProgramadosOrdenadosPorHora = []
+        for h in [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 4, 5, 6, 7, 19, 20, 21, 2, 3, 22, 0, 23]:
+            for c in cdnph:
+                if c[0] == h:
+                    capacidadDiasNoProgramadosOrdenadosPorHora.append(c)
+        return capacidadDiasNoProgramadosOrdenadosPorHora
     # 1. iterar
     #   se asignan horas al mejor evento programable
     #   si la ficha queda programada (al menos el minimo de horas a programar por ficha), se retiran los eventos de la ficha en la matriz y se baja el numero de horas a programar
