@@ -164,10 +164,26 @@
 # print(max(lista, key=lista.count))
 # print(sorted(lista, key=lista.count))
 # 
-lista = [[1,2,5],[2,4,4],[3,6,2],[4,5,7]]
-orden2 = [5,6,2,4]
-listaO = sorted(lista, key=lambda l: -l[2])
-lista.sort(key=lambda l: -l[2])
-lista.sort(orden2)
-print("original ordenada:", lista)
-print("copia ordinada   :", listaO)
+# lista = [[1,2,5],[2,4,4],[3,6,2],[4,5,7]]
+# orden2 = [5,6,2,4]
+# listaO = sorted(lista, key=lambda l: -l[2])
+# lista.sort(key=lambda l: -l[2])
+# lista.sort(orden2)
+# print("original ordenada:", lista)
+# print("copia ordinada   :", listaO)
+
+# l  = [ x for x in range(10)]
+# i = l[len(l)-1]
+# print(i)
+# print(l)
+# l.pop(-1)
+# l.pop(-1)
+# print(l)
+
+dias = [3, 4, 5, 10, 11, 12, 13, 14, 17, 18, 19, 20, 21, 24, 25, 26, 27, 28 ]
+v = 11
+i = dias.index(v)
+c = 6
+r = i+c-1
+print(dias[r])
+print(dias[dias.index(v)+c -1])
