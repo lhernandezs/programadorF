@@ -11,8 +11,8 @@ class Programador:
         self._horasAProgramar = horasAProgramar
         self._tolerancia = tolerancia
         self._promedioHorasPorFicha = self._horasAProgramar // len(self._diccionarioFichas)
-        self._minimoHorasAProgramarPorFicha = self._promedioHorasPorFicha * (1-(self._tolerancia/100))
-        self._maximoHorasAProgramarPorFicha = self._promedioHorasPorFicha * (1+(self._tolerancia/100))
+        self._minimoHorasAProgramarPorFicha = int(self._promedioHorasPorFicha * (1-(self._tolerancia/100)))
+        self._maximoHorasAProgramarPorFicha = int(self._promedioHorasPorFicha * (1+(self._tolerancia/100)))
         self._ultimaFecMes = Mes(self._mes).ultimoDia()
         self._diasDelMes = self._ultimaFecMes.day
         self._listaDiasLaborablesMes = Mes(self._mes).listaDiasLaborables()
@@ -191,39 +191,44 @@ class Programador:
                     self._saldoDeHorasAProgramar -= horasEvento
                     self._diccionarioFichas[evento.ficha] += horasEvento
         # 3.
-        for ficha in list(filter(lambda item: item[1] < self._minimoHorasAProgramarPorFicha ,self._diccionarioFichas.items())): 
-            if horasAReducir := (self._saldoDeHorasAProgramar - self._minimoHorasAProgramarPorFicha) < 0:
+        for item in list(filter(lambda item: item[1] < self._minimoHorasAProgramarPorFicha, self._diccionarioFichas.items())): 
+            ficha = item[0]
+            if (horasAReducir := (self._minimoHorasAProgramarPorFicha - self._saldoDeHorasAProgramar)) > 0:
                 fichaADesprogramar = max(self._diccionarioFichas, key=self._diccionarioFichas.get)
-                eventoADesprogramar = sorted(list(filter(lambda e: e.ficha == fichaADesprogramar, self._listaEventos)), key =lambda e: e[9])[0]
+                eventoADesprogramar = sorted(list(filter(lambda e: e.ficha == fichaADesprogramar and not e.listaDiasAProgramar is None, self._listaEventos)), key =lambda e: len(e.listaDiasAProgramar))[0]
                 horasEventoADesprogramar = eventoADesprogramar.horaF - eventoADesprogramar.horaI
-                diasAReducir = (horasAReducir // horasEventoADesprogramar) + 1
+                diasAReducir = (horasAReducir // horasEventoADesprogramar)
                 for x in range(diasAReducir): 
-                    d = eventoADesprogramar.listaDiasAProgramar[len(eventoADesprogramar.listaDiasAProgramar)-1]
-                    # reducir los dias programados en el evento
-                    eventoADesprogramar.listaDiasAProgramar.pop(len(eventoADesprogramar.listaDiasAProgramar)-1)
-                    # aumentar los dias por programar en el evento
-                    eventoADesprogramar.listaDiasPorProgram.append(d)
-                    # disminuir las horas programdas en el diccionario para la ficha
-                    self._diccionarioFichas[fichaADesprogramar] -= horasEventoADesprogramar
-                    # aumentar el saldo de horas a Programar
-                    self._saldoDeHorasAProgramar += horasEventoADesprogramar
+                    d = eventoADesprogramar.listaDiasAProgramar.pop() # reducir los dias programados en el evento
+                    eventoADesprogramar.listaDiasPorProgram.append(d) # aumentar los dias por programar en el evento  
+                    eventoADesprogramar.listaDiasPorProgram.sort()  
+                self._diccionarioFichas[fichaADesprogramar] -= horasEventoADesprogramar * diasAReducir# disminuir las horas en el diccionario para la ficha
+                self._saldoDeHorasAProgramar += horasEventoADesprogramar * diasAReducir# aumentar el saldo de horas a Programar
             # crear un evento para la ficha si no lo tiene en la mejor Capacidad de Dias No programdos - incluir este evento en self._listaEventos-- OJO: no se puede cruzar con los eventos de la ficha
-            for mejor in self.mejoresHorasNoProgramadas:
-                (diaI, horaI, horaF, capacidad) = mejor
+            ban = True
+            mejores = self.mejoresHorasNoProgramadas()
+            while ban:
+                (horaI, diaI, diaF, capacidad) = mejores.pop(0)
                 for e in list(filter(lambda eve: eve.ficha == ficha, self._listaEventos)):
-                    if e.horaI in range(horaI, horaF) or e.horaF in range(horaI, horaF):
+                    if e.horaI in range(horaI, horaI+1) or e.horaF in range(horaI, horaI+1):
                         continue
-                id = len(self._listaEventos)
-                diaF = self._listaDiasLaborablesMes[self._listaDiasLaborablesMes.index(diaI) + capacidad - 1]
-                nuevoEvento = Evento(id, horaI, horaF, date(2023, self._mes, diaI), date(2023, self._mes, diaF))          
-                self.analisisDiasEventos()
-                # setear los dias programados hasta el minimo de horas a programar por ficha
-                # aumentar las horas programadas en el didcionario para la ficha
-                # disminuir el saldo de horas totales a Programar
+                    id = len(self._listaEventos)
+                    diaFin = self._listaDiasLaborablesMes[self._listaDiasLaborablesMes.index(diaI) + self._minimoHorasAProgramarPorFicha - 1]
+                    nuevoEvento = Evento(id, ficha, horaI, horaI+1, date(2023, self._mes, diaI), date(2023, self._mes, diaFin)) 
+                    self._listaEventos.append(nuevoEvento)        
+                    self.analisisDiasEventos() # esto para inicializar la lista de dias a programar
+                    # setear los dias programados hasta el minimo de horas a programar por ficha
+                    nuevoEvento.listaDiasAProgramar = list(set(self._listaDiasLaborablesMes) & set(range(diaI, diaFin+1)))
+                    # aumentar las horas programadas en el didcionario para la ficha
+                    self._diccionarioFichas[ficha] += self._minimoHorasAProgramarPorFicha
+                    # disminuir el saldo de horas totales a Programar
+                    self._saldoDeHorasAProgramar -= self._minimoHorasAProgramarPorFicha
+                    # setear ficha_programada en todos eventos de la ficha
+                    self.marcarEventosDeLaFichaProgramada(nuevoEvento)
+
+                    ban = False
+                    break
                 
-
-
-
 # principal 
 listaEventos = [ \
 # Evento(0, 1, 6, 8, date(2023,4,1), date(2023,4,30)), \
