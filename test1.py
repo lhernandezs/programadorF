@@ -220,7 +220,7 @@ listaDiasLaborables = [3,4,5,10,11,12,13,14,17,18,19,20,21,24,25,26,27,28]
 matrizDeRectangulos = []
 matrizHorasNoProgramadas = [[(" " if d+1 in listaDiasLaborables else "F") for d in range(31)] for h in range(24)]
 
-matrizHorasNoProgramadas[6][9] = "X"
+matrizHorasNoProgramadas[12][19] = "X"
 
 for i in range(24):
     print(f" {i:2d}", end = "")
