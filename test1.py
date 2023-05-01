@@ -1,5 +1,5 @@
 # eventosPorDiaHora = self.eventosPorDiaHora()
-# for i in range(Mes(self._mes).ultimoDia().day):
+# for i in range(Mes(mes).ultimoDia().day):
 #     for j in range(24):
 #         if len(eventosPorDiaHora[i][j]) > 1:
 #             print(f"[dia: {i+1:2d}, horas: {j:2d} a {j+1:2d}]...Eventos:", eventosPorDiaHora[i][j])
@@ -15,33 +15,33 @@
 # print("********************")
 # class prueba:
 #     def __init__(self):
-#         self.__cedula
-#         self.__nombre
-#         self.__apellido
+#         _cedula
+#         _nombre
+#         _apellido
 
 #     @property
 #     def cedula(self):
-#         return self.__cedula
+#         return _cedula
 
 #     @cedula.setter
 #     def cedula(self, cedula):
-#         self.__cedula = cedula
+#         _cedula = cedula
 
 #     @property
 #     def nombre(self):
-#         return self.__nombre
+#         return _nombre
 
 #     @nombre.setter
 #     def nombre(self, nombre):
-#         self.__nombre = nombre
+#         _nombre = nombre
 
 #     @property
 #     def apellido(self):
-#         return self.__apellido
+#         return _apellido
 
 #     @apellido.setter
 #     def apellido(self, apellido):
-#         self.__apellido = apellido
+#         _apellido = apellido
 
 
 # number = 0
@@ -83,8 +83,8 @@
 
 # class Prueba:
 #     def __init__(self):
-#         self._a = 0
-#         self._b = 1
+#         a = 0
+#         b = 1
 
 #     def mandaTupla(self):
 #         datos = ( 1, 2, 3 )
@@ -133,15 +133,15 @@
 
 # class Decorador:
 #     def __init__(self):
-#         self.__var = False
+#         _var = False
 
 #     @property
 #     def var(self):
-#         return self.__var
+#         return _var
 
 #     @var.setter
 #     def var(self, var):
-#         self.__var = var
+#         _var = var
 
 # lista = True
 # dec = Decorador()
@@ -180,10 +180,69 @@
 # l.pop(-1)
 # print(l)
 
-dias = [3, 4, 5, 10, 11, 12, 13, 14, 17, 18, 19, 20, 21, 24, 25, 26, 27, 28 ]
-v = 11
-i = dias.index(v)
-c = 6
-r = i+c-1
-print(dias[r])
-print(dias[dias.index(v)+c -1])
+# dias = [3, 4, 5, 10, 11, 12, 13, 14, 17, 18, 19, 20, 21, 24, 25, 26, 27, 28 ]
+
+# v = 11
+# i = dias.index(v)
+# c = 6
+# r = i+c-1
+# print(dias[r])
+# print(dias[dias.index(v)+c -1])
+
+# dias = [1,2,3,4,5]
+# horas = [10,11,12,13]
+
+# matriz = []
+# i = 0
+# for h in horas:
+#     matriz.append([h,[]])
+#     for d in dias:
+#         matriz[i][1].append(d)
+#     i += 1
+# print(matriz)
+# print(len(matriz))
+# print(len(matriz[0][1]))
+
+# lista = [[1,3],[2,2],[1,6]]
+# lista1 = sorted(lista, key=lambda x: x[1])
+# print(lista.sort(key=lambda x: x[1]))
+# print(lista1)
+
+# lista = [1,2,3,4,65]
+# print(lista.index(65))
+# print(lista[-1])
+# lista = lista[:2]
+# print(lista)
+# print
+
+listaDiasNoLaborables = [1,2,6,7,8,9,15,16,22,23,29,30]
+listaDiasLaborables = [3,4,5,10,11,12,13,14,17,18,19,20,21,24,25,26,27,28]
+matrizDeRectangulos = []
+matrizHorasNoProgramadas = [[(" " if d+1 in listaDiasLaborables else "F") for d in range(31)] for h in range(24)]
+
+matrizHorasNoProgramadas[6][9] = "X"
+
+for i in range(24):
+    print(f" {i:2d}", end = "")
+    for j in range(30):
+         print(f"|{matrizHorasNoProgramadas[i][j]}|", end = "")
+    print()
+
+def encontrarRectangulo(hIni, dIni, hFin, dFin):
+    if hIni == 24 and dIni == 30:
+        return
+    banPorTerminaciónBucleh = True
+    banPorTerminaciónBucled = True
+    for h in range(hIni, hFin):
+        for d in listaDiasLaborables[listaDiasLaborables.index(dIni):listaDiasLaborables.index(dFin)]:
+            if matrizHorasNoProgramadas[h][d-1] != " ":
+                banPorTerminaciónBucled = False
+                matrizDeRectangulos.append([hIni, dIni, h-1, dFin])
+                d = listaDiasLaborables[listaDiasLaborables.index(d)-1]
+                encontrarRectangulo(hIni, dIni, hFin, d)
+    if banPorTerminaciónBucled:
+        matrizDeRectangulos.append([hIni, dIni, h, dFin])
+
+encontrarRectangulo(0,3,24,28)
+for x in range(len(matrizDeRectangulos)):
+    print(matrizDeRectangulos[x])

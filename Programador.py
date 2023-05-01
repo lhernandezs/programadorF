@@ -19,6 +19,7 @@ class Programador:
         self._matrizDeEventos = self.matrizDeEventos()
         self._saldoDeHorasAProgramar = horasAProgramar
         self._matrizHorasNoProgramadas = None
+        self._matrizDeRectangulos = None
 
     # retorna True si el evento está en el Dia y la Hora pasado como parametros o False en caso contrario
     def estaElEventoEnDiaHora(self, evento, dia, hora):
@@ -113,33 +114,109 @@ class Programador:
     # retorna True si el evento está en el Dia y la Hora pasado como parametros o False en caso contrario
     def estaProgramadoElEventoEnDiaHora(self, evento, dia, hora):
         return True if not evento.listaDiasAProgramar is None and dia in evento.listaDiasAProgramar and evento.horaI <= hora and hora < evento.horaF else False
-    
-    # setea una matriz que tiene las 24 horas del dia y en cada hora uno o varios rangos de dias (disyuntos) que no tienen programaciò
-    def mejoresHorasNoProgramadas(self):
-        matrizHorasNoProgramadas = [[" " for h in range(24)] for d in range(self._diasDelMes)]
+
+    def encontrarRectangulo(self, hIni, dIni, hFin, dFin):
+        if hIni == 23 and dIni == self._diasDeMes -1:
+            return
+        for h in range(hIni, hFin):
+            for d in range(dIni, dFin):
+                if d in self._listaDiasLaborablesMes and self._matrizHorasNoProgramadas[d-1][h] != " ":
+                    self._matrizDeRectangulos.append(hIni, dIni, h, d)
+                    self.encontrarRectangulo(hIni, dIni, h, d)
+
+
+    # setea una matriz que tiene las 24 horas del dia y en cada hora uno o varios rangos de dias (disyuntos) que no tienen programación. POR MEJORAR: Tener eventos de 2 o mas horas seguidas....
+    def mejoresEspaciosNoProgramados(self):
+        self._matrizHorasNoProgramadas = [[(" " if d+1 in self._listaDiasLaborablesMes else "NL") for h in range(24)] for d in range(self._diasDelMes)]
         for evento in self._listaEventos:
-            for d in range(self._diasDelMes):
+            for d in self._listaDiasLaborablesMes:
                 for h in range(24):
-                    if self.estaProgramadoElEventoEnDiaHora(evento, d+1, h):
-                        matrizHorasNoProgramadas[d][h] = str(f"{evento.id:2d}")
-                    if  d+1 not in self._listaDiasLaborablesMes:
-                        matrizHorasNoProgramadas[d][h] = "NL"
-        self._matrizHorasNoProgramadas = matrizHorasNoProgramadas
-        capacidadDiasNoProgramados = []
-        cap = 0
-        for h in range(24):
-            diaI = diaF = None
-            for d in range(self._diasDelMes):
-                if matrizHorasNoProgramadas[d][h] == " ":
-                    if diaI is None: 
-                        diaI = d + 1
-                    diaF = d + 1
-                    cap += 1
+                    if self.estaProgramadoElEventoEnDiaHora(evento, d, h):
+                        self._matrizHorasNoProgramadas[d][h] = str(f"{evento.id:2d}")
+        
+        # DATOS DE PRUEBA: Se debe borrar las siguientes linea
+        self._matrizHorasNoProgramadas[9][4] = 1
+        self._matrizHorasNoProgramadas[10][6] = 1
+
+        matrizDeRectangulos = []
+
+        # llenar la matriz de Matrices con los rectagulos "libres" de capacidad al menos el 50% del minimo de horas a programar por ficha
+        dias = self._listaDiasLaborablesMes
+        diaFinal = dias[-1]
+        alto = 0
+        h = 0
+        rectangulo = []
+        while h < 24:
+            rectangulo.append([h, []])
+            ancho = 0
+            i = 0
+            acaboDias = False
+            while not acaboDias:
+                d = dias[i]
+                if self._matrizHorasNoProgramadas[d-1][h] == " ":
+                    rectangulo[alto][1].append(d)
+                    ancho += 1
+                    i += 1
                 else:
+                    capacidad = len(rectangulo[0][1]) * (len(rectangulo) - 1)
+                    if capacidad >= self._minimoHorasAProgramarPorFicha // 2:
+                        matrizDeRectangulos.append([capacidad, rectangulo])
+                        dt = d
+                        d = rectangulo[alto][1][0]
+                        rectangulo = []
+                        rectangulo.append([h,[]])
+                        alto = ancho = 0
+                        diaFinal = dias[dias.index(dt)-1]
+                        i = dias.index(d)
+                    else:
+                        for hARetirar in range(alto):
+                            print()
+                            rectangulo[hARetirar][1] = rectangulo[hARetirar][1][:ancho]
+                        alto += 1
+                        d = rectangulo[0][0]
+                if d == diaFinal:
+                    acaboDias = True
+            alto += 1
+            h += 1
+
+        if len(rectangulo) > 0:
+                matrizDeRectangulos.append(rectangulo)
+                rectangulo = []
+                i = 0            
+        # llenar la matriz de matrices con los rectangulos "libres" altos del mes
+        for d in self._listaDiasLaborablesMes:
+            rectangulo.append([i, [d]])
+            for h in range(24):
+                if self._matrizHorasNoProgramadas[d-1][h] == " ":
+                    rectangulo[0][i].append(h)
                     continue
-            if cap >= self._minimoHorasAProgramarPorFicha:
-                capacidadDiasNoProgramados.append([h, diaI, diaF, cap])
-            cap = 0
+                matrizDeRectangulos.append(rectangulo)
+                rectangulo = []
+                i = 0
+            i += 1                
+        if len(rectangulo) > 0:
+                matrizDeRectangulos.append(rectangulo)
+                rectangulo = []
+                i = 0    
+        capacidades = []
+        for i in range(len(matrizDeRectangulos)):
+            ancho = len(matrizDeRectangulos[i])
+            alto = len(matrizDeRectangulos[i][0])
+            capacidades.append([i, ancho * alto])
+        capacidadesDeMasAMenos = sorted(capacidades, key=lambda x: -x[1])
+        mejores = []
+        for n in range(len(capacidadesDeMasAMenos)):
+            # calcule si la matriz tiene capacidad minima de horas a programar por ficha y si es el caso, sume esta matriz a los mejores        
+            if capacidadesDeMasAMenos[n][1] >= self._minimoHorasAProgramarPorFicha:
+                mejores.append( matrizDeRectangulos[capacidadesDeMasAMenos[n][0][0]],  \
+                                matrizDeRectangulos[capacidadesDeMasAMenos[n][len(matrizDeRectangulos[0])][0]], \
+                                matrizDeRectangulos[capacidadesDeMasAMenos[n][0][1]], \
+                                matrizDeRectangulos[capacidadesDeMasAMenos[n][len(matrizDeRectangulos[0])][1]], \
+                                capacidadesDeMasAMenos[n])
+        # calcule
+        # reinicie            
+
+        cap = 0
         cdnph = sorted(capacidadDiasNoProgramados, key=lambda l: -l[3])
         capacidadDiasNoProgramadosOrdenadosPorHora = []
         for h in [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 4, 5, 6, 7, 19, 20, 21, 2, 3, 22, 0, 23]:
@@ -160,7 +237,7 @@ class Programador:
     def programarEventos(self):
         # 1.
         self.analisisDiasEventos() 
-        (evento, listaDias, horasEvento) = self.buscarMejorEventoProgramable()
+        (evento, listaDias, horasEvento) = self.buscarMejorEventoProgramable() if not self.buscarMejorEventoProgramable() is None else (None, None, None)
         while evento:
             listaDiasAProgramar = []
             for dia in listaDias:
@@ -190,7 +267,7 @@ class Programador:
                     evento.listaDiasPorProgram.remove(dia)
                     self._saldoDeHorasAProgramar -= horasEvento
                     self._diccionarioFichas[evento.ficha] += horasEvento
-        # 3.
+        # 3. POR MEJORAR ... tener en cuenta que en el mejor hueco "sin progrmar" no alcance a programarse la ficha
         for item in list(filter(lambda item: item[1] < self._minimoHorasAProgramarPorFicha, self._diccionarioFichas.items())): 
             ficha = item[0]
             if (horasAReducir := (self._minimoHorasAProgramarPorFicha - self._saldoDeHorasAProgramar)) > 0:
@@ -206,7 +283,7 @@ class Programador:
                 self._saldoDeHorasAProgramar += horasEventoADesprogramar * diasAReducir# aumentar el saldo de horas a Programar
             # crear un evento para la ficha si no lo tiene en la mejor Capacidad de Dias No programdos - incluir este evento en self._listaEventos-- OJO: no se puede cruzar con los eventos de la ficha
             ban = True
-            mejores = self.mejoresHorasNoProgramadas()
+            mejores = self.mejoresEspaciosNoProgramados()
             while ban:
                 (horaI, diaI, diaF, capacidad) = mejores.pop(0)
                 for e in list(filter(lambda eve: eve.ficha == ficha, self._listaEventos)):
@@ -216,16 +293,14 @@ class Programador:
                     diaFin = self._listaDiasLaborablesMes[self._listaDiasLaborablesMes.index(diaI) + self._minimoHorasAProgramarPorFicha - 1]
                     nuevoEvento = Evento(id, ficha, horaI, horaI+1, date(2023, self._mes, diaI), date(2023, self._mes, diaFin)) 
                     self._listaEventos.append(nuevoEvento)        
-                    self.analisisDiasEventos() # esto para inicializar la lista de dias a programar
                     # setear los dias programados hasta el minimo de horas a programar por ficha
                     nuevoEvento.listaDiasAProgramar = list(set(self._listaDiasLaborablesMes) & set(range(diaI, diaFin+1)))
-                    # aumentar las horas programadas en el didcionario para la ficha
-                    self._diccionarioFichas[ficha] += self._minimoHorasAProgramarPorFicha
-                    # disminuir el saldo de horas totales a Programar
-                    self._saldoDeHorasAProgramar -= self._minimoHorasAProgramarPorFicha
-                    # setear ficha_programada en todos eventos de la ficha
+                    self.analisisDiasEventos() # esto para inicializar la lista de dias a programar
+                    # POR MEJORAR .. puede ser que la ficha no quede programar en un solo evento por que no le alcance el hueco para cumplir sus horas minimas
                     self.marcarEventosDeLaFichaProgramada(nuevoEvento)
-
+                    self._diccionarioFichas[ficha] += self._minimoHorasAProgramarPorFicha # aumentar las horas programadas en el diccionario para la ficha
+                    self._saldoDeHorasAProgramar -= self._minimoHorasAProgramarPorFicha # disminuir el saldo de horas totales a Programar
+                    mejores = self.mejoresEspaciosNoProgramados()
                     ban = False
                     break
                 
@@ -238,25 +313,27 @@ listaEventos = [ \
 # Evento(4, 3, 9, 11, date(2023,4,1), date(2023,4,23)), \
 # Evento(5, 3, 12, 13, date(2023,4,10), date(2023,4,28)), \
 
-Evento(0, 2675758, 6, 7, date(2023,4,1), date(2023,4,30)), \
-Evento(1, 2675759, 7, 8, date(2023,4,1), date(2023,4,30)), \
-Evento(2, 2626937, 12, 14, date(2023,4,1), date(2023,4,30)), \
-Evento(3, 2626938, 7, 9, date(2023,4,1), date(2023,4,30)), \
-Evento(4, 2626939, 9, 11, date(2023,4,1), date(2023,4,30)), \
-Evento(5, 2626940, 7, 8, date(2023,4,1), date(2023,4,30)), \
-Evento(6, 2675911, 12, 13, date(2023,4,1), date(2023,4,30)), \
-Evento(7, 2675912, 20, 22, date(2023,4,1), date(2023,4,30)), \
-Evento(8, 2675758, 6, 7, date(2023,4,1), date(2023,4,30)), \
-Evento(9, 2675759, 7, 8, date(2023,4,1), date(2023,4,30)), \
-Evento(10, 2626937, 12, 14, date(2023,4,1), date(2023,4,30)), \
-Evento(11, 2626938, 7, 9, date(2023,4,1), date(2023,4,30)), \
-Evento(12, 2626939, 9, 11, date(2023,4,1), date(2023,4,30)), \
-Evento(13, 2626940, 7, 8, date(2023,4,1), date(2023,4,30)), \
-Evento(14, 2675911, 12, 13, date(2023,4,1), date(2023,4,30)), \
-Evento(15, 2675912, 20, 22, date(2023,4,1), date(2023,4,30)), \
+# Evento(0, 2675758, 6, 7, date(2023,4,1), date(2023,4,30)), \
+# Evento(1, 2675759, 7, 8, date(2023,4,1), date(2023,4,30)), \
+# Evento(2, 2626937, 12, 14, date(2023,4,1), date(2023,4,30)), \
+# Evento(3, 2626938, 7, 9, date(2023,4,1), date(2023,4,30)), \
+# Evento(4, 2626939, 9, 11, date(2023,4,1), date(2023,4,30)), \
+# Evento(5, 2626940, 7, 8, date(2023,4,1), date(2023,4,30)), \
+# Evento(6, 2675911, 12, 13, date(2023,4,1), date(2023,4,30)), \
+# Evento(7, 2675912, 20, 22, date(2023,4,1), date(2023,4,30)), \
+# Evento(8, 2675758, 6, 7, date(2023,4,1), date(2023,4,30)), \
+# Evento(9, 2675759, 7, 8, date(2023,4,1), date(2023,4,30)), \
+# Evento(10, 2626937, 12, 14, date(2023,4,1), date(2023,4,30)), \
+# Evento(11, 2626938, 7, 9, date(2023,4,1), date(2023,4,30)), \
+# Evento(12, 2626939, 9, 11, date(2023,4,1), date(2023,4,30)), \
+# Evento(13, 2626940, 7, 8, date(2023,4,1), date(2023,4,30)), \
+# Evento(14, 2675911, 12, 13, date(2023,4,1), date(2023,4,30)), \
+# Evento(15, 2675912, 20, 22, date(2023,4,1), date(2023,4,30)), \
+Evento(0, 2600000, 0, 0, date(2023,4,1), date(2023,4,30)), \
+Evento(1, 2700000, 0, 0, date(2023,4,1), date(2023,4,30)), \
 ]
 
-programador = Programador(listaEventos, 4, 160, 20)
+programador = Programador(listaEventos, 4, 160, 10)
 programador.programarEventos()
 print()
 print(f"  H a programar: {programador._horasAProgramar} - H por Programar:{programador._saldoDeHorasAProgramar:3d} - Dicionario: {programador._diccionarioFichas}  - Mes: {programador._mes}  - Tolerancia: {programador._tolerancia}%" )
