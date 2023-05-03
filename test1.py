@@ -215,61 +215,112 @@
 # print(lista)
 # print
 
-listaDiasNoLaborables = [1,2,6,7,8,9,15,16,22,23,29,30]
-listaDiasLaborables = [3,4,5,10,11,12,13,14,17,18,19,20,21,24,25,26,27,28]
+# listaDiasNoLaborables = [1,2,6,7,8,9,15,16,22,23,29,30]
+# listaDiasLaborables = [3,4,5,10,11,12,13,14,17,18,19,20,21,24,25,26,27,28]
+# matrizDeRectangulos = []
+# matrizHorasNoProgramadas = [[(" " if d+1 in listaDiasLaborables else "F") for d in range(31)] for h in range(24)]
+
+# matrizHorasNoProgramadas[12][19] = "X"
+# matrizHorasNoProgramadas[9][12] = "X"
+
+# for i in range(24):
+#     print(f" {i:2d}", end = "")
+#     for j in range(30):
+#          print(f"|{matrizHorasNoProgramadas[i][j]}|", end = "")
+#     print()
+
+# def encontrarRectangulo(hIni, hFin, dIni, dFin):
+#     global vertical
+#     global hAnt
+#     global dAnt
+#     if hIni == 24 or dIni == 28:
+#         return
+#     banPorTerminaciónBucled = True
+#     for h in range(hIni, hFin):
+#         for d in listaDiasLaborables[listaDiasLaborables.index(dIni):listaDiasLaborables.index(dFin)]:
+#             if matrizHorasNoProgramadas[h][d-1] != " ":
+#                 banPorTerminaciónBucled = False
+#                 matrizDeRectangulos.append([vertical, "R", hIni, h-1, dIni, dFin])
+#                 if not vertical:
+#                     # d = listaDiasLaborables[listaDiasLaborables.index(d)-1]
+#                     # hAnt = h
+#                     # dIni = dAnt
+#                     hIni = hAnt
+#                     hFin = hAnt
+#                     dIni = dIni
+#                     dFin = listaDiasLaborables[listaDiasLaborables.index(d)-1]
+#                     hAnt = hIni
+#                     dAnt = dIni
+#                 else:
+#                     hIni = hAnt
+#                     hFin = hAnt
+#                     dIni = listaDiasLaborables[listaDiasLaborables.index(d)+ 1]
+#                     dFin = dFin
+#                     hAnt = hIni
+#                     dAnt = dIni
+#                     # dAnt = d + 1
+#                     # hIni = hAnt + 1
+#                     # dIni = listaDiasLaborables[listaDiasLaborables.index(d)+ 1]
+#                 vertical = not vertical
+#                 encontrarRectangulo(hIni, hFin, dIni, dFin)
+#     if banPorTerminaciónBucled:
+# #        contador += 1
+#         matrizDeRectangulos.append([vertical, "T", hIni, hFin, dIni, dFin])
+
+# hAnt = 0
+# dAnt = 3
+# vertical = False
+# encontrarRectangulo(0, 24, 3, 28)
+# for x in range(len(matrizDeRectangulos)):
+#     print(f"contador: {matrizDeRectangulos[x][0]:2d}, marca: {matrizDeRectangulos[x][1]} -- horas: {matrizDeRectangulos[x][2]:2d} a {matrizDeRectangulos[x][3]:2d} -- dias: {matrizDeRectangulos[x][4]:2d} a {matrizDeRectangulos[x][5]:2d}")
+
+listaDias = [d for d in range(10)]
+listaHoras = [h for h in range(12)]
+
 matrizDeRectangulos = []
-matrizHorasNoProgramadas = [[(" " if d+1 in listaDiasLaborables else "F") for d in range(31)] for h in range(24)]
+matrizHorasProgramadas = [[" "  for d in listaDias] for h in listaHoras]
 
-matrizHorasNoProgramadas[12][19] = "X"
-matrizHorasNoProgramadas[9][12] = "X"
+matrizHorasProgramadas[4][5] = "X"
 
-for i in range(24):
+print("   ", end="")
+for j in range(10):
+        print(f"|{j}", end = "")
+print("|")
+for i in range(12):
     print(f" {i:2d}", end = "")
-    for j in range(30):
-         print(f"|{matrizHorasNoProgramadas[i][j]}|", end = "")
-    print()
+    for j in range(10):
+         print(f"|{matrizHorasProgramadas[i][j]}", end = "")
+    print("|")
 
 def encontrarRectangulo(hIni, hFin, dIni, dFin):
     global vertical
     global hAnt
     global dAnt
-    if hIni == 24 or dIni == 28:
+    if hIni == 11 and dIni == 9:
         return
     banPorTerminaciónBucled = True
     for h in range(hIni, hFin):
-        for d in listaDiasLaborables[listaDiasLaborables.index(dIni):listaDiasLaborables.index(dFin)]:
-            if matrizHorasNoProgramadas[h][d-1] != " ":
+        for d in range(dIni, dFin):
+            if matrizHorasProgramadas[h][d] != " ":
                 banPorTerminaciónBucled = False
-                matrizDeRectangulos.append([vertical, "R", hIni, h-1, dIni, dFin])
                 if not vertical:
-                    # d = listaDiasLaborables[listaDiasLaborables.index(d)-1]
-                    # hAnt = h
-                    # dIni = dAnt
-                    hIni = hAnt
-                    hFin = hAnt
-                    dIni = dIni
-                    dFin = listaDiasLaborables[listaDiasLaborables.index(d)-1]
-                    hAnt = hIni
-                    dAnt = dIni
+                    matrizDeRectangulos.append([vertical, "R", hIni, h-1, dIni, dFin])
+                    hAnt = h - 1
+                    hFin = d - 1
+                    dFin = d - 1
                 else:
                     hIni = hAnt
-                    hFin = hAnt
-                    dIni = listaDiasLaborables[listaDiasLaborables.index(d)+ 1]
-                    dFin = dFin
-                    hAnt = hIni
-                    dAnt = dIni
-                    # dAnt = d + 1
-                    # hIni = hAnt + 1
-                    # dIni = listaDiasLaborables[listaDiasLaborables.index(d)+ 1]
+                    hFin = 11
+                    dIni = dAnt
+                    dFin = 9
                 vertical = not vertical
                 encontrarRectangulo(hIni, hFin, dIni, dFin)
     if banPorTerminaciónBucled:
-#        contador += 1
         matrizDeRectangulos.append([vertical, "T", hIni, hFin, dIni, dFin])
 
 hAnt = 0
 dAnt = 3
 vertical = False
-encontrarRectangulo(0, 24, 3, 28)
+encontrarRectangulo(0, 11, 0, 9)
 for x in range(len(matrizDeRectangulos)):
     print(f"contador: {matrizDeRectangulos[x][0]:2d}, marca: {matrizDeRectangulos[x][1]} -- horas: {matrizDeRectangulos[x][2]:2d} a {matrizDeRectangulos[x][3]:2d} -- dias: {matrizDeRectangulos[x][4]:2d} a {matrizDeRectangulos[x][5]:2d}")
