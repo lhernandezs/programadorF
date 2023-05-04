@@ -293,34 +293,24 @@ for i in range(12):
     print("|")
 
 def encontrarRectangulo(hIni, hFin, dIni, dFin):
-    global vertical
     global hAnt
     global dAnt
-    if hIni == 11 and dIni == 9:
+    if hIni > 10 and dIni > 9:
         return
-    banPorTerminaciónBucled = True
     for h in range(hIni, hFin):
         for d in range(dIni, dFin):
             if matrizHorasProgramadas[h][d] != " ":
                 banPorTerminaciónBucled = False
-                if not vertical:
-                    matrizDeRectangulos.append([vertical, "R", hIni, h-1, dIni, dFin])
-                    hAnt = h - 1
-                    hFin = d - 1
-                    dFin = d - 1
-                else:
-                    hIni = hAnt
-                    hFin = 11
-                    dIni = dAnt
-                    dFin = 9
-                vertical = not vertical
-                encontrarRectangulo(hIni, hFin, dIni, dFin)
-    if banPorTerminaciónBucled:
-        matrizDeRectangulos.append([vertical, "T", hIni, hFin, dIni, dFin])
-
+                matrizDeRectangulos.append(["Dentro", "R", hIni, h-1, dIni, dFin])
+                hAnt = h + 1
+                dAnt = d + 1
+                encontrarRectangulo(hIni, hFin, dIni, d-1)
+    else:
+        matrizDeRectangulos.append(["Fuera", "T", hIni, hFin, dIni, dFin])
+        encontrarRectangulo(hAnt, hFin, dAnt, dFin)
+                        
 hAnt = 0
-dAnt = 3
-vertical = False
+dAnt = 0
 encontrarRectangulo(0, 11, 0, 9)
 for x in range(len(matrizDeRectangulos)):
-    print(f"contador: {matrizDeRectangulos[x][0]:2d}, marca: {matrizDeRectangulos[x][1]} -- horas: {matrizDeRectangulos[x][2]:2d} a {matrizDeRectangulos[x][3]:2d} -- dias: {matrizDeRectangulos[x][4]:2d} a {matrizDeRectangulos[x][5]:2d}")
+    print(f"sentido: {matrizDeRectangulos[x][0]:2d}, marca: {matrizDeRectangulos[x][1]} -- horas: {matrizDeRectangulos[x][2]:2d} a {matrizDeRectangulos[x][3]:2d} -- dias: {matrizDeRectangulos[x][4]:2d} a {matrizDeRectangulos[x][5]:2d}")
