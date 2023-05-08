@@ -11,15 +11,15 @@ matrizHorasProgramadas[4][3] = "X"
 matrizHorasProgramadas[5][5] = "X"
 matrizHorasProgramadas[2][6] = "X"
 
-print("   ", end="")
-for x in range(len(listaX)):
-    print(f"|{x}", end = "")
-print("|")
-for y in range(len(listaY)):
-    print(f" {y:2d}", end = "")
-    for x in range(len(listaX)):
-         print(f"|{matrizHorasProgramadas[x][y]}", end = "")
-    print("|")
+# print("   ", end="")
+# for x in range(len(listaX)):
+#     print(f"|{x}", end = "")
+# print("|")
+# for y in range(len(listaY)):
+#     print(f" {y:2d}", end = "")
+#     for x in range(len(listaX)):
+#          print(f"|{matrizHorasProgramadas[x][y]}", end = "")
+#     print("|")
 
 def encontrarRectangulo():
     ban = False
@@ -51,3 +51,20 @@ pila = [(0,0,9,7)]
 encontrarRectangulo()
 for x in range(len(matrizDeRectangulos)):
     print(f"Lugar: {matrizDeRectangulos[x][0]} -- coordenada Inicial: ({matrizDeRectangulos[x][1]:2d} , {matrizDeRectangulos[x][2]:2d}) -- coordenada Final: ({matrizDeRectangulos[x][3]:2d}, {matrizDeRectangulos[x][4]:2d})")
+    print("   ", end="")
+    for a in range(matrizDeRectangulos[x][1], matrizDeRectangulos[x][3] +1 ):
+        for b in range(matrizDeRectangulos[x][2], matrizDeRectangulos[x][4] +1 ):
+            matrizHorasProgramadas[a][b] = "O" 
+
+    for i in range(len(listaX)):
+        print(f"|{i}", end = "")
+    print("|")
+    for j in range(len(listaY)):
+        print(f" {j:2d}", end = "")
+        for i in range(len(listaX)):
+            print(f"|{matrizHorasProgramadas[i][j]}", end = "")
+        print("|")
+
+    for a in range(matrizDeRectangulos[x][1], matrizDeRectangulos[x][3] +1 ):
+        for b in range(matrizDeRectangulos[x][2], matrizDeRectangulos[x][4] +1 ):
+            matrizHorasProgramadas[a][b] = " " 
