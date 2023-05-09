@@ -21,16 +21,6 @@ matrizHorasProgramadas[15][12] = "X"
 matrizHorasProgramadas[16][12] = "X"
 matrizHorasProgramadas[17][12] = "X"
 
-# print("   ", end="")
-# for x in range(len(listaX)):
-#     print(f"|{x}", end = "")
-# print("|")
-# for y in range(len(listaY)):
-#     print(f" {y:2d}", end = "")
-#     for x in range(len(listaX)):
-#          print(f"|{matrizHorasProgramadas[x][y]}", end = "")
-#     print("|")
-
 def encontrarRectangulo():
     ban = False
     if len(pila) > 0:
@@ -38,11 +28,15 @@ def encontrarRectangulo():
         for y in range(yIni, yFin+1):
             for x in range(xIni, xFin+1):
                 if matrizHorasProgramadas[x][y] != " ":
-                    if xIni <= xFin and yIni <= y-1:
+#                    if xIni <= xFin and yIni <= y-1:
+                    if yIni != y:
                         matrizDeRectangulos.append(["Dentro", xIni, yIni, xFin, y-1])
+                    else:
+                        matrizDeRectangulos.append(["Dentro", xIni, yIni, x-1, y])                        
                     pila.append((xIni, yIni, x-1, yFin))
                     pila.append((x+1, yIni, xFin, yFin))
                     pila.append((xIni, y+1, xFin, yFin))
+
                     yFin = y
                     encontrarRectangulo()
                     ban = True
@@ -50,10 +44,9 @@ def encontrarRectangulo():
             if ban:
                 break
         else:
-            if xIni <= xFin and yIni <= yFin:
-                matrizDeRectangulos.append(["Fuera ", xIni, yIni, xFin, yFin])
+#            if xIni <= xFin and yIni <= yFin:
+            matrizDeRectangulos.append(["Fuera ", xIni, yIni, xFin, yFin])
             if len(pila)>0:
-#                (xIni, yIni, xFin, yFin) = pila.pop()
                 encontrarRectangulo()
     else:
         return
@@ -65,28 +58,30 @@ print("*********************************************")
 print("************* c o m e n z o *****************")
 print("*********************************************")
 
-matrizDeRectangulosNew = []
-while len(matrizDeRectangulos)>0:
-    (indicador,xIni, yIni, xFin, yFin) = matrizDeRectangulos.pop()
-    xEIni, yEIni, xEFin, yEFin = xIni, yIni, xFin, yFin
-    ban = False
-    for rn in range(len(matrizDeRectangulosNew)):
-        if len(matrizDeRectangulosNew)>0:
-            (indicador, xnIni, ynIni, xnFin, ynFin) = matrizDeRectangulosNew[rn]
-            if   xIni != xnIni and xFin == xnFin and yIni == ynIni and yFin == ynFin:
-                xEIni = xIni if xIni <= xnIni else xnIni
-                ban = True
-            elif xIni == xnIni and xFin != xnFin and yIni == ynIni and yFin == ynFin:
-                xEFin = xFin if xFin >= xnFin else xnFin
-                ban = True
-            elif xIni == xnIni and xFin == xnFin and yIni != ynIni and yFin == ynFin:
-                yEIni = yIni if yIni <= ynIni else ynIni
-                ban = True
-            elif xIni == xnIni and xFin == xnFin and yIni == ynIni and yFin != ynFin:
-                yEFin = yFin if yFin >= ynFin else ynFin
-                ban = True        
-    if not ban:
-        matrizDeRectangulosNew.append([indicador, xEIni, yEIni, xEFin, yEFin])
+matrizDeRectangulosNew = matrizDeRectangulos
+
+# matrizDeRectangulosNew = []
+# while len(matrizDeRectangulos)>0:
+#     (indicador,xIni, yIni, xFin, yFin) = matrizDeRectangulos.pop()
+#     xEIni, yEIni, xEFin, yEFin = xIni, yIni, xFin, yFin
+#     ban = False
+#     for rn in range(len(matrizDeRectangulosNew)):
+#         if len(matrizDeRectangulosNew)>0:
+#             (indicador, xnIni, ynIni, xnFin, ynFin) = matrizDeRectangulosNew[rn]
+#             if   xIni != xnIni and xFin == xnFin and yIni == ynIni and yFin == ynFin:
+#                 xEIni = xIni if xIni <= xnIni else xnIni
+#                 ban = True
+#             elif xIni == xnIni and xFin != xnFin and yIni == ynIni and yFin == ynFin:
+#                 xEFin = xFin if xFin >= xnFin else xnFin
+#                 ban = True
+#             elif xIni == xnIni and xFin == xnFin and yIni != ynIni and yFin == ynFin:
+#                 yEIni = yIni if yIni <= ynIni else ynIni
+#                 ban = True
+#             elif xIni == xnIni and xFin == xnFin and yIni == ynIni and yFin != ynFin:
+#                 yEFin = yFin if yFin >= ynFin else ynFin
+#                 ban = True        
+#     if not ban:
+#         matrizDeRectangulosNew.append([indicador, xEIni, yEIni, xEFin, yEFin])
 
 
 # for x in range(len(matrizDeRectangulosNew)):
