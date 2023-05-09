@@ -1,5 +1,5 @@
-ancho = 30
-alto = 24
+ancho = 20
+alto = 14
 
 listaX = [x for x in range(ancho)]
 listaY = [y for y in range(alto)]
