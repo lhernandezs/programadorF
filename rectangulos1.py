@@ -1,5 +1,5 @@
-ancho = 10
-alto = 7
+ancho = 31
+alto = 23
 
 listaX = [x for x in range(ancho)]
 listaY = [y for y in range(alto)]
@@ -10,16 +10,16 @@ matrizHorasProgramadas = [[" "  for y in listaY] for x in listaX]
 matrizHorasProgramadas[4][3] = "X"
 matrizHorasProgramadas[5][5] = "X"
 matrizHorasProgramadas[6][5] = "X"
-# matrizHorasProgramadas[7][5] = "X"
-# matrizHorasProgramadas[8][5] = "X"
-# matrizHorasProgramadas[9][5] = "X"
-# matrizHorasProgramadas[2][6] = "X"
-# matrizHorasProgramadas[2][7] = "X"
-# matrizHorasProgramadas[2][8] = "X"
-# matrizHorasProgramadas[2][9] = "X"
-# matrizHorasProgramadas[15][12] = "X"
-# matrizHorasProgramadas[16][12] = "X"
-# matrizHorasProgramadas[17][12] = "X"
+matrizHorasProgramadas[7][5] = "X"
+matrizHorasProgramadas[8][5] = "X"
+matrizHorasProgramadas[9][5] = "X"
+matrizHorasProgramadas[2][6] = "X"
+matrizHorasProgramadas[2][7] = "X"
+matrizHorasProgramadas[2][8] = "X"
+matrizHorasProgramadas[2][9] = "X"
+matrizHorasProgramadas[15][12] = "X"
+matrizHorasProgramadas[16][12] = "X"
+matrizHorasProgramadas[17][12] = "X"
 
 def encontrarRectangulo():
     ban = False
@@ -51,7 +51,7 @@ def encontrarRectangulo():
                         elif xIni == x and yIni != y               : # superior                 izquierdo derecho inferior      
                             izquierdo = derecho = inferior = True
                         elif yIni == y and xIni != x               : # izquierdo                derecho inferior                superior
-                            derecho = inferior = superior = True
+                            derecho = inferior = True
                         else                                       : #                          izquierdo derecho inferior      superior
                             izquierdo = derecho = inferior = superior = True
 
@@ -72,6 +72,7 @@ def encontrarRectangulo():
                 break
         else:
 #            if xIni <= xFin and yIni <= yFin:
+
             matrizDeRectangulos.append(["Fuera ", xIni, yIni, xFin, yFin])
             if len(pila)>0:
                 encontrarRectangulo()
@@ -86,7 +87,9 @@ print("************* c o m e n z o *****************")
 print("*********************************************")
 
 relleno = str(chr(35))  
+
 arregloMatrizRectangulos = False
+
 if arregloMatrizRectangulos:
     matrizDeRectangulosNew = []
     while len(matrizDeRectangulos)>0:
@@ -114,7 +117,8 @@ else:
     matrizDeRectangulosNew = matrizDeRectangulos
 
 
-terminal = True
+terminal = False
+
 if terminal:
     for x in range(len(matrizDeRectangulosNew)):
         print(f"Lugar: {matrizDeRectangulosNew[x][0]} -- coordenada Inicial: ({matrizDeRectangulosNew[x][1]:2d} , {matrizDeRectangulosNew[x][2]:2d}) -- coordenada Final: ({matrizDeRectangulosNew[x][3]:2d}, {matrizDeRectangulosNew[x][4]:2d})")
