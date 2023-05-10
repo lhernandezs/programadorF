@@ -203,10 +203,7 @@
 # print(len(matriz))
 # print(len(matriz[0][1]))
 
-# lista = [[1,3],[2,2],[1,6]]
-# lista1 = sorted(lista, key=lambda x: x[1])
-# print(lista.sort(key=lambda x: x[1]))
-# print(lista1)
+
 
 # lista = [1,2,3,4,65]
 # print(lista.index(65))
@@ -274,43 +271,49 @@
 # for x in range(len(matrizDeRectangulos)):
 #     print(f"contador: {matrizDeRectangulos[x][0]:2d}, marca: {matrizDeRectangulos[x][1]} -- horas: {matrizDeRectangulos[x][2]:2d} a {matrizDeRectangulos[x][3]:2d} -- dias: {matrizDeRectangulos[x][4]:2d} a {matrizDeRectangulos[x][5]:2d}")
 
-listaDias = [d for d in range(10)]
-listaHoras = [h for h in range(12)]
+# listaDias = [d for d in range(10)]
+# listaHoras = [h for h in range(12)]
 
-matrizDeRectangulos = []
-matrizHorasProgramadas = [[" "  for d in listaDias] for h in listaHoras]
+# matrizDeRectangulos = []
+# matrizHorasProgramadas = [[" "  for d in listaDias] for h in listaHoras]
 
-matrizHorasProgramadas[4][5] = "X"
+# matrizHorasProgramadas[4][5] = "X"
 
-print("   ", end="")
-for j in range(10):
-        print(f"|{j}", end = "")
-print("|")
-for i in range(12):
-    print(f" {i:2d}", end = "")
-    for j in range(10):
-         print(f"|{matrizHorasProgramadas[i][j]}", end = "")
-    print("|")
+# print("   ", end="")
+# for j in range(10):
+#         print(f"|{j}", end = "")
+# print("|")
+# for i in range(12):
+#     print(f" {i:2d}", end = "")
+#     for j in range(10):
+#          print(f"|{matrizHorasProgramadas[i][j]}", end = "")
+#     print("|")
 
-def encontrarRectangulo(hIni, hFin, dIni, dFin):
-    global hAnt
-    global dAnt
-    if hIni > 10 and dIni > 9:
-        return
-    for h in range(hIni, hFin):
-        for d in range(dIni, dFin):
-            if matrizHorasProgramadas[h][d] != " ":
-                banPorTerminaciónBucled = False
-                matrizDeRectangulos.append(["Dentro", "R", hIni, h-1, dIni, dFin])
-                hAnt = h + 1
-                dAnt = d + 1
-                encontrarRectangulo(hIni, hFin, dIni, d-1)
-    else:
-        matrizDeRectangulos.append(["Fuera", "T", hIni, hFin, dIni, dFin])
-        encontrarRectangulo(hAnt, hFin, dAnt, dFin)
+# def encontrarRectangulo(hIni, hFin, dIni, dFin):
+#     global hAnt
+#     global dAnt
+#     if hIni > 10 and dIni > 9:
+#         return
+#     for h in range(hIni, hFin):
+#         for d in range(dIni, dFin):
+#             if matrizHorasProgramadas[h][d] != " ":
+#                 banPorTerminaciónBucled = False
+#                 matrizDeRectangulos.append(["Dentro", "R", hIni, h-1, dIni, dFin])
+#                 hAnt = h + 1
+#                 dAnt = d + 1
+#                 encontrarRectangulo(hIni, hFin, dIni, d-1)
+#     else:
+#         matrizDeRectangulos.append(["Fuera", "T", hIni, hFin, dIni, dFin])
+#         encontrarRectangulo(hAnt, hFin, dAnt, dFin)
                         
-hAnt = 0
-dAnt = 0
-encontrarRectangulo(0, 11, 0, 9)
-for x in range(len(matrizDeRectangulos)):
-    print(f"sentido: {matrizDeRectangulos[x][0]:2d}, marca: {matrizDeRectangulos[x][1]} -- horas: {matrizDeRectangulos[x][2]:2d} a {matrizDeRectangulos[x][3]:2d} -- dias: {matrizDeRectangulos[x][4]:2d} a {matrizDeRectangulos[x][5]:2d}")
+# hAnt = 0
+# dAnt = 0
+# encontrarRectangulo(0, 11, 0, 9)
+# for x in range(len(matrizDeRectangulos)):
+#     print(f"sentido: {matrizDeRectangulos[x][0]:2d}, marca: {matrizDeRectangulos[x][1]} -- horas: {matrizDeRectangulos[x][2]:2d} a {matrizDeRectangulos[x][3]:2d} -- dias: {matrizDeRectangulos[x][4]:2d} a {matrizDeRectangulos[x][5]:2d}")
+
+
+lista = [[1,3],[2,2],[1,6]]
+lista1 = sorted(lista, key=lambda x: x[1])
+print(lista.sort(key=lambda x: x[1]))
+print(lista1)

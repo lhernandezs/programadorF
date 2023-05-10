@@ -1,5 +1,5 @@
-ancho = 31
-alto = 23
+ancho = 10
+alto = 8
 
 listaX = [x for x in range(ancho)]
 listaY = [y for y in range(alto)]
@@ -11,15 +11,15 @@ matrizHorasProgramadas[4][3] = "X"
 matrizHorasProgramadas[5][5] = "X"
 matrizHorasProgramadas[6][5] = "X"
 matrizHorasProgramadas[7][5] = "X"
-matrizHorasProgramadas[8][5] = "X"
-matrizHorasProgramadas[9][5] = "X"
-matrizHorasProgramadas[2][6] = "X"
-matrizHorasProgramadas[2][7] = "X"
-matrizHorasProgramadas[2][8] = "X"
-matrizHorasProgramadas[2][9] = "X"
-matrizHorasProgramadas[15][12] = "X"
-matrizHorasProgramadas[16][12] = "X"
-matrizHorasProgramadas[17][12] = "X"
+# matrizHorasProgramadas[8][5] = "X"
+# matrizHorasProgramadas[9][5] = "X"
+# matrizHorasProgramadas[2][6] = "X"
+# matrizHorasProgramadas[2][7] = "X"
+# matrizHorasProgramadas[2][8] = "X"
+# matrizHorasProgramadas[2][9] = "X"
+# matrizHorasProgramadas[15][12] = "X"
+# matrizHorasProgramadas[16][12] = "X"
+# matrizHorasProgramadas[17][12] = "X"
 
 def encontrarRectangulo():
     ban = False
@@ -56,7 +56,7 @@ def encontrarRectangulo():
                             izquierdo = derecho = inferior = superior = True
 
                     if superior:
-                        matrizDeRectangulos.append(["Dentro", xIni, yIni, xFin, y-1]) # ENTRA superior
+                        matrizDeRectangulos.append(["Dentro", xIni, yIni, xFin, y-1, (xFin - xIni)*((y-1) - yIni)]) # ENTRA superior
                     if izquierdo:
                         pila.append((xIni, yIni, x-1, yFin))                          # apunta a rectangulo izquierdo
                     if derecho:    
@@ -71,9 +71,8 @@ def encontrarRectangulo():
             if ban:
                 break
         else:
-#            if xIni <= xFin and yIni <= yFin:
-
-            matrizDeRectangulos.append(["Fuera ", xIni, yIni, xFin, yFin])
+            if xIni <= xFin and yIni <= yFin:
+                matrizDeRectangulos.append(["Fuera ", xIni, yIni, xFin, yFin, (xFin - xIni)*(yFin - yIni)])
             if len(pila)>0:
                 encontrarRectangulo()
     else:
@@ -91,9 +90,10 @@ relleno = str(chr(35))
 arregloMatrizRectangulos = False
 
 if arregloMatrizRectangulos:
+    matrizDeRectangulosOrd = sorted(matrizDeRectangulos, key=lambda x: x[5])
     matrizDeRectangulosNew = []
-    while len(matrizDeRectangulos)>0:
-        (indicador,xIni, yIni, xFin, yFin) = matrizDeRectangulos.pop()
+    while len(matrizDeRectangulosOrd)>0:
+        (indicador,xIni, yIni, xFin, yFin, capacidad) = matrizDeRectangulosOrd.pop()
         xEIni, yEIni, xEFin, yEFin = xIni, yIni, xFin, yFin
         ban = False
         for rn in range(len(matrizDeRectangulosNew)):
@@ -114,10 +114,10 @@ if arregloMatrizRectangulos:
         if not ban:
             matrizDeRectangulosNew.append([indicador, xEIni, yEIni, xEFin, yEFin])
 else:
-    matrizDeRectangulosNew = matrizDeRectangulos
+    matrizDeRectangulosNew = sorted(matrizDeRectangulos, key=lambda x: x[5])
 
 
-terminal = False
+terminal = True
 
 if terminal:
     for x in range(len(matrizDeRectangulosNew)):
