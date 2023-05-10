@@ -25,43 +25,46 @@ def encontrarRectangulo():
     ban = False
     if len(pila) > 0:
         (xIni, yIni, xFin, yFin) = pila.pop()
+        superior = izquierdo = derecho = inferior = False
         for y in range(yIni, yFin+1):
             for x in range(xIni, xFin+1):
-                if matrizHorasProgramadas[x][y] != " ":              # NO                       SI                              ENTRA
+                if matrizHorasProgramadas[x][y] != " ":              # NO                       APUNTA                          ENTRA
                     if   x == 0 and y == 0                         : # izquierdo superior       derecho inferior    
-                        pass
+                        derecho = inferior = True
                     elif x == 0 and y in range(1,  alto-1)         : # izquierdo                derecho inferior                superior
-                        pass
-                    elif y == 0 and x in range(1, ancho-1)         : # superior                 izquiero derecho inferior
-                        pass
+                        derecho = inferior = superior = True
+                    elif y == 0 and x in range(1, ancho-1)         : # superior                 derecho inferior izquierdo
+                        derecho = inferior = izquierdo = True
                     elif x == (ancho-1) and y == (alto-1)          : # derecho inferior         izquierdo                       superior
-                        pass
+                        izquierdo = superior = True
                     elif x == (ancho-1) and y in range(1, alto-1)  : # derecho                  izquierdo inferior              superior
-                        pass
+                        izquierdo = inferior = superior = True
                     elif y == (alto-1)  and x in range (1, ancho-1): # inferior                 izquierdo derecho               superior
-                        pass
+                        izquierdo = derecho = superior = True
                     elif x == 0 and y == (alto-1)                  : # izquierdo inferior       derecho                         superior
-                        pass
+                        derecho = superior = True
                     elif x == (ancho-1) and y == 0                 : # derecho superior         izquierdo inferior
-                        pass
+                        izquierdo =  inferior = True
                     else:     
-                        if   xIni == x and yIni == y               : #                          izquierda derecho inferior
-                            pass
-                        elif xIni == x and yIni != y               : #                          izquierdo derecho inferior      superior
-                            pass
-                        elif yIni == y and xIni != x               : #
-                            pass
-                        else                                       : #
+                        if   xIni == x and yIni == y               : # izquierdo superior       derecho inferior
+                            derecho = inferior = True
+                        elif xIni == x and yIni != y               : # superior                 izquierdo derecho inferior      
+                            izquierdo = derecho = inferior = True
+                        elif yIni == y and xIni != x               : # izquierdo                derecho inferior                superior
+                            derecho = inferior = superior = True
+                        else                                       : #                          izquierdo derecho inferior      superior
+                            izquierdo = derecho = inferior = superior = True
 
-                    if yIni != y:
+                    if superior:
                         matrizDeRectangulos.append(["Dentro", xIni, yIni, xFin, y-1]) # ENTRA superior
-                    else:
-                        matrizDeRectangulos.append(["Dentro", xIni, yIni, x-1, y]) # ingresan rectangulo superior                        
-                    pila.append((xIni, yIni, x-1, yFin)) # apunta a rectangulo izquierdo
-                    pila.append((x+1, yIni, xFin, yFin)) # apunta a rectangulo derecho
-                    pila.append((xIni, y+1, xFin, yFin)) # apunta a rectangulo inferior
+                    if izquierdo:
+                        pila.append((xIni, yIni, x-1, yFin))                          # apunta a rectangulo izquierdo
+                    if derecho:    
+                        pila.append((x+1, yIni, xFin, yFin))                          # apunta a rectangulo derecho
+                    if inferior:
+                        pila.append((xIni, y+1, xFin, yFin))                          # apunta a rectangulo inferior
 
-                    yFin = y
+#                    yFin = y
                     encontrarRectangulo()
                     ban = True
                     break
