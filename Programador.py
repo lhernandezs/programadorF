@@ -9,24 +9,24 @@ class Programador:
         self._mes = mes
         self._horasAProgramar = horasAProgramar
         self._tolerancia = tolerancia
-        self._diccionarioFichas = dict.fromkeys([evento.ficha for evento in self._listaEventos], 0)
-        self._promedioHorasPorFicha = self._horasAProgramar // len(self._diccionarioFichas)
-        self._minimoHorasAProgramarPorFicha = int(self._promedioHorasPorFicha * (1-(self._tolerancia/100)))
-        self._maximoHorasAProgramarPorFicha = int(self._promedioHorasPorFicha * (1+(self._tolerancia/100)))
-        self._ultimaFecMes = Mes(self._mes).ultimoDia()
-        self._diasDelMes = self._ultimaFecMes.day
-        self._listaDiasLaborablesMes = Mes(self._mes).listaDiasLaborables()
-        self._matrizDeEventos = self.matrizDeEventos()
-        self._saldoDeHorasAProgramar = horasAProgramar
-        self._matrizHorasNoProgramadas = None
-        self._matrizDeRectangulos = None
+        self._diccionarioFichas = dict.fromkeys([evento.ficha for evento in self._listaEventos], 0) # crea el diccionario de fichas en ceros
+        self._promedioHorasPorFicha = self._horasAProgramar // len(self._diccionarioFichas) # valor entero de la division
+        self._minimoHorasAProgramarPorFicha = int(self._promedioHorasPorFicha * (1-(self._tolerancia/100))) # valor entero
+        self._maximoHorasAProgramarPorFicha = int(self._promedioHorasPorFicha * (1+(self._tolerancia/100))) # valor entero
+        self._ultimaFecMes = Mes(self._mes).ultimoDia() # contiene la fecha del ultimo dia del mes
+        self._diasDelMes = self._ultimaFecMes.day # contiene el entero del ultimo dia del mes
+        self._listaDiasLaborablesMes = Mes(self._mes).listaDiasLaborables() # contiene la lista de los dias laborables del mes
+        self._matrizDeEventos = self.matrizDeEventos() # contiene una matriz de 24 horas x los dias del mes con los eventos -- sin programar
+        self._saldoDeHorasAProgramar = horasAProgramar # representa el saldo de horas aún sin programar
+        self._matrizHorasNoProgramadas = None # OJO.. definir
+        self._matrizDeRectangulos = None # contiene los "rectangulos" disponibles - sin programacion-
 
-    # retorna True si el evento está en el Dia y la Hora pasado como parametros o False en caso contrario
+    # retorna True si el evento exite en el Dia y la Hora pasado como parametros o False en caso contrario
     def estaElEventoEnDiaHora(self, evento, dia, hora):
         fecha = date(2023, self._mes, dia)
         return True if evento.fechaI <= fecha and fecha <= evento.fechaF and evento.horaI <= hora and hora < evento.horaF else False
     
-    # devuelve la lista de eventos sin programar
+    # devuelve la lista de eventos sin ningun dia programado de las fichas que aú no han sido programadas
     def listaEventosSinProgramar(self):
         return list(filter(lambda evento: evento.listaDiasAProgramar is None and not evento.fichaYaProgramada, self._listaEventos))
 
