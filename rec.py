@@ -21,130 +21,164 @@ matrizHorasProgramadas[2][6] = "X"
 matrizHorasProgramadas[2][7] = "X"
 matrizHorasProgramadas[2][8] = "X"
 matrizHorasProgramadas[2][9] = "X"
-matrizHorasProgramadas[1][6] = 'X'
-matrizHorasProgramadas[2][6] = 'X'
-matrizHorasProgramadas[3][6] = 'X'
-matrizHorasProgramadas[4][6] = 'X'
-matrizHorasProgramadas[5][6] = 'X'
-matrizHorasProgramadas[6][6] = 'X'
-matrizHorasProgramadas[7][6] = 'X'
-matrizHorasProgramadas[8][6] = 'X'
-matrizHorasProgramadas[9][6] = 'X'
-matrizHorasProgramadas[10][6] = 'X'
-matrizHorasProgramadas[11][6] = 'X'
-matrizHorasProgramadas[12][6] = 'X'
-matrizHorasProgramadas[13][6] = 'X'
-matrizHorasProgramadas[14][6] = 'X'
-matrizHorasProgramadas[15][6] = 'X'
-matrizHorasProgramadas[16][6] = 'X'
-matrizHorasProgramadas[17][6] = 'X'
-matrizHorasProgramadas[18][6] = 'X'
-matrizHorasProgramadas[19][6] = 'X'
-matrizHorasProgramadas[20][6] = 'X'
-matrizHorasProgramadas[21][6] = 'X'
-matrizHorasProgramadas[22][6] = 'X'
-matrizHorasProgramadas[23][6] = 'X'
-matrizHorasProgramadas[24][6] = 'X'
-matrizHorasProgramadas[25][6] = 'X'
-matrizHorasProgramadas[26][6] = 'X'
-matrizHorasProgramadas[27][6] = 'X'
-matrizHorasProgramadas[28][6] = 'X'
-matrizHorasProgramadas[1][7] = 'X'
-matrizHorasProgramadas[2][7] = 'X'
-matrizHorasProgramadas[3][7] = 'X'
-matrizHorasProgramadas[4][7] = 'X'
-matrizHorasProgramadas[5][7] = 'X'
-matrizHorasProgramadas[6][7] = 'X'
-matrizHorasProgramadas[7][7] = 'X'
-matrizHorasProgramadas[8][7] = 'X'
-matrizHorasProgramadas[9][7] = 'X'
-matrizHorasProgramadas[10][7] = 'X'
-matrizHorasProgramadas[11][7] = 'X'
-matrizHorasProgramadas[12][7] = 'X'
-matrizHorasProgramadas[13][7] = 'X'
-matrizHorasProgramadas[14][7] = 'X'
-matrizHorasProgramadas[15][7] = 'X'
-matrizHorasProgramadas[16][7] = 'X'
-matrizHorasProgramadas[17][7] = 'X'
-matrizHorasProgramadas[18][7] = 'X'
-matrizHorasProgramadas[19][7] = 'X'
-matrizHorasProgramadas[20][7] = 'X'
-matrizHorasProgramadas[21][7] = 'X'
-matrizHorasProgramadas[22][7] = 'X'
-matrizHorasProgramadas[23][7] = 'X'
-matrizHorasProgramadas[24][7] = 'X'
-matrizHorasProgramadas[25][7] = 'X'
-matrizHorasProgramadas[26][7] = 'X'
-matrizHorasProgramadas[27][7] = 'X'
-matrizHorasProgramadas[28][7] = 'X'
-matrizHorasProgramadas[3][10] = 'X'
-matrizHorasProgramadas[4][10] = 'X'
-matrizHorasProgramadas[5][10] = 'X'
-matrizHorasProgramadas[6][10] = 'X'
-matrizHorasProgramadas[7][10] = 'X'
-matrizHorasProgramadas[8][10] = 'X'
-matrizHorasProgramadas[9][10] = 'X'
-matrizHorasProgramadas[10][10] = 'X'
-matrizHorasProgramadas[11][10] = 'X'
-matrizHorasProgramadas[12][10] = 'X'
-matrizHorasProgramadas[13][10] = 'X'
-matrizHorasProgramadas[14][10] = 'X'
-matrizHorasProgramadas[15][10] = 'X'
-matrizHorasProgramadas[16][10] = 'X'
-# matrizHorasProgramadas[17][10] = 'X'
-# matrizHorasProgramadas[18][10] = 'X'
-# matrizHorasProgramadas[19][10] = 'X'
-# matrizHorasProgramadas[20][10] = 'X'
-# matrizHorasProgramadas[21][10] = 'X'
-# matrizHorasProgramadas[22][10] = 'X'
-# matrizHorasProgramadas[23][10] = 'X'
-# matrizHorasProgramadas[24][10] = 'X'
-# matrizHorasProgramadas[6][13] = 'X'
-# matrizHorasProgramadas[7][13] = 'X'
-# matrizHorasProgramadas[8][13] = 'X'
-# matrizHorasProgramadas[9][13] = 'X'
-# matrizHorasProgramadas[10][13] = 'X'
-# matrizHorasProgramadas[11][13] = 'X'
-# matrizHorasProgramadas[12][13] = 'X'
-# matrizHorasProgramadas[13][13] = 'X'
-# matrizHorasProgramadas[14][13] = 'X'
-# matrizHorasProgramadas[15][13] = 'X'
-# matrizHorasProgramadas[16][13] = 'X'
-# matrizHorasProgramadas[17][13] = 'X'
-# matrizHorasProgramadas[18][13] = 'X'
-# matrizHorasProgramadas[19][13] = 'X'
-# matrizHorasProgramadas[20][13] = 'X'
-# matrizHorasProgramadas[6][14] = 'X'
-# matrizHorasProgramadas[7][14] = 'X'
-# matrizHorasProgramadas[8][14] = 'X'
-# matrizHorasProgramadas[9][14] = 'X'
-# matrizHorasProgramadas[10][14] = 'X'
-# matrizHorasProgramadas[11][14] = 'X'
-# matrizHorasProgramadas[12][14] = 'X'
-# matrizHorasProgramadas[13][14] = 'X'
-# matrizHorasProgramadas[14][14] = 'X'
-# matrizHorasProgramadas[15][14] = 'X'
-# matrizHorasProgramadas[16][14] = 'X'
-# matrizHorasProgramadas[17][14] = 'X'
-# matrizHorasProgramadas[18][14] = 'X'
-# matrizHorasProgramadas[19][14] = 'X'
-# matrizHorasProgramadas[20][14] = 'X'
-# matrizHorasProgramadas[6][15] = 'X'
-# matrizHorasProgramadas[7][15] = 'X'
-# matrizHorasProgramadas[8][15] = 'X'
-# matrizHorasProgramadas[9][15] = 'X'
-# matrizHorasProgramadas[10][15] = 'X'
-# matrizHorasProgramadas[11][15] = 'X'
-# matrizHorasProgramadas[12][15] = 'X'
-# matrizHorasProgramadas[13][15] = 'X'
-# matrizHorasProgramadas[14][15] = 'X'
-# matrizHorasProgramadas[15][15] = 'X'
-# matrizHorasProgramadas[16][15] = 'X'
-# matrizHorasProgramadas[17][15] = 'X'
-# matrizHorasProgramadas[18][15] = 'X'
-# matrizHorasProgramadas[19][15] = 'X'
-# matrizHorasProgramadas[20][15] = 'X'
-
+matrizHorasProgramadas[1][6] = "X"
+matrizHorasProgramadas[2][6] = "X"
+matrizHorasProgramadas[3][6] = "X"
+matrizHorasProgramadas[4][6] = "X"
+matrizHorasProgramadas[5][6] = "X"
+matrizHorasProgramadas[6][6] = "X"
+matrizHorasProgramadas[7][6] = "X"
+matrizHorasProgramadas[8][6] = "X"
+matrizHorasProgramadas[9][6] = "X"
+matrizHorasProgramadas[10][6] = "X"
+matrizHorasProgramadas[11][6] = "X"
+matrizHorasProgramadas[12][6] = "X"
+matrizHorasProgramadas[13][6] = "X"
+matrizHorasProgramadas[14][6] = "X"
+matrizHorasProgramadas[15][6] = "X"
+matrizHorasProgramadas[16][6] = "X"
+matrizHorasProgramadas[17][6] = "X"
+matrizHorasProgramadas[18][6] = "X"
+matrizHorasProgramadas[19][6] = "X"
+matrizHorasProgramadas[20][6] = "X"
+matrizHorasProgramadas[21][6] = "X"
+matrizHorasProgramadas[22][6] = "X"
+matrizHorasProgramadas[23][6] = "X"
+matrizHorasProgramadas[24][6] = "X"
+matrizHorasProgramadas[25][6] = "X"
+matrizHorasProgramadas[26][6] = "X"
+matrizHorasProgramadas[27][6] = "X"
+matrizHorasProgramadas[28][6] = "X"
+matrizHorasProgramadas[1][7] = "X"
+matrizHorasProgramadas[2][7] = "X"
+matrizHorasProgramadas[3][7] = "X"
+matrizHorasProgramadas[4][7] = "X"
+matrizHorasProgramadas[5][7] = "X"
+matrizHorasProgramadas[6][7] = "X"
+matrizHorasProgramadas[7][7] = "X"
+matrizHorasProgramadas[8][7] = "X"
+matrizHorasProgramadas[9][7] = "X"
+matrizHorasProgramadas[10][7] = "X"
+matrizHorasProgramadas[11][7] = "X"
+matrizHorasProgramadas[12][7] = "X"
+matrizHorasProgramadas[13][7] = "X"
+matrizHorasProgramadas[14][7] = "X"
+matrizHorasProgramadas[15][7] = "X"
+matrizHorasProgramadas[16][7] = "X"
+matrizHorasProgramadas[17][7] = "X"
+matrizHorasProgramadas[18][7] = "X"
+matrizHorasProgramadas[19][7] = "X"
+matrizHorasProgramadas[20][7] = "X"
+matrizHorasProgramadas[21][7] = "X"
+matrizHorasProgramadas[22][7] = "X"
+matrizHorasProgramadas[23][7] = "X"
+matrizHorasProgramadas[24][7] = "X"
+matrizHorasProgramadas[25][7] = "X"
+matrizHorasProgramadas[26][7] = "X"
+matrizHorasProgramadas[27][7] = "X"
+matrizHorasProgramadas[28][7] = "X"
+matrizHorasProgramadas[3][10] = "X"
+matrizHorasProgramadas[4][10] = "X"
+matrizHorasProgramadas[5][10] = "X"
+matrizHorasProgramadas[6][10] = "X"
+matrizHorasProgramadas[7][10] = "X"
+matrizHorasProgramadas[8][10] = "X"
+matrizHorasProgramadas[9][10] = "X"
+matrizHorasProgramadas[10][10] = "X"
+matrizHorasProgramadas[11][10] = "X"
+matrizHorasProgramadas[12][10] = "X"
+matrizHorasProgramadas[13][10] = "X"
+matrizHorasProgramadas[14][10] = "X"
+matrizHorasProgramadas[15][10] = "X"
+matrizHorasProgramadas[16][10] = "X"
+matrizHorasProgramadas[17][10] = "X"
+matrizHorasProgramadas[18][10] = "X"
+matrizHorasProgramadas[19][10] = "X"
+matrizHorasProgramadas[20][10] = "X"
+matrizHorasProgramadas[21][10] = "X"
+matrizHorasProgramadas[22][10] = "X"
+matrizHorasProgramadas[23][10] = "X"
+matrizHorasProgramadas[24][10] = "X"
+matrizHorasProgramadas[6][13] = "X"
+matrizHorasProgramadas[7][13] = "X"
+matrizHorasProgramadas[8][13] = "X"
+matrizHorasProgramadas[9][13] = "X"
+matrizHorasProgramadas[10][13] = "X"
+matrizHorasProgramadas[11][13] = "X"
+matrizHorasProgramadas[12][13] = "X"
+matrizHorasProgramadas[13][13] = "X"
+matrizHorasProgramadas[14][13] = "X"
+matrizHorasProgramadas[15][13] = "X"
+matrizHorasProgramadas[16][13] = "X"
+matrizHorasProgramadas[17][13] = "X"
+matrizHorasProgramadas[18][13] = "X"
+matrizHorasProgramadas[19][13] = "X"
+matrizHorasProgramadas[20][13] = "X"
+matrizHorasProgramadas[6][14] = "X"
+matrizHorasProgramadas[7][14] = "X"
+matrizHorasProgramadas[8][14] = "X"
+matrizHorasProgramadas[9][14] = "X"
+matrizHorasProgramadas[10][14] = "X"
+matrizHorasProgramadas[11][14] = "X"
+matrizHorasProgramadas[12][14] = "X"
+matrizHorasProgramadas[13][14] = "X"
+matrizHorasProgramadas[14][14] = "X"
+matrizHorasProgramadas[15][14] = "X"
+matrizHorasProgramadas[16][14] = "X"
+matrizHorasProgramadas[17][14] = "X"
+matrizHorasProgramadas[18][14] = "X"
+matrizHorasProgramadas[19][14] = "X"
+matrizHorasProgramadas[20][14] = "X"
+matrizHorasProgramadas[6][15] = "X"
+matrizHorasProgramadas[7][15] = "X"
+matrizHorasProgramadas[8][15] = "X"
+matrizHorasProgramadas[9][15] = "X"
+matrizHorasProgramadas[10][15] = "X"
+matrizHorasProgramadas[11][15] = "X"
+matrizHorasProgramadas[12][15] = "X"
+matrizHorasProgramadas[13][15] = "X"
+matrizHorasProgramadas[14][15] = "X"
+matrizHorasProgramadas[15][15] = "X"
+matrizHorasProgramadas[16][15] = "X"
+matrizHorasProgramadas[17][15] = "X"
+matrizHorasProgramadas[18][15] = "X"
+matrizHorasProgramadas[19][15] = "X"
+matrizHorasProgramadas[20][15] = "X"
+matrizHorasProgramadas[3][17] = "X"
+matrizHorasProgramadas[4][17] = "X"
+matrizHorasProgramadas[5][17] = "X"
+matrizHorasProgramadas[6][17] = "X"
+matrizHorasProgramadas[7][17] = "X"
+matrizHorasProgramadas[8][17] = "X"
+matrizHorasProgramadas[9][17] = "X"
+matrizHorasProgramadas[10][17] = "X"
+matrizHorasProgramadas[11][17] = "X"
+matrizHorasProgramadas[12][17] = "X"
+matrizHorasProgramadas[13][17] = "X"
+matrizHorasProgramadas[14][17] = "X"
+matrizHorasProgramadas[15][17] = "X"
+matrizHorasProgramadas[16][17] = "X"
+matrizHorasProgramadas[17][17] = "X"
+matrizHorasProgramadas[18][17] = "X"
+matrizHorasProgramadas[19][17] = "X"
+matrizHorasProgramadas[20][17] = "X"
+matrizHorasProgramadas[4][18] = "X"
+matrizHorasProgramadas[5][18] = "X"
+matrizHorasProgramadas[6][18] = "X"
+matrizHorasProgramadas[7][18] = "X"
+matrizHorasProgramadas[8][18] = "X"
+matrizHorasProgramadas[9][18] = "X"
+matrizHorasProgramadas[10][18] = "X"
+matrizHorasProgramadas[11][18] = "X"
+matrizHorasProgramadas[12][18] = "X"
+matrizHorasProgramadas[13][18] = "X"
+matrizHorasProgramadas[14][18] = "X"
+matrizHorasProgramadas[15][18] = "X"
+matrizHorasProgramadas[16][18] = "X"
+matrizHorasProgramadas[17][18] = "X"
+matrizHorasProgramadas[18][18] = "X"
+matrizHorasProgramadas[19][18] = "X"
+matrizHorasProgramadas[20][17] = "X"
 
 def encontrarRectangulo():
     global recursividad
@@ -153,6 +187,7 @@ def encontrarRectangulo():
     global recursividadIn
     
     recursividad += 1
+
     ban = False
     if len(pila) > 0:
         (xIni, yIni, xFin, yFin) = pila.pop()
@@ -188,19 +223,26 @@ def encontrarRectangulo():
 
                     if superior:
                         matrizDeRectangulos.append(["Dentro", xIni, yIni, xFin, y-1, (xFin - xIni)*((y-1) - yIni)]) # ENTRA superior
-                    if izquierdo and matrizHorasProgramadas[x-1][y] == " ":
-                        pila.append((xIni, yIni, x-1, yFin))                          # apunta a rectangulo izquierdo
-                        recursividadIz += 1
+                    if izquierdo:
+                        for i in range (x-1, xIni, -1):
+                            if matrizHorasProgramadas[i][yIni] == " ":                        
+                                pila.append((xIni, yIni, i, yFin))                          # apunta a rectangulo izquierdo
+                                recursividadIz += 1
+                                break
 #                    if derecho and matrizHorasProgramadas[x+1][y] == " ":  
                     if derecho:
-                        pila.append((x+1, yIni, xFin, yFin))                          # apunta a rectangulo derecho
-                        recursividadDe += 1
+                        for i in range (x+1, xFin):
+                            if matrizHorasProgramadas[i][yIni] == " ":
+                                pila.append((i, yIni, xFin, yFin))                          # apunta a rectangulo derecho
+                                recursividadDe += 1
+                                break
 #                    if inferior and matrizHorasProgramadas[x][y+1] == " ":
                     if inferior:
-                        pila.append((xIni, y+1, xFin, yFin))                          # apunta a rectangulo inferior
-                        recursividadIn += 1
-
-#                    yFin = y
+                        for j in range (y+1, yFin):
+                            if matrizHorasProgramadas[xIni][j] == " ":
+                                pila.append((xIni, j, xFin, yFin))                          # apunta a rectangulo inferior
+                                recursividadIn += 1
+                                break
                     encontrarRectangulo()
                     ban = True
                     break
@@ -225,7 +267,7 @@ print("*********************************************")
 print(f"recursividad = {recursividad} Izquierdo = {recursividadIz} Derecho = {recursividadDe} Inferior = {recursividadIn}")
 
 relleno = str(chr(35))  
-relleno = "0"
+relleno = "o"
 
 arregloMatrizRectangulos = True
 
