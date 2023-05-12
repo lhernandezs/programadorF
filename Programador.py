@@ -6,10 +6,10 @@ class Programador:
     # constructor de la clase
     def __init__(self, listaEventos, mes, horasAProgramar, tolerancia):
         self._listaEventos = listaEventos
-        self._diccionarioFichas = dict.fromkeys([evento.ficha for evento in self._listaEventos], 0)
         self._mes = mes
         self._horasAProgramar = horasAProgramar
         self._tolerancia = tolerancia
+        self._diccionarioFichas = dict.fromkeys([evento.ficha for evento in self._listaEventos], 0)
         self._promedioHorasPorFicha = self._horasAProgramar // len(self._diccionarioFichas)
         self._minimoHorasAProgramarPorFicha = int(self._promedioHorasPorFicha * (1-(self._tolerancia/100)))
         self._maximoHorasAProgramarPorFicha = int(self._promedioHorasPorFicha * (1+(self._tolerancia/100)))
@@ -74,20 +74,20 @@ class Programador:
         horasEvento = evento.horaF - evento.horaI
         if cruzado:
             listaDias = evento.listaDiasLaborables
-            capacidad = horasEvento * len(evento.listaDiasLaborables)
+            capacidad = horasEvento * len(listaDias)
             return (evento, capacidad, listaDias, horasEvento)
         else:
             listaDias = lA if len(lA := evento.listaDiasAntesCruce) > len(lL := evento.listaDiasLuegoCruce) else lL
             capacidad = horasEvento * len(listaDias)
             return (capacidad, listaDias, horasEvento)
     
-    # devuelve True si la capacidad del evento es al menos el 50% del mínimo de horas a programar por ficha o False en caso contrario
+    # devuelve True si la capacidad es al menos el 50% del mínimo de horas a programar por ficha o False en caso contrario
     def tieneCapacidadMinima(self, capacidad):
         return True if capacidad >= self._minimoHorasAProgramarPorFicha // 2 else False
     
-    # devuelve el evento, la lista de dias a programar y las horas del mejor evento programable, que se define: 
+    # devuelve el evento, la lista de dias a programar y las horas del mejor evento programable, que se define asi: 
     # 1. Tiene la capacidad mas grande revisando las lista de dias que no se cruzan; en caso de empate, tiene la hora de inicio mas temprano. 
-    # 2. Si se acaban los eventos anteriores, se revisan los eventos cruzados de menos a mas cardinalidad (nùmero de evento que se cruzan en un dia y hora).   
+    # 2. Si se acaban los eventos anteriores, se revisan los eventos cruzados de menos a mas "cardinalidad" -nùmero de eventos que se cruzan en un dia y hora-.   
     def buscarMejorEventoProgramable(self):
         # 1.
         eventosProgramables = [] 
@@ -99,8 +99,8 @@ class Programador:
             return (evento, listaDias, horasEvento)
         else:
             # 2.
-            for l in range(2, len(self._listaEventos)):
-                listaDeEventosCruzados = list(filter(lambda item: len(item) == l, [self._matrizDeEventos[i][j] for j in range(24) for i in range(self._diasDelMes)]))
+            for longitud in range(2, len(self._listaEventos)):
+                listaDeEventosCruzados = list(filter(lambda item: len(item) == longitud, [self._matrizDeEventos[i][j] for j in range(24) for i in range(self._diasDelMes)]))
                 if listaDeEventosCruzados:
                     cruceMasRepetido = max(listaDeEventosCruzados, key=listaDeEventosCruzados.count)
                     listaTuplas = []
@@ -111,10 +111,11 @@ class Programador:
                 else:
                     return (None, None, None)
     
-    # retorna True si el evento está en el Dia y la Hora pasado como parametros o False en caso contrario
+    # retorna True si el evento "está programado" en el Dia y la Hora pasado como parametros o False en caso contrario
     def estaProgramadoElEventoEnDiaHora(self, evento, dia, hora):
         return True if not evento.listaDiasAProgramar is None and dia in evento.listaDiasAProgramar and evento.horaI <= hora and hora < evento.horaF else False
 
+    # ---- replantear con la nueva funcion -----
     def encontrarRectangulo(self, hIni, dIni, hFin, dFin):
         if hIni == 23 and dIni == self._diasDeMes -1:
             return
@@ -229,8 +230,8 @@ class Programador:
     #   se asignan horas al mejor evento programable
     #   si la ficha queda programada (al menos el minimo de horas a programar por ficha), se retiran los eventos de la ficha en la matriz y se baja el numero de horas a programar
     #   se vuelve a iterar hasta que no sea posible asignar mas horas a las fichas 
-    # 2. para todos los eventos que tengan dias por programar  se tratan de asignar horas en los dias
-    # 3. se revisan las fichas no programadas para hacer los siguientes ajustes (se da por hecho que se han acabado los eventos originales):
+    # 2. para todos los eventos que tengan dias por programar se tratan de asignar horas en los dias
+    # 3. se revisan las fichas no programadas para hacer los siguientes ajustes -se da por hecho que se han acabado los eventos originales-:
     #   si hay horas por programar, se buscar un horario y dias que no se crucen con lo ya programado para programar el mínimo de horas por ficha
     #   si se acaban las horas por programar, hay que quitar dias de las fichas que tienen mayor número de horas para dejar programación a las fichas
    
@@ -279,8 +280,8 @@ class Programador:
                     d = eventoADesprogramar.listaDiasAProgramar.pop() # reducir los dias programados en el evento
                     eventoADesprogramar.listaDiasPorProgram.append(d) # aumentar los dias por programar en el evento  
                     eventoADesprogramar.listaDiasPorProgram.sort()  
-                self._diccionarioFichas[fichaADesprogramar] -= horasEventoADesprogramar * diasAReducir# disminuir las horas en el diccionario para la ficha
-                self._saldoDeHorasAProgramar += horasEventoADesprogramar * diasAReducir# aumentar el saldo de horas a Programar
+                self._diccionarioFichas[fichaADesprogramar] -= horasEventoADesprogramar * diasAReducir # disminuir las horas en el diccionario para la ficha
+                self._saldoDeHorasAProgramar += horasEventoADesprogramar * diasAReducir # aumentar el saldo de horas a Programar
             # crear un evento para la ficha si no lo tiene en la mejor Capacidad de Dias No programdos - incluir este evento en self._listaEventos-- OJO: no se puede cruzar con los eventos de la ficha
             ban = True
             mejores = self.mejoresEspaciosNoProgramados()
@@ -336,6 +337,7 @@ Evento(1, 2700000, 0, 0, date(2023,4,1), date(2023,4,30)), \
 programador = Programador(listaEventos, 4, 160, 10)
 programador.programarEventos()
 print()
+
 print(f"  H a programar: {programador._horasAProgramar} - H por Programar:{programador._saldoDeHorasAProgramar:3d} - Dicionario: {programador._diccionarioFichas}  - Mes: {programador._mes}  - Tolerancia: {programador._tolerancia}%" )
 # print(" -------------------------------------------------------------------------------------------------------------- ")
 # print("|  Evento  |   Ficha  |   Horas   |  D In Fi | D labor  | D A Cruz | D L Cruz | D A Prog | D P Prog | Ya Progr | ")
