@@ -1,4 +1,4 @@
-import sys as sys
+
 
 ancho = 31
 alto = 24
