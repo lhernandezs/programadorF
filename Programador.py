@@ -117,7 +117,7 @@ class Programador:
     def estaProgramadoElEventoEnDiaHora(self, evento, dia, hora):
         return True if not evento.listaDiasAProgramar is None and dia in evento.listaDiasAProgramar and evento.horaI <= hora and hora < evento.horaF else False
 
-    # ---- replantear con la nueva funcion -----
+    # ---- la nueva funcion -----
     def encontrarRectangulo(self):
 
         global recursividad
@@ -125,43 +125,47 @@ class Programador:
         global recursividadDe
         global recursividadIn
         
-        alto = 24
-        ancho = self._diasDelMes
-
         recursividad += 1
 
+        primerDia    = self._listaDiasLaborablesMes.index(0)
+        ultimoDia    = self._listaDiasLaborablesMes.index(len(self._listaDiasLaborablesMes)-1)
+        penultimoIndice = len(self._listaDiasLaborablesMes)-2
+
         ban = False
+
         if len(self._pila) > 0:
             (xIni, yIni, xFin, yFin) = self._pila.pop()
             superior = izquierdo = derecho = inferior = False
             for y in range(yIni, yFin+1):
-                for x in range(xIni, xFin+1):
-                    if self._matrizHorasProgramadas[x][y] != " ":        # NO                       APUNTA                          ENTRA
-                        if   x == 0 and y == 0                         : # izquierdo superior       derecho inferior    
+                for x in self._listaDiasLaborablesMes[self._listaDiasLaborablesMes.index(xIni): self._listaDiasLaborablesMes.index(xFin)]:
+                    if self._matrizHorasProgramadas[x][y] != " ":                               # NO                       APUNTA                          ENTRA
+                        if   x == primerDia and y == 0                                        : # izquierdo superior       derecho inferior    
                             derecho = inferior = True
-                        elif x == 0 and y in range(1,  alto-1)         : # izquierdo                derecho inferior                superior
-                            derecho = inferior = superior = True
-                        elif y == 0 and x in range(1, ancho-1)         : # superior                 derecho inferior izquierdo
+                        elif x in self._listaDiasLaborablesMes[1:penultimoIndice] and y == 0  : # superior                 derecho inferior izquierdo
                             derecho = inferior = izquierdo = True
-                        elif x == (ancho-1) and y == (alto-1)          : # derecho inferior         izquierdo                       superior
-                            izquierdo = superior = True
-                        elif x == (ancho-1) and y in range(1, alto-1)  : # derecho                  izquierdo inferior              superior
-                            izquierdo = inferior = superior = True
-                        elif y == (alto-1)  and x in range (1, ancho-1): # inferior                 izquierdo derecho               superior
-                            izquierdo = derecho = superior = True
-                        elif x == 0 and y == (alto-1)                  : # izquierdo inferior       derecho                         superior
-                            derecho = superior = True
-                        elif x == (ancho-1) and y == 0                 : # derecho superior         izquierdo inferior
+                        elif x == ultimoDia and y == 0                                        : # derecho superior         izquierdo inferior
                             izquierdo =  inferior = True
+                        elif x == ultimoDia and y in range(1, 23)                             : # derecho                  izquierdo inferior              superior
+                            izquierdo = inferior = superior = True
+                        elif x == ultimoDia and y == 23                                       : # derecho inferior         izquierdo                       superior
+                            izquierdo = superior = True
+                        elif x in self._listaDiasLaborablesMes[1:penultimoIndice] and y == 23 : # inferior                 izquierdo derecho               superior
+                            izquierdo = derecho = superior = True
+                        elif x == primerDia and y == 23                                       : # izquierdo inferior       derecho                         superior
+                            derecho = superior = True
+                        elif x == primerDia and y in range(1, 23)                             : # izquierdo                derecho inferior                superior
+                            derecho = inferior = superior = True
                         else:     
-                            if   xIni == x and yIni == y               : # izquierdo superior       derecho inferior
+                            if   xIni == x and yIni == y                                      : # izquierdo superior       derecho inferior
                                 derecho = inferior = True
-                            elif xIni == x and yIni != y               : # superior                 izquierdo derecho inferior      
-                                izquierdo = derecho = inferior = True
-                            elif yIni == y and xIni != x               : # izquierdo                derecho inferior                superior
-                                derecho = inferior = True
-                            else                                       : #                          izquierdo derecho inferior      superior
+                            elif xIni == x and yIni != y                                      : # izquierdo                derecho inferior                superior
+                                derecho = inferior = superior = True
+                            elif xIni != x and yIni == y                                      : # superior                 derecho izquierdo inferior
+                                derecho = izquierdo = inferior = True
+                            else                                                              : #                          izquierdo derecho inferior      superior
                                 izquierdo = derecho = inferior = superior = True
+
+                        indiceX = self._listaDiasLaborablesMes.indice(x)
 
                         if superior:
                             self._matrizDeRectangulos.append(["Dentro", xIni, yIni, xFin, y-1, (xFin - xIni)*((y-1) - yIni)]) # ENTRA superior
@@ -207,16 +211,16 @@ class Programador:
                     if self.estaProgramadoElEventoEnDiaHora(evento, d, h):
                         self._matrizHorasProgramadas[d][h] = str(f"{evento.id:2d}")
           
-        self._pila = [(0, 0, programador._diasDelMes, 24)]
+        self._pila = [(self._listaDiasLaborablesMes.index(0), 0, self._listaDiasLaborablesMes.index(len(self._listaDiasLaborablesMes)-1), 24)]
         self.encontrarRectangulo()
 
-        ropc = sorted(self._matrizDeRectangulos, key=lambda c: -l[5]) # OJO: ordenar la matriz de rectangulos de mayor a menor capacidad
-        rectangulosOrdenadosPorHora = []
-        for h in [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 4, 5, 6, 7, 19, 20, 21, 2, 3, 22, 0, 23]:
-            for r in ropc:
-                if r[1] == h:
-                    rectangulosOrdenadosPorHora.append(r)
-        return rectangulosOrdenadosPorHora
+        # ropc = sorted(self._matrizDeRectangulos, key=lambda c: -l[5]) # OJO: ordenar la matriz de rectangulos de mayor a menor capacidad
+        # rectangulosOrdenadosPorHora = []
+        # for h in [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 4, 5, 6, 7, 19, 20, 21, 2, 3, 22, 0, 23]:
+        #     for r in ropc:
+        #         if r[1] == h:
+        #             rectangulosOrdenadosPorHora.append(r)
+        # return rectangulosOrdenadosPorHora
     
     # 1. iterar
     #   se asignan horas al mejor evento programable

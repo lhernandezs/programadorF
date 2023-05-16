@@ -313,7 +313,12 @@
 #     print(f"sentido: {matrizDeRectangulos[x][0]:2d}, marca: {matrizDeRectangulos[x][1]} -- horas: {matrizDeRectangulos[x][2]:2d} a {matrizDeRectangulos[x][3]:2d} -- dias: {matrizDeRectangulos[x][4]:2d} a {matrizDeRectangulos[x][5]:2d}")
 
 
-lista = [[1,3],[2,2],[1,6]]
-lista1 = sorted(lista, key=lambda x: x[1])
-print(lista.sort(key=lambda x: x[1]))
-print(lista1)
+# lista = [[1,3],[2,2],[1,6]]
+# lista1 = sorted(lista, key=lambda x: x[1])
+# print(lista.sort(key=lambda x: x[1]))
+# print(lista1)
+
+lista = [x for x in range(5)]
+print(lista)
+print(lista.index(0))
+print(lista.index(len(lista)-1))
