@@ -319,6 +319,7 @@
 # print(lista1)
 
 lista = [x for x in range(5)]
-print(lista)
-print(lista.index(0))
-print(lista.index(len(lista)-1))
+# print(lista)
+# print(lista.index(0))
+# print(lista.index(len(lista)-1))
+print(sorted(lista, reverse=True))
