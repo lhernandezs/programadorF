@@ -22,11 +22,11 @@ class Evento:
         self.__horaF = horaF
         self.__fechaI = fechaI
         self.__fechaF = fechaF
-        self.__listaDiasLaborables = None
-        self.__listaDiasAntesCruce = None
-        self.__listaDiasLuegoCruce = None
-        self.__listaDiasAProgramar = None
-        self.__listaDiasPorProgram = None        
+        self.__listaDiasLaborables = []
+        self.__listaDiasAntesCruce = []
+        self.__listaDiasLuegoCruce = []
+        self.__listaDiasAProgramar = []
+        self.__listaDiasPorProgram = []        
         self.__fichaYaProgramada = False
 
     @property
