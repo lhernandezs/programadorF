@@ -20,15 +20,12 @@ class Mes:
     def __init__(self, mes):
         self._mes = mes
 
-    #Retorna la lista de los dias laborables del mes
+    # devuelve la lista de los dias laborables del mes
     def listaDiasLaborables(self):
         calendario = calendar.Calendar()
-        # se crean las tuplas (dia mes, dia semana)
-        listaDiasMes = [x for x in calendario.itermonthdays2(2023, self._mes)]
-        #se elminan los sabados y domingos y se crea la lista de dias -- tambien elimina los ceros de relleno en listaDiasMes
-        listaTuplasMes = list(filter(lambda x: x[1] not in [5,6] and x[0]!= 0, listaDiasMes))
-        #retorna la lista de dias laborables del mes eliminando los festivos
-        return list(filter(lambda x: x not in Mes.FESTIVOS[self._mes], [x[0] for x in listaTuplasMes]))
+        listaDiasMes = [x for x in calendario.itermonthdays2(2023, self._mes)] # se crean las tuplas (dia mes, dia semana)
+        listaTuplasMes = list(filter(lambda x: x[1] not in [5,6] and x[0]!= 0, listaDiasMes)) # se elminan los sabados y domingos y se crea la lista de dias. tambien elimina los ceros de relleno en listaDiasMes
+        return list(filter(lambda x: x not in Mes.FESTIVOS[self._mes], [x[0] for x in listaTuplasMes])) # retorna la lista de dias laborables del mes eliminando los festivos
 
     # devuelve la fecha del ultimo dia del mes
     def ultimoDia(self):

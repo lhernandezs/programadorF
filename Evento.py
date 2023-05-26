@@ -1,19 +1,19 @@
 from datetime import datetime
 
 class Evento:
-    def __init__(self):
-        self.__id = 0
-        self.__ficha = 0
-        self.__horaI = 0
-        self.__horaF = 0
-        self.__fechaI = None   
-        self.__fechaF = None
-        self.__listaDiasLaborables = None
-        self.__listaDiasAntesCruce = None
-        self.__listaDiasLuegoCruce = None
-        self.__listaDiasAProgramar = None
-        self.__listaDiasPorProgram = None
-        self.__fichaYaProgramada = False
+    # def __init__(self):
+    #     self.__id = 0
+    #     self.__ficha = 0
+    #     self.__horaI = 0
+    #     self.__horaF = 0
+    #     self.__fechaI = None   
+    #     self.__fechaF = None
+    #     self.__listaDiasLaborables = None
+    #     self.__listaDiasAntesCruce = None
+    #     self.__listaDiasLuegoCruce = None
+    #     self.__listaDiasAProgramar = None
+    #     self.__listaDiasPorProgram = None
+    #     self.__fichaYaProgramada = False
 
     def __init__(self, id, ficha, horaI, horaF, fechaI, fechaF):
         self.__id = id
@@ -28,6 +28,20 @@ class Evento:
         self.__listaDiasAProgramar = []
         self.__listaDiasPorProgram = []        
         self.__fichaYaProgramada = False
+
+    # def __init__(self, id, ficha, horaI, horaF, fechaI, fechaF, listaDiasLaborables, listaDiasAProgramar):
+    #     self.__id = id
+    #     self.__ficha = ficha
+    #     self.__horaI = horaI
+    #     self.__horaF = horaF
+    #     self.__fechaI = fechaI
+    #     self.__fechaF = fechaF
+    #     self.__listaDiasLaborables = listaDiasLaborables
+    #     self.__listaDiasAntesCruce = []
+    #     self.__listaDiasLuegoCruce = []
+    #     self.__listaDiasAProgramar = listaDiasAProgramar
+    #     self.__listaDiasPorProgram = []        
+    #     self.__fichaYaProgramada = False
 
     @property
     def id(self):
