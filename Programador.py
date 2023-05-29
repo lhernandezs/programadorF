@@ -75,7 +75,7 @@ class Programador:
     # recibe un evento y un boleano que indica si el evento esta cruzado o no dependiendo desde donde se llama este metodo
     # devuelve una tupla con el evento - depende -, la capacidad de horas a programar en el evento, la lista mas larga de dias programables y la duracion en horas
     def capacidadEvento(self, evento, cruzado):
-        horasEvento = evento.horaF - evento.horaI
+        horasEvento = evento.horaF - evento.horaI + 1
         if cruzado:
             listaDias = evento.listaDiasLaborables  # se toman todos los dias laborables del evento sin importar los cruces
             capacidad = horasEvento * len(listaDias)
@@ -209,8 +209,7 @@ class Programador:
         else:
             return
 
-    # setea una matriz que tiene los dias del mes y las 24 horas del dia, marca fines de semana y festivos como NL -no laborales- y llama al procedimiento que setea la matriz de "rectangulos libres" - que estan libres para programarlos. 
-    def mejoresRectangulosNoProgramados(self):
+    def setMatrizHorasProgramadas(self):
         #  construir la matriz marcando los dias no laborables con "NL"
         self._matrizHorasProgramadas = [[("  " if d+1 in self._listaDiasLaborablesMes else "NL") for h in range(24)] for d in range(self._diasDelMes)]
         # colocar en la matriz anterior los eventos programados
@@ -220,7 +219,21 @@ class Programador:
                 for h in range(24):
                     if self.estaProgramadoElEventoEnDiaHora(evento, dia, h):
                         self._matrizHorasProgramadas[indiceDMatriz][h] = str(f"{evento.id:2d}")
-          
+
+    # setea una matriz que tiene los dias del mes y las 24 horas del dia, marca fines de semana y festivos como NL -no laborales- y llama al procedimiento que setea la matriz de "rectangulos libres" - que estan libres para programarlos. 
+    def mejoresRectangulosNoProgramados(self):
+        #  construir la matriz marcando los dias no laborables con "NL"
+        # self._matrizHorasProgramadas = [[("  " if d+1 in self._listaDiasLaborablesMes else "NL") for h in range(24)] for d in range(self._diasDelMes)]
+        # # colocar en la matriz anterior los eventos programados
+        # for evento in self._listaEventos:
+        #     for dia in self._listaDiasLaborablesMes:
+        #         indiceDMatriz = dia-1
+        #         for h in range(24):
+        #             if self.estaProgramadoElEventoEnDiaHora(evento, dia, h):
+        #                 self._matrizHorasProgramadas[indiceDMatriz][h] = str(f"{evento.id:2d}")
+
+        self.setMatrizHorasProgramadas()
+
         self._pila = [(self._listaDiasLaborablesMes[0], 0, self._listaDiasLaborablesMes[len(self._listaDiasLaborablesMes)-1], 23)]
         self.encontrarRectangulo()
  
@@ -330,6 +343,8 @@ class Programador:
                         mejores = self.mejoresRectangulosNoProgramados()
                         ban = False
                         break
+        # 4. si no hubo que encontrar rectangulos tambien hay que setea la matriz de horas programaas.
+        self.setMatrizHorasProgramadas()
                 
 # principal 
 sys.setrecursionlimit(500000)
@@ -344,30 +359,39 @@ listaEventos = [ \
 # Evento(4, 3, 9, 11, date(2023,4,1), date(2023,4,23)), \
 # Evento(5, 3, 12, 13, date(2023,4,10), date(2023,4,28)), \
 
-Evento(0, 2675758, 6, 7, date(2023,4,1), date(2023,4,30)), \
-Evento(1, 2675759, 7, 8, date(2023,4,1), date(2023,4,30)), \
-Evento(2, 2626937, 12, 14, date(2023,4,1), date(2023,4,30)), \
-Evento(3, 2626938, 7, 9, date(2023,4,1), date(2023,4,30)), \
-Evento(4, 2626939, 9, 11, date(2023,4,1), date(2023,4,30)), \
-Evento(5, 2626940, 7, 8, date(2023,4,1), date(2023,4,30)), \
-Evento(6, 2675911, 12, 13, date(2023,4,1), date(2023,4,30)), \
-Evento(7, 2675912, 20, 22, date(2023,4,1), date(2023,4,30)), \
-Evento(8, 2675758, 6, 7, date(2023,4,1), date(2023,4,30)), \
-Evento(9, 2675759, 7, 8, date(2023,4,1), date(2023,4,30)), \
-Evento(10, 2626937, 12, 14, date(2023,4,1), date(2023,4,30)), \
-Evento(11, 2626938, 7, 9, date(2023,4,1), date(2023,4,30)), \
-Evento(12, 2626939, 9, 11, date(2023,4,1), date(2023,4,30)), \
-Evento(13, 2626940, 7, 8, date(2023,4,1), date(2023,4,30)), \
-Evento(14, 2675911, 12, 13, date(2023,4,1), date(2023,4,30)), \
-Evento(15, 2675912, 20, 22, date(2023,4,1), date(2023,4,30)), \
-Evento(16, 2600000, 9,15, date(2023,4,4), date(2023,4,30)), \
-Evento(17, 2700000, 0, 0, date(2023,4,1), date(2023,4,30)), \
+# Evento(0, 2675758, 6, 7, date(2023,4,1), date(2023,4,30)), \
+# Evento(1, 2675759, 7, 8, date(2023,4,1), date(2023,4,30)), \
+# Evento(2, 2626937, 12, 14, date(2023,4,1), date(2023,4,30)), \
+# Evento(3, 2626938, 7, 9, date(2023,4,1), date(2023,4,30)), \
+# Evento(4, 2626939, 9, 11, date(2023,4,1), date(2023,4,30)), \
+# Evento(5, 2626940, 7, 8, date(2023,4,1), date(2023,4,30)), \
+# Evento(6, 2675911, 12, 13, date(2023,4,1), date(2023,4,30)), \
+# Evento(7, 2675912, 20, 22, date(2023,4,1), date(2023,4,30)), \
+# Evento(8, 2675758, 6, 7, date(2023,4,1), date(2023,4,30)), \
+# Evento(9, 2675759, 7, 8, date(2023,4,1), date(2023,4,30)), \
+# Evento(10, 2626937, 12, 14, date(2023,4,1), date(2023,4,30)), \
+# Evento(11, 2626938, 7, 9, date(2023,4,1), date(2023,4,30)), \
+# Evento(12, 2626939, 9, 11, date(2023,4,1), date(2023,4,30)), \
+# Evento(13, 2626940, 7, 8, date(2023,4,1), date(2023,4,30)), \
+# Evento(14, 2675911, 12, 13, date(2023,4,1), date(2023,4,30)), \
+# Evento(15, 2675912, 20, 22, date(2023,4,1), date(2023,4,30)), \
+# Evento(16, 2600000, 9,15, date(2023,4,4), date(2023,4,30)), \
+# Evento(17, 2700000, 0, 0, date(2023,4,1), date(2023,4,30)), \
+
+Evento(0, 2674886, 7, 7 , date(2023,5,2), date(2023,5,31)) , \
+Evento(1, 2675815, 8, 8 , date(2023,5,2), date(2023,5,31)) , \
+Evento(2, 2675816, 9, 9 , date(2023,5,2), date(2023,5,31)) , \
+Evento(3, 2675817, 10, 10 , date(2023,5,2), date(2023,5,31)) , \
+Evento(4, 2675818, 11, 11 , date(2023,5,2), date(2023,5,31)) , \
+Evento(5, 2675819, 12, 12 , date(2023,5,2), date(2023,5,31)) , \
+Evento(6, 2675820, 13, 13 , date(2023,5,2), date(2023,5,31)) , \
+Evento(7, 2675821, 14, 14 , date(2023,5,2), date(2023,5,31)) , \
 
 ]
 
 recursividad = recursividadIz = recursividadDe = recursividadIn = 0
 
-programador = Programador(listaEventos, 4, 160, 10)
+programador = Programador(listaEventos, 5, 160, 10)
 programador.programarEventos()
 
 print("*********************************************")
