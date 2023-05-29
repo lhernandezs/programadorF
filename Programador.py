@@ -26,11 +26,11 @@ class Programador:
     # retorna True si el evento exite en el Dia y la Hora pasado como parametros o False en caso contrario
     def estaElEventoEnDiaHora(self, evento, dia, hora):
         fecha = date(2023, self._mes, dia)
-        return True if evento.fechaI <= fecha and fecha <= evento.fechaF and evento.horaI <= hora and hora < evento.horaF else False
+        return True if evento.fechaI <= fecha and fecha <= evento.fechaF and evento.horaI <= hora and hora <= evento.horaF else False
     
     # devuelve la lista de eventos sin ningun dia programado de las fichas que aún no han sido programadas
     def listaEventosSinProgramar(self):
-        return list(filter(lambda evento: evento.listaDiasAProgramar is None and not evento.fichaYaProgramada, self._listaEventos))
+        return list(filter(lambda evento: len(evento.listaDiasAProgramar) == 0 and not evento.fichaYaProgramada, self._listaEventos))
 
     # setea la matriz de los eventos sin programar por cada dia y la hora del mes
     def matrizDeEventos(self):
@@ -113,8 +113,10 @@ class Programador:
                         listaTuplas.append(self.capacidadEvento(self._listaEventos[id], True))
                     (evento, capacidad, listaDias, horasEvento)= (list(sorted(listaTuplas, key=lambda tupla: -tupla[1])))[0] #de los eventos se escoje el de mayor capacidad
                     return (evento, listaDias, horasEvento)
-                else:
-                    return (None, None, None) # si no hay eventos sin cruzar ni tampoco eventos cruzados devuelve una tupla de None
+            else:
+                return (None, None, None) # si no hay eventos sin cruzar ni tampoco eventos cruzados devuelve una tupla de None
+
+
     
     # retorna True si el evento "está programado" en el Dia y la Hora pasado como parametros o False en caso contrario
     def estaProgramadoElEventoEnDiaHora(self, evento, dia, hora):
@@ -173,7 +175,7 @@ class Programador:
                                 izquierdo = derecho = inferior = superior = True
 
                         if superior:
-                            capacidad = (self._listaDiasLaborablesMes.index(dFin) - self._listaDiasLaborablesMes.index(dIni)) * (h-1 -hIni)
+                            capacidad = (self._listaDiasLaborablesMes.index(dFin) - self._listaDiasLaborablesMes.index(dIni)) * (h - hIni)
                             self._matrizDeRectangulos.append(["Dentro", dIni, hIni, dFin, h-1, capacidad]) # ENTRA superior
                         if izquierdo:
                             for dl in sorted(self._listaDiasLaborablesMes[indiceD-1: indiceDIni], reverse = True):
@@ -200,7 +202,7 @@ class Programador:
                     break
             else:
                 if indiceDIni <= indiceDFin and hIni <= hFin:
-                    capacidad = (self._listaDiasLaborablesMes.index(dFin) - self._listaDiasLaborablesMes.index(dIni)) * (hFin -hIni)
+                    capacidad = (self._listaDiasLaborablesMes.index(dFin) - self._listaDiasLaborablesMes.index(dIni)) * (hFin -hIni + 1 )
                     self._matrizDeRectangulos.append(["Fuera ", dIni, hIni, dFin, hFin, capacidad])
                 if len(self._pila)>0:
                     self.encontrarRectangulo()
@@ -272,18 +274,20 @@ class Programador:
                     self._saldoDeHorasAProgramar -= horasEvento
                     self._diccionarioFichas[evento.ficha] += horasEvento
         # 3. 
-        for item in list(filter(lambda item: item[1] < self._minimoHorasAProgramarPorFicha, self._diccionarioFichas.items())): # devulve tuplas ficha - horas programadas del diccionario de fichas cuando la ficha este programada por debajo del minimo de horas a programar
-            ficha = item[0] # obtine la ficha que aun no está programada
-            horasAReducir = self._minimoHorasAProgramarPorFicha - item[1]
-            if horasAReducir > self._saldoDeHorasAProgramar: # si las hora que hacen falta por programar a la ficha son mas que el saldo de horas a programas se deben quitar horas a otra ficha
+        for (ficha, horasProgramadas) in list(filter(lambda item: item[1] < self._minimoHorasAProgramarPorFicha, self._diccionarioFichas.items())): # devuelve tuplas ficha - horas programadas del diccionario de fichas cuando la ficha este programada por debajo del minimo de horas a programar
+            horasAProgramar = self._minimoHorasAProgramarPorFicha - horasProgramadas # calcula el mínimo de horas que le faltan por programar para alcanzar el minimo de horas por Ficha
+            if horasAProgramar > self._saldoDeHorasAProgramar: # si las hora que hacen falta por programar a la ficha son mas que el saldo de horas a programar se deben quitar horas a otra ficha
                 fichaADesprogramar = max(self._diccionarioFichas, key=self._diccionarioFichas.get) # se consigue la ficha con mayor numero de horas programadas
                 eventoADesprogramar = sorted(list(filter(lambda e: e.ficha == fichaADesprogramar and not e.listaDiasAProgramar is None, self._listaEventos)), key =lambda e: len(e.listaDiasAProgramar))[0] # se consigue el evento con mas programacion de la ficha a desprogramar
-                horasEventoADesprogramar = eventoADesprogramar.horaF - eventoADesprogramar.horaI
-                diasAReducir = (horasAReducir // horasEventoADesprogramar) + 1 
-                for x in range(diasAReducir): 
-                    d = eventoADesprogramar.listaDiasAProgramar.pop() # reducir los dias programados en el evento
-                    eventoADesprogramar.listaDiasPorProgram.append(d) # aumentar los dias por programar en el evento  
-                    eventoADesprogramar.listaDiasPorProgram.sort() # ordenar la lista de dias dado que el nuevo dia programado queda al final
+                horasEventoADesprogramar = eventoADesprogramar.horaF - eventoADesprogramar.horaI + 1
+                diasMaxAReducir = (horasAProgramar // horasEventoADesprogramar) + 1 
+                diasAReducir = 0
+                for x in range(diasMaxAReducir): 
+                    if len(eventoADesprogramar.listaDiasAProgramar) > 0:
+                        d = eventoADesprogramar.listaDiasAProgramar.pop() # reducir los dias programados en el evento
+                        eventoADesprogramar.listaDiasPorProgram.append(d) # aumentar los dias por programar en el evento  
+                        eventoADesprogramar.listaDiasPorProgram.sort() # ordenar la lista de dias dado que el nuevo dia programado queda al final
+                        diasAReducir += 1
                 self._diccionarioFichas[fichaADesprogramar] -= horasEventoADesprogramar * diasAReducir # disminuir las horas en el diccionario para la ficha
                 self._saldoDeHorasAProgramar += horasEventoADesprogramar * diasAReducir # aumentar el saldo de horas a Programar
             # crea un evento para la ficha en el mejor rectangula No programados - incluir este evento en self._listaEventos
@@ -291,11 +295,11 @@ class Programador:
             mejores = self.mejoresRectangulosNoProgramados()
             while ban:
                 if len(mejores) > 0:
-                    (indicador, dIni, hIni, dFin, hFin, capacidad) = mejores.pop(0) 
+                    (indicador, dIni, hIni, dFin, hFin, capacidad) = mejores.pop(0) # extrae el rectangulo de mayor capacidad
                     for e in list(filter(lambda eve: eve.ficha == ficha, self._listaEventos)): # filtra los eventos de la ficha que aun no está programada
-                        id = len(self._listaEventos)
+                        id = len(self._listaEventos) 
                         #OJO: revisar los diasAProgramar
-                        diasAProgramarTentativo = horasAReducir // (hFin-hIni) # dias que le faltan por programar a la ficha segun las horas del rectangulo que se encontro
+                        diasAProgramarTentativo = horasAProgramar // (hFin - hIni + 1) # dias que le faltan por programar a la ficha segun las horas del rectangulo que se encontro
                         if  self._saldoDeHorasAProgramar >= self._maximoHorasAProgramarPorFicha: # en este caso se tratará de programar todos los dias del rectangulo
                             if ((self._listaDiasLaborablesMes.index(dFin) - self._listaDiasLaborablesMes.index(dIni)) + 1) >= diasAProgramarTentativo: # si hay dias suficientes en el rectangulo
                                 diasAProgramar = diasAProgramarTentativo # se toma solo los dias necesarios
@@ -306,9 +310,9 @@ class Programador:
 
                         diaFin = self._listaDiasLaborablesMes[self._listaDiasLaborablesMes.index(dIni) + diasAProgramar]
                         # setear los dias laborables del evento
-                        listaDiasLaborables = sorted(list(set(self._listaDiasLaborablesMes) & set(range(dIni, diaFin+1))))
+                        listaDiasLaborables = sorted(list(set(self._listaDiasLaborablesMes) & set(range(dIni, diaFin))))
                         # setear los dias programados hasta el minimo de horas a programar por ficha
-                        listaDiasAProgramar = sorted(list(set(self._listaDiasLaborablesMes) & set(range(dIni, diaFin+1))))
+                        listaDiasAProgramar = sorted(list(set(self._listaDiasLaborablesMes) & set(range(dIni, diaFin))))
  
                         nuevoEvento = Evento(id, ficha, hIni, hFin, date(2023, self._mes, dIni), date(2023, self._mes, diaFin)) 
                         self._listaEventos.append(nuevoEvento) 
@@ -317,7 +321,7 @@ class Programador:
 
                         self.analisisDiasEventos() # esto para inicializar la matriz de eventos de los eventos sin programar
 
-                        horasProgramadas = diasAProgramar * (hFin-hIni)
+                        horasProgramadas = diasAProgramar * (hFin-hIni+1)
                         if horasProgramadas >= self._minimoHorasAProgramarPorFicha:
                             self.marcarEventosDeLaFichaProgramada(nuevoEvento)
                         self._diccionarioFichas[ficha] += horasProgramadas # aumentar las horas programadas en el diccionario para la ficha
@@ -340,25 +344,24 @@ listaEventos = [ \
 # Evento(4, 3, 9, 11, date(2023,4,1), date(2023,4,23)), \
 # Evento(5, 3, 12, 13, date(2023,4,10), date(2023,4,28)), \
 
-# Evento(0, 2675758, 6, 7, date(2023,4,1), date(2023,4,30)), \
-# Evento(1, 2675759, 7, 8, date(2023,4,1), date(2023,4,30)), \
-# Evento(2, 2626937, 12, 14, date(2023,4,1), date(2023,4,30)), \
-# Evento(3, 2626938, 7, 9, date(2023,4,1), date(2023,4,30)), \
-# Evento(4, 2626939, 9, 11, date(2023,4,1), date(2023,4,30)), \
-# Evento(5, 2626940, 7, 8, date(2023,4,1), date(2023,4,30)), \
-# Evento(6, 2675911, 12, 13, date(2023,4,1), date(2023,4,30)), \
-# Evento(7, 2675912, 20, 22, date(2023,4,1), date(2023,4,30)), \
-# Evento(8, 2675758, 6, 7, date(2023,4,1), date(2023,4,30)), \
-# Evento(9, 2675759, 7, 8, date(2023,4,1), date(2023,4,30)), \
-# Evento(10, 2626937, 12, 14, date(2023,4,1), date(2023,4,30)), \
-# Evento(11, 2626938, 7, 9, date(2023,4,1), date(2023,4,30)), \
-# Evento(12, 2626939, 9, 11, date(2023,4,1), date(2023,4,30)), \
-# Evento(13, 2626940, 7, 8, date(2023,4,1), date(2023,4,30)), \
-# Evento(14, 2675911, 12, 13, date(2023,4,1), date(2023,4,30)), \
-# Evento(15, 2675912, 20, 22, date(2023,4,1), date(2023,4,30)), \
-
-Evento(0, 2600000, 0, 0, date(2023,4,1), date(2023,4,30)), \
-Evento(1, 2700000, 0, 0, date(2023,4,1), date(2023,4,30)), \
+Evento(0, 2675758, 6, 7, date(2023,4,1), date(2023,4,30)), \
+Evento(1, 2675759, 7, 8, date(2023,4,1), date(2023,4,30)), \
+Evento(2, 2626937, 12, 14, date(2023,4,1), date(2023,4,30)), \
+Evento(3, 2626938, 7, 9, date(2023,4,1), date(2023,4,30)), \
+Evento(4, 2626939, 9, 11, date(2023,4,1), date(2023,4,30)), \
+Evento(5, 2626940, 7, 8, date(2023,4,1), date(2023,4,30)), \
+Evento(6, 2675911, 12, 13, date(2023,4,1), date(2023,4,30)), \
+Evento(7, 2675912, 20, 22, date(2023,4,1), date(2023,4,30)), \
+Evento(8, 2675758, 6, 7, date(2023,4,1), date(2023,4,30)), \
+Evento(9, 2675759, 7, 8, date(2023,4,1), date(2023,4,30)), \
+Evento(10, 2626937, 12, 14, date(2023,4,1), date(2023,4,30)), \
+Evento(11, 2626938, 7, 9, date(2023,4,1), date(2023,4,30)), \
+Evento(12, 2626939, 9, 11, date(2023,4,1), date(2023,4,30)), \
+Evento(13, 2626940, 7, 8, date(2023,4,1), date(2023,4,30)), \
+Evento(14, 2675911, 12, 13, date(2023,4,1), date(2023,4,30)), \
+Evento(15, 2675912, 20, 22, date(2023,4,1), date(2023,4,30)), \
+Evento(16, 2600000, 9,15, date(2023,4,4), date(2023,4,30)), \
+Evento(17, 2700000, 0, 0, date(2023,4,1), date(2023,4,30)), \
 
 ]
 
