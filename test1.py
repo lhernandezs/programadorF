@@ -318,8 +318,15 @@
 # print(lista.sort(key=lambda x: x[1]))
 # print(lista1)
 
-lista = [x for x in range(5)]
+# lista = [x for x in range(5)]
 # print(lista)
 # print(lista.index(0))
 # print(lista.index(len(lista)-1))
-print(sorted(lista, reverse=True))
+# print(sorted(lista, reverse=True))
+# print(lista[-1])
+# print(list(filter(lambda x: x%2 == 0, lista)))
+
+# diccionario = {10:1, 11:2, 12: 2, 13:2}
+#print(list(filter(lambda value: value == 2 for value in diccionario.values)))
+# print(list(filter(lambda x: diccionario[x]== 2, diccionario.keys())))
+print(30//4)
