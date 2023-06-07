@@ -232,7 +232,7 @@ class Programador:
 
     # Devuelve True si hay fichas con cero programación o si el saldo de horas -generales- por programar es mayor que cero
     def finDeLaProgramacion(self):
-        False if len(list(filter(lambda x: self._diccionarioFichas[x] == 0,self._diccionarioFichas.keys()))) > 0 or self._saldoDeHorasAProgramar > 0 else True
+        return False if len(list(filter(lambda x: self._diccionarioFichas[x] == 0,self._diccionarioFichas.keys()))) > 0 or self._saldoDeHorasAProgramar > 0 else True
 
     # Para programar los eventos sigo la siguiente logica:
     # 1. Para utilizar los eventos actuales: 
@@ -269,7 +269,7 @@ class Programador:
                         if  self._saldoDeHorasAProgramar < horasEvento or saldoDeHorasAProgramarDeLaFicha < horasEvento:
                             self.marcarEventosDeLaFichaProgramada(evento)
                         break                                     
-                evento.listaDiasAProgramar = listaDiasAProgramar
+#                evento.listaDiasAProgramar = listaDiasAProgramar
                 evento.listaDiasPorProgram = list(set(listaDias) - set(listaDiasAProgramar)) if len(listaDias) != len(listaDiasAProgramar) else []
             else:       
                 # 2.
