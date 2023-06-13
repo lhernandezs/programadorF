@@ -329,4 +329,20 @@
 # diccionario = {10:1, 11:2, 12: 2, 13:2}
 #print(list(filter(lambda value: value == 2 for value in diccionario.values)))
 # print(list(filter(lambda x: diccionario[x]== 2, diccionario.keys())))
-print(30//4)
+# print(30//4)
+
+# class Prueba:
+#     a = 3
+#     b = 5
+
+# print(Prueba.b)
+
+# for i in range(3,3+1):
+#     print(i)
+
+# lista = list(filter(lambda x: x>10, range(3)))
+# print(lista)
+l1 = [[1,2],[3],["nd"]]
+for i in range(len(l1)):
+    if len(l1[i]) > 1 or l1[i] == ["nd"]:
+        print(l1[i])
