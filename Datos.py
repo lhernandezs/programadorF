@@ -23,7 +23,7 @@ class Datos:
                                 Evento(5, 2626940, 7, 7, date(2023,mes,1), date(2023,mes,30)), \
                                 Evento(6, 2675911, 12, 12, date(2023,mes,1), date(2023,mes,30)), \
                                 Evento(7, 2675912, 20, 21, date(2023,mes,1), date(2023,mes,30)), \
-                                Evento(8, 2600000, 9, 14, date(2023,mes,mes), date(2023,mes,30)), \
+                                Evento(8, 2600000, 9, 14, date(2023,mes,5), date(2023,mes,30)), \
                                 Evento(9, 2700000, 0, 0, date(2023,mes,1), date(2023,mes,30)), \
                                 ]
 
