@@ -2,6 +2,14 @@ from datetime import datetime
 
 class Evento:
 
+    @classmethod
+    def encabezado(cls):
+        columnas = ["Evento", "Ficha", "Horas", "D In Fi", "D Labor", "D A Cruc", "D D Cruc", "D A Prog", "D P Prog", "Ya Prog", "H Programa"]
+        encabez = "|"
+        for nombreCol in columnas:
+            encabez += nombreCol.center(10) + "|"
+        return encabez
+
     def __init__(self, id, ficha, horaI, horaF, fechaI, fechaF):
         self.__id = id
         self.__ficha = ficha
@@ -101,16 +109,28 @@ class Evento:
         self.__fichaYaProgramada = fichaYaProgramada
 
     def __str__(self):
+        horas = (f"{self.horaI:2d} - {self.horaF:2d}").center(10)
+        fechas = (f"{self.fechaI.day:2d} a {self.fechaF.day:2d}").center(10)
+
+        cadenaVacia = " " * 10
+        
         dLa = self.listaDiasLaborables
         dAc = self.listaDiasAntesCruce
         dLc = self.listaDiasLuegoCruce
-        dAp = self.listaDiasAProgramar 
+        dAp = self.listaDiasAProgramar
         dPp = self.listaDiasPorProgram
-        diasLaborables = f"  {dLa[0]:2d} a {dLa[len(dLa)-1]:2d} " if len(dLa)> 0 else f"          "
-        diasAntesCruce = f"  {dAc[0]:2d} a {dAc[len(dAc)-1]:2d} " if len(dAc)> 0 else f"          "
-        diasLuegoCruce = f"  {dLc[0]:2d} a {dLc[len(dLc)-1]:2d} " if len(dLc)> 0 else f"          "
-        diasAProgramar = f"  {dAp[0]:2d} a {dAp[len(dAp)-1]:2d} " if len(dAp)> 0 else f"          "
-        diasPorProgram = f"  {dPp[0]:2d} a {dPp[len(dPp)-1]:2d} " if len(dPp)> 0 else f"          "
 
-        return f"|{str(self.id).center(10)}|{str(self.ficha).center(10)}|  {self.horaI:2d} - {self.horaF:2d} |  {self.fechaI.day:2d} a {self.fechaF.day:2d} |{diasLaborables}| {diasAntesCruce}|{diasLuegoCruce}|{diasAProgramar}|{diasPorProgram}|{'    Si    ' if self.fichaYaProgramada else '    No    '}|"
+        diasLaborables = (f"{dLa[0]:2d} a {dLa[-1]:2d}").center(10) if dLa != [] else cadenaVacia
+        diasAntesCruce = (f"{dAc[0]:2d} a {dAc[-1]:2d}").center(10) if dAc != [] else cadenaVacia
+        diasLuegoCruce = (f"{dLc[0]:2d} a {dLc[-1]:2d}").center(10) if dLc != [] else cadenaVacia
+        diasAProgramar = (f"{dAp[0]:2d} a {dAp[-1]:2d}").center(10) if dAp != [] else cadenaVacia
+        diasPorProgram = (f"{dPp[0]:2d} a {dPp[-1]:2d}").center(10) if dPp != [] else cadenaVacia
+
+        si = "Si".center(10)
+        no = "No".center(10)
+
+        horasProgramadas = (self.horaF - self.horaI + 1) * len(dAp)
+
+        return f"|{str(self.id).center(10)}|{str(self.ficha).center(10)}|{horas}|{fechas}|{diasLaborables}|{diasAntesCruce}|{diasLuegoCruce}|{diasAProgramar}|{diasPorProgram}|{si if self.fichaYaProgramada else no}|{str(horasProgramadas).center(10)}|"
+    
 

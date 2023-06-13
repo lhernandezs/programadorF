@@ -37,42 +37,44 @@ class Programador:
     def listaEventosProgramados(self):
         return list(filter(lambda evento: len(evento.listaDiasAProgramar) > 0 , self._listaEventos))
 
-    # setea la matriz de los eventos sin programar de las fichas que aun no han sido programadas por cada dia y la hora del mes y marca los dias y horas "nd" en los eventos ya programados
+    # setea la matriz de los eventos sin programar de las fichas que aun no han sido programadas por cada dia y la hora del mes y marca los dias y horas "yp" en los eventos ya programados
     def matrizDeEventosSinProgramar(self):
         matrizDeEventosSinProgramar = [[[] for h in range(24)] for d in range(self._diasDelMes)] # las horas van de 0 a 23 y los dias de 0 al ultimo dia del mes - 1
         if self.listaEventosSinProgramar() != []: 
             for evento in self.listaEventosSinProgramar():
-                for i in range(self._diasDelMes):
-                    dia = i + 1
+                for d in range(self._diasDelMes): 
+                    dia = d + 1 # el dia es igual al indice d + 1
                     for h in range(24):
                         if self.estaElEventoEnDiaHora(evento, dia, h) and dia in self._listaDiasLaborablesMes:
-                            matrizDeEventosSinProgramar[i][h].append(evento.id) # añado los eventos no programados que estan en el dia y la hora
+                            matrizDeEventosSinProgramar[d][h].append(evento.id) # añado en cada item -lista - el evento no programado que esta en el dia y la hora 
         if self.listaEventosProgramados() != []:
             for evento in self.listaEventosProgramados():
                 for dia in evento.listaDiasAProgramar:
-                    indiceDMatriz = dia - 1
+                    d = dia - 1 # el indice es igual al dia - 1
                     for h in range(evento.horaI, evento.horaF + 1):
-                        matrizDeEventosSinProgramar[indiceDMatriz][h] = ["nd"] # marca los eventos ya programados en su dia y hora como "nd" - no disponible -                    
+                        matrizDeEventosSinProgramar[d][h] = ["yp"] # marca los eventos ya programados en su dia y hora como "yp" - ya programado -                    
         self._matrizDeEventosSinProgramar = matrizDeEventosSinProgramar  
 
     # setea las listas de dias laborables, dias antes de cruce y dias luego de cruce de los eventos sin programar   
     def analisisDiasEventos(self):
         self.matrizDeEventosSinProgramar()
-        conjuntoDiasLaborablesMes = set(self._listaDiasLaborablesMes) # prepara este conjunto para la intercección
+        conjuntoDiasLaborablesMes = set(self._listaDiasLaborablesMes) # prepara este conjunto para facilitar la intersección
         for evento in self.listaEventosSinProgramar():
             diaIniEvento = 1 if (evento.fechaI < date(2023, self._mes, 1)) else evento.fechaI.day # controla si el inicio del evento es antes del 1er dia del mes
             diaFinEvento = self._diasDelMes if (self._ultimaFecMes < evento.fechaF) else evento.fechaF.day # controla si el fin del evento es despues del ultimo dia del mes
-            listaDiasIniFinEvento = [dia for dia in range(diaIniEvento, diaFinEvento+1)]  # tener en cuenta que en los rangos el valor final no se incluye
+            listaDiasIniFinEvento = [dia for dia in range(diaIniEvento, diaFinEvento + 1)]  # como en los rangos el valor final no se incluye se suma 1 al final - dias corrientes -
             fecIniCruce = fecFinCruce = None
-            for i in range(self._diasDelMes):
-                dia = i + 1
+
+            for d in range(self._diasDelMes):
+                dia = d + 1 # el dia es igual al indice d + 1
                 for h in range(24):
-                    if self.estaElEventoEnDiaHora(evento, dia, h) and  \
-                       (len(self._matrizDeEventosSinProgramar[i][h]) > 1 or self._matrizDeEventosSinProgramar[i][h] == ["nd"] ): # si el evento esta dentro de varios cruzados 
+                    if self.estaElEventoEnDiaHora(evento, dia, h) and \
+                       ((len(self._matrizDeEventosSinProgramar[d][h]) > 1) or self._matrizDeEventosSinProgramar[d][h] == ["yp"]): # si el evento esta dentro de varios eventos cruzados o el dia ya esta programado
                         if fecIniCruce is None or date(2023, self._mes, dia) < fecIniCruce: fecIniCruce = date(2023, self._mes, dia) # encuentro la menor fecha inicial de cruce
                         if fecFinCruce is None or date(2023, self._mes, dia) > fecFinCruce: fecFinCruce = date(2023, self._mes, dia) # encuentro la mayor fecha final de cruce
-            listaDiasAntesDeCruce = listaDiasIniFinEvento if fecIniCruce is None else [d for d in range(diaIniEvento, fecIniCruce.day)] # no se tiene en cuenta el dia inicio cruce 
-            listaDiasLuegoDeCruce = [] if fecFinCruce is None else [d for d in range(fecFinCruce.day+1, diaFinEvento+1)] # no se tiene en cuenta el dia final cruce
+                    
+            listaDiasAntesDeCruce = listaDiasIniFinEvento if fecIniCruce is None else [dia for dia in range(diaIniEvento, fecIniCruce.day)] # no se tiene en cuenta el dia inicio cruce - dias corrientes -
+            listaDiasLuegoDeCruce = [] if fecFinCruce is None else [dia for dia in range(fecFinCruce.day + 1, diaFinEvento + 1)] # no se tiene en cuenta el dia final cruce - dias corrientes -
 
             self._listaEventos[evento.id].listaDiasLaborables = list(set(listaDiasIniFinEvento) & conjuntoDiasLaborablesMes) # setea la lista de dias laborables del evento
             self._listaEventos[evento.id].listaDiasAntesCruce = list(set(listaDiasAntesDeCruce) & conjuntoDiasLaborablesMes) # setea la lista de dias antes de cruce
@@ -82,10 +84,14 @@ class Programador:
     def marcarEventosDeLaFichaProgramada(self, evento):
         for e in list(filter(lambda e: evento.ficha == e.ficha, self._listaEventos)): e.fichaYaProgramada = True
 
-    # recibe un evento y retorna una tupla con la capacidad de horas a programar en el evento, la lista mas larga de dias programables y la duracion en horas
-    def capacidadEvento(self, evento):
+    # recibe un evento y un booleano que indica si hay que usar toda la lista de dias laborables
+    # retorna una tupla con la capacidad de horas a programar en el evento, la lista mas larga de dias programables y la duracion en horas
+    def capacidadEvento(self, evento, usarListaDiasLaborables):
         horasEvento = evento.horaF - evento.horaI + 1 # se parte que si un evento tiene la misma hora de inicio y de fin, el evento dura una hora
-        listaDias = lA if len(lA := evento.listaDiasAntesCruce) > len(lL := evento.listaDiasLuegoCruce) else lL  # se toman la lista mayor de los dias que no se cruzan
+        if usarListaDiasLaborables:
+                listaDias = evento.listaDiasLaborables
+        else:
+                listaDias = lA if len(lA := evento.listaDiasAntesCruce) > len(lL := evento.listaDiasLuegoCruce) else lL  # se toman la lista mayor de los dias que no se cruzan
         capacidad = horasEvento * len(listaDias)
         return (capacidad, listaDias, horasEvento)
     
@@ -97,32 +103,36 @@ class Programador:
     # retorna el evento, la lista de dias a programar y las horas
     def buscarMejorEventoProgramable(self):
         self.analisisDiasEventos() # para asegurar que trabajamos con los eventos sin programar y estan bien seteadas las lista de dias antes y luego de cruce 
-        # for cardinalidad in range(1, len(self._listaEventos)): # se procesan los eventos de cardinalidad 1, luego 2, luego 3, etc.
-        #     items = [self._matrizDeEventosSinProgramar[i][j] for j in range(24) for i in range(self._diasDelMes)]
-        #     listasDeIdEventos = list(filter(lambda item: len(item) == cardinalidad and item != ["nd"] and item != [], items ))
-        #     if listasDeIdEventos != []:
-        #         cruceMasRepetido = max(listasDeIdEventos, key=listasDeIdEventos.count) # dado que la matriz de eventos sin programar tiene un dato por cada dia y hora
-        #         listaTuplas = []
-        #         for id in cruceMasRepetido:
-        #             evento = self._listaEventos[id]
-        #             (capacidad, listaDias, horasEvento) = self.capacidadEvento(evento) # se pasa True para calcular capacidad sin contar con cruces
-        #             if self.tieneCapacidadMinima(capacidad):
-        #                 listaTuplas.append((evento, capacidad, listaDias, horasEvento)) 
-        #         if listaTuplas != []:
-        #             (evento, capacidad, listaDias, horasEvento)= (list(sorted(listaTuplas, key=lambda tupla: -tupla[1])))[0] # escoje el evento de mayor capacidad
-        #             return (evento, listaDias, horasEvento)                    
-        # else:
-        #     return (None, None, None)
-        listaTuplas = []
-        for evento in self.listaEventosSinProgramar():
-            (capacidad, listaDias, horasEvento) = self.capacidadEvento(evento)
-            if self.tieneCapacidadMinima(capacidad):
-                listaTuplas.append((evento, capacidad, listaDias, horasEvento))
-        if listaTuplas != []:
-            (evento, capacidad, listaDias, horasEvento)= (list(sorted(listaTuplas, key=lambda tupla: -tupla[1])))[0] # escoje el evento de mayor capacidad
-            return (evento, listaDias, horasEvento)
+        for cardinalidad in range(1, len(self._listaEventos)): # se procesan los eventos de cardinalidad 1, luego 2, luego 3, etc.
+            items = [self._matrizDeEventosSinProgramar[d][h] for h in range(24) for d in range(self._diasDelMes)] # cada item es una lista de eventos presentes en dia y hora
+            listasDeIdsEventos = list(filter(lambda item: len(item) == cardinalidad and item != ["yp"] and item != [], items )) # filtro que la cardinalidad se la del for y que el item no sea "yp" o vacio
+            if listasDeIdsEventos != []:
+                cruceMasRepetido = max(listasDeIdsEventos, key=listasDeIdsEventos.count) # dado que la matriz de eventos sin programar tiene un dato por cada dia y hora
+                listaTuplas = []
+                for id in cruceMasRepetido:
+                    evento = self._listaEventos[id]
+                    if cardinalidad == 1:
+                        (capacidad, listaDias, horasEvento) = self.capacidadEvento(evento, False) # se pasa False para calcular capacidad con los dias Antes o Luego del cruce 
+                    else:
+                        (capacidad, listaDias, horasEvento) = self.capacidadEvento(evento, True)# se pasa False para calcular capacidad con todos los dias laborables - simulando que no hay cruces
+                    if self.tieneCapacidadMinima(capacidad):
+                        listaTuplas.append((evento, capacidad, listaDias, horasEvento)) 
+                if listaTuplas != []:
+                    (evento, capacidad, listaDias, horasEvento)= (list(sorted(listaTuplas, key=lambda tupla: -tupla[1])))[0] # escoje el evento de mayor capacidad
+                    return (evento, listaDias, horasEvento)                    
         else:
             return (None, None, None)
+
+        # listaTuplas = []
+        # for evento in self.listaEventosSinProgramar():
+        #     (capacidad, listaDias, horasEvento) = self.capacidadEvento(evento)
+        #     if self.tieneCapacidadMinima(capacidad):
+        #         listaTuplas.append((evento, capacidad, listaDias, horasEvento))
+        # if listaTuplas != []:
+        #     (evento, capacidad, listaDias, horasEvento)= (list(sorted(listaTuplas, key=lambda tupla: -tupla[1])))[0] # escoje el evento de mayor capacidad
+        #     return (evento, listaDias, horasEvento)
+        # else:
+        #     return (None, None, None)
                            
 
     # retorna True si el evento esta "programado" en el dia y la hora pasado como parametros o False en caso contrario
@@ -264,10 +274,10 @@ class Programador:
                 if not evento is None:
                     listaDiasAProgramar = []
                     while True:
-                        saldoDeHorasAProgramarDeLaFicha = self._maximoHorasAProgramarPorFicha - self._diccionarioFichas[evento.ficha]
-                        if  self._saldoDeHorasAProgramar < horasEvento or saldoDeHorasAProgramarDeLaFicha < horasEvento:
+                        horasFaltantesDeLaFicha = self._maximoHorasAProgramarPorFicha - self._diccionarioFichas[evento.ficha]
+                        if  self._saldoDeHorasAProgramar < horasEvento or horasFaltantesDeLaFicha < horasEvento:
                             self.marcarEventosDeLaFichaProgramada(evento)
-                            break
+                            break # termina por agotamiento del saldo de horas a programar o por agotamiento de las horas faltantes de la ficha 
                         if len(listaDias) > 0:
                             dia = listaDias.pop(0)
                             evento.listaDiasAProgramar.append(dia) # programo un dia mas
@@ -283,8 +293,8 @@ class Programador:
 #                 listaDiasPorProgramar = evento.listaDiasPorProgram[:] # copia la lista en otra lista para que se recorran los dias sin las modificacion del cuerpo del for
 #                 for dia in listaDiasPorProgramar:
 #                     horasEvento = evento.horaF - evento.horaI
-#                     saldoDeHorasAProgramarDeLaFicha = self._maximoHorasAProgramarPorFicha - self._diccionarioFichas[evento.ficha]
-#                     if  not (self._saldoDeHorasAProgramar < horasEvento or saldoDeHorasAProgramarDeLaFicha < horasEvento):
+#                     horasFaltantesDeLaFicha = self._maximoHorasAProgramarPorFicha - self._diccionarioFichas[evento.ficha]
+#                     if  not (self._saldoDeHorasAProgramar < horasEvento or horasFaltantesDeLaFicha < horasEvento):
 #                         evento.listaDiasAProgramar.append(dia)
 #                         evento.listaDiasPorProgram.remove(dia)
 #                         self._saldoDeHorasAProgramar -= horasEvento
@@ -357,7 +367,7 @@ programador = Programador(listaEventos, mes, horasAProgramar, tolerancia)
 # llamo al metodo de programar eventos
 programador.programarEventos()
 
-# imprimo en pantalla la salida 
+# salida en pantalla 
 
 # imprimo la recusividad utilizada
 print(f"recursividad = {recursividad} Izquierdo = {recursividadIz} Derecho = {recursividadDe} Inferior = {recursividadIn}", end="\n"*2)
@@ -367,24 +377,30 @@ print(f" H a programar: {horasAProgramar} - H por Programar: {programador._saldo
 print(f" Dicionario:{programador._diccionarioFichas}"  )
 
 # imprimo los eventos
-linea = " " + "-"*110 + "" 
-encabezado = "|  Evento  |   Ficha  |   Horas   |  D In Fi | D labor  | D A Cruz | D L Cruz | D A Prog | D P Prog | Ya Progr | "
+linea = " " + "-"*120 + " " 
+# encabezado
 print(linea)
-print(encabezado)
+print(Evento.encabezado())
 print(linea)
+# cuerpo
 for evento in programador._listaEventos:
     print(evento)
     print(linea)
+
 print()
 
 # imprimo la matriz de horas programadas
+# encabezado
 print("|" + "hora".center(6) + "|", end="")
-for i in range(programador._diasDelMes):
-    print((f"{i+1}").center(4), end="|")
+for d in range(programador._diasDelMes):
+    dia = d + 1 # el dia es igual al indice d + 1
+    print((f"{dia}").center(4), end="|")
+
 print()
 
+# cuerpo
 for h in range(24):
     print(f"|" + str(h).center(6) + "|", end="")
-    for indiceDMatriz in range(programador._diasDelMes):
-        print((f"{programador._matrizHorasProgramadas[indiceDMatriz][h]}").center(4), end="|")
+    for d in range(programador._diasDelMes):
+        print((f"{programador._matrizHorasProgramadas[d][h]}").center(4), end="|")
     print()
