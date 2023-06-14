@@ -3,6 +3,7 @@ from Mes import Mes
 from Evento import Evento
 from Datos import Datos
 from datetime import date
+from collections import Counter
 
 class Programador:
     # constructor de la clase
@@ -18,7 +19,7 @@ class Programador:
         self._ultimaFecMes = Mes(self._mes).ultimoDia() # contiene la fecha del ultimo dia del mes
         self._diasDelMes = self._ultimaFecMes.day # contiene el entero del ultimo dia del mes
         self._listaDiasLaborablesMes = Mes(self._mes).listaDiasLaborables() # contiene la lista de los dias laborables del mes
-        self._matrizDeEventosSinProgramar = self.matrizDeEventosSinProgramar() # contiene una matriz de 24 horas por cada dia del mes con los eventos sin programar
+        self._matrizDeEventosSinProgramar = [] # contiene una matriz de 24 horas por cada dia del mes con los eventos sin programar
         self._saldoDeHorasAProgramar = horasAProgramar # contiene el saldo de horas aun sin programar
         self._matrizHorasProgramadas = None # contiene la horas programadas del mes marcando los dias no laborables
         self._matrizDeRectangulos = [] # contiene los "rectangulos" disponibles - horas y dias sin programacion -
@@ -53,7 +54,19 @@ class Programador:
                     d = dia - 1 # el indice es igual al dia - 1
                     for h in range(evento.horaI, evento.horaF + 1):
                         matrizDeEventosSinProgramar[d][h] = ["yp"] # marca los eventos ya programados en su dia y hora como "yp" - ya programado -                    
-        self._matrizDeEventosSinProgramar = matrizDeEventosSinProgramar  
+        self._matrizDeEventosSinProgramar = matrizDeEventosSinProgramar
+        print("hora".center(6), end= "")
+        for d in range(self._diasDelMes):
+            dia = str(d+1)
+            print(dia.center(7),end="")
+        print()
+        for h in range(24):
+            print(str(h).center(6),end="")
+            for d in range(self._diasDelMes):
+                lista = str(self._matrizDeEventosSinProgramar[d][h]).replace(" ","").replace("[","").replace("]","")
+                print(lista.center(7), end="")
+            print()
+        pass
 
     # setea las listas de dias laborables, dias antes de cruce y dias luego de cruce de los eventos sin programar   
     def analisisDiasEventos(self):
@@ -107,19 +120,27 @@ class Programador:
             items = [self._matrizDeEventosSinProgramar[d][h] for h in range(24) for d in range(self._diasDelMes)] # cada item es una lista de eventos presentes en dia y hora
             listasDeIdsEventos = list(filter(lambda item: len(item) == cardinalidad and item != ["yp"] and item != [], items )) # filtro que la cardinalidad se la del for y que el item no sea "yp" o vacio
             if listasDeIdsEventos != []:
-                cruceMasRepetido = max(listasDeIdsEventos, key=listasDeIdsEventos.count) # dado que la matriz de eventos sin programar tiene un dato por cada dia y hora
-                listaTuplas = []
-                for id in cruceMasRepetido:
-                    evento = self._listaEventos[id]
-                    if cardinalidad == 1:
-                        (capacidad, listaDias, horasEvento) = self.capacidadEvento(evento, False) # se pasa False para calcular capacidad con los dias Antes o Luego del cruce 
-                    else:
-                        (capacidad, listaDias, horasEvento) = self.capacidadEvento(evento, True)# se pasa False para calcular capacidad con todos los dias laborables - simulando que no hay cruces
-                    if self.tieneCapacidadMinima(capacidad):
-                        listaTuplas.append((evento, capacidad, listaDias, horasEvento)) 
-                if listaTuplas != []:
-                    (evento, capacidad, listaDias, horasEvento)= (list(sorted(listaTuplas, key=lambda tupla: -tupla[1])))[0] # escoje el evento de mayor capacidad
-                    return (evento, listaDias, horasEvento)                    
+                conteo=Counter(listasDeIdsEventos)
+                diccCruces={}
+                for clave in conteo:  
+                    valor=conteo[clave]
+                    diccCruces[clave] = valor
+                sorted_diccCruces = dict(sorted(diccCruces.items(), key=lambda item:-item[1]))
+                for cruceMasRepetido in sorted_diccCruces.keys():
+                    listaTuplas = []
+                    for id in cruceMasRepetido:
+                        evento = self._listaEventos[id]
+                        if cardinalidad == 1:
+                            (capacidad, listaDias, horasEvento) = self.capacidadEvento(evento, False) # se pasa False para calcular capacidad con los dias Antes o Luego del cruce 
+                        else:
+                            (capacidad, listaDias, horasEvento) = self.capacidadEvento(evento, True)# se pasa False para calcular capacidad con todos los dias laborables - simulando que no hay cruces
+                        if self.tieneCapacidadMinima(capacidad) and listaDias != []:
+                            listaTuplas.append((evento, capacidad, listaDias, horasEvento))
+                        else:
+                            continue 
+                    if listaTuplas != []:
+                        (evento, capacidad, listaDias, horasEvento)= (list(sorted(listaTuplas, key=lambda tupla: -tupla[1])))[0] # escoje el evento de mayor capacidad
+                        return (evento, listaDias, horasEvento)                    
         else:
             return (None, None, None)
 
