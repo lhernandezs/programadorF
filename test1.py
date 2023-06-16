@@ -358,3 +358,6 @@ for l in lista:
     resultado[il] += 1
 
 print(resultado)
+
+for id in resultado.keys():
+    print(id.split("_"))
