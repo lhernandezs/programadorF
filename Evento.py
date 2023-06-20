@@ -4,7 +4,7 @@ class Evento:
 
     @classmethod
     def encabezado(cls):
-        columnas = ["Evento", "Ficha", "Horas", "D In Fi", "D Labor", "D Dispo", "D A Cruc", "D D Cruc", "D A Prog", "D P Prog", "Ya Prog", "H Programa"]
+        columnas = ["Evento", "Ficha", "Horas", "D In Fi", "D Labor", "D No Di", "D A Cruc", "D D Cruc", "D A Prog", "D P Prog", "Ya Prog", "H Programa"]
         encabez = "|"
         for nombreCol in columnas:
             encabez += nombreCol.center(10) + "|"
@@ -17,7 +17,7 @@ class Evento:
         self.__horaF = horaF
         self.__fechaI = fechaI
         self.__fechaF = fechaF
-        self.__listaDiasLaborables = []
+        self.__listaDiasLaborables = []        
         self.__listaDiasNoDisponib = []
         self.__listaDiasAntesCruce = []
         self.__listaDiasLuegoCruce = []
@@ -130,7 +130,7 @@ class Evento:
         dPp = self.listaDiasPorProgram
 
         diasLaborables = (f"{dLa[0]:2d} a {dLa[-1]:2d}").center(10) if dLa != [] else cadenaVacia
-        diasDisponible = (f"{dDi[0]:2d} a {dDi[-1]:2d}").center(10) if dDi != [] else cadenaVacia
+        diasNoDisponib = (f"{dDi[0]:2d} a {dDi[-1]:2d}").center(10) if dDi != [] else cadenaVacia
         diasAntesCruce = (f"{dAc[0]:2d} a {dAc[-1]:2d}").center(10) if dAc != [] else cadenaVacia
         diasLuegoCruce = (f"{dLc[0]:2d} a {dLc[-1]:2d}").center(10) if dLc != [] else cadenaVacia
         diasAProgramar = (f"{dAp[0]:2d} a {dAp[-1]:2d}").center(10) if dAp != [] else cadenaVacia
@@ -141,6 +141,6 @@ class Evento:
 
         horasProgramadas = (self.horaF - self.horaI + 1) * len(dAp)
 
-        return f"|{str(self.id).center(10)}|{str(self.ficha).center(10)}|{horas}|{fechas}|{diasLaborables}|{diasDisponible}|{diasAntesCruce}|{diasLuegoCruce}|{diasAProgramar}|{diasPorProgram}|{si if self.fichaYaProgramada else no}|{str(horasProgramadas).center(10)}|"
+        return f"|{str(self.id).center(10)}|{str(self.ficha).center(10)}|{horas}|{fechas}|{diasLaborables}|{diasNoDisponib}|{diasAntesCruce}|{diasLuegoCruce}|{diasAProgramar}|{diasPorProgram}|{si if self.fichaYaProgramada else no}|{str(horasProgramadas).center(10)}|"
     
 
