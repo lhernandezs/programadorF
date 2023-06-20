@@ -111,7 +111,7 @@ class Programador:
 
             self._listaEventos[evento.id].listaDiasLaborables = list(set(listaDiasIniFinEvento) & conjuntoDiasLaborablesMes) # setea la lista de dias laborables del evento
             diasNoDisponiblesDesordenados = list((set(listaDiasIniFinEvento) - set(listaDiasAntesDeNoDis) - set(listaDiasLuegoDeNoDis))& conjuntoDiasLaborablesMes)
-            self._listaEventos[evento.id].listaDiasNoDisponib = diasNoDisponiblesDesordenados.sort # setea la lista de dias laborables del evento
+            self._listaEventos[evento.id].listaDiasNoDisponib = sorted(diasNoDisponiblesDesordenados) # setea la lista de dias laborables del evento
             self._listaEventos[evento.id].listaDiasAntesCruce = list(set(listaDiasAntesDeCruce) & conjuntoDiasLaborablesMes) # setea la lista de dias antes de cruce
             self._listaEventos[evento.id].listaDiasLuegoCruce = list(set(listaDiasLuegoDeCruce) & conjuntoDiasLaborablesMes) # setea la lista de dias despues de cruce
     
