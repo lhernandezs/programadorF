@@ -11,6 +11,7 @@ class Programador:
         self._mes = mes # recibe el mes que se quiere programar
         self._horasAProgramar = horasAProgramar # recibe la cantidad de horas a programar
         self._tolerancia = tolerancia # determina que porcentaje de horas por encima o por debajo se puede programar una ficha respecto al promedio
+
         self._diccionarioFichas = dict.fromkeys([evento.ficha for evento in self._listaEventos], 0) # crea el diccionario de fichas en ceros
         self._promedioHorasPorFicha = self._horasAProgramar // len(self._diccionarioFichas) # valor entero de la division
         self._minimoHorasAProgramarPorFicha = int(self._promedioHorasPorFicha * (1-(self._tolerancia/100))) # valor entero
@@ -18,13 +19,13 @@ class Programador:
         self._ultimaFecMes = Mes(self._mes).ultimoDia() # contiene la fecha del ultimo dia del mes
         self._diasDelMes = self._ultimaFecMes.day # contiene el entero del ultimo dia del mes
         self._listaDiasLaborablesMes = Mes(self._mes).listaDiasLaborables() # contiene la lista de los dias laborables del mes
-        self._matrizDeEventosSinProgramar = [] # contiene una matriz de 24 horas por cada dia del mes con los eventos sin programar
         self._saldoDeHorasAProgramar = horasAProgramar # contiene el saldo de horas aun sin programar
+        self._matrizDeEventosSinProgramar = [] # contiene una matriz de 24 horas por cada dia del mes con los eventos sin programar
         self._matrizHorasProgramadas = None # contiene la horas programadas del mes marcando los dias no laborables
         self._matrizDeRectangulos = [] # contiene los "rectangulos" disponibles - horas y dias sin programacion -
         self._pila = [] # contiene la pila de llamadas recursivas para el metodo encontrarRectangulo
 
-    # retorna True si el evento existe para el dia y la hora pasado como parametros o False en caso contrario
+    # retorna True si el evento pasa por el dia y la hora pasado como parametros o False en caso contrario
     def estaElEventoEnDiaHora(self, evento, dia, hora):
         fecha = date(2023, self._mes, dia)
         return True if evento.fechaI <= fecha and fecha <= evento.fechaF and evento.horaI <= hora and hora <= evento.horaF else False
@@ -41,7 +42,7 @@ class Programador:
     def tieneCapacidadMinima(self, capacidad):
         return True if capacidad >= self._minimoHorasAProgramarPorFicha // 2 else False
 
-    # retorna True si el evento esta "programado" en el dia y la hora pasado como parametros o False en caso contrario
+    # retorna True si el evento esta "programado en el dia y la hora pasado como parametros o False en caso contrario
     def estaProgramadoElEventoEnDiaHora(self, evento, dia, hora):
         return True if not evento.listaDiasAProgramar is None and dia in evento.listaDiasAProgramar and evento.horaI <= hora and hora <= evento.horaF else False
 
@@ -49,7 +50,8 @@ class Programador:
     def marcarEventosDeLaFichaProgramada(self, evento):
         for e in list(filter(lambda e: evento.ficha == e.ficha, self._listaEventos)): e.fichaYaProgramada = True
 
-    def imprimirMatrisDeEventosSinProgramar(self):
+    # imprime la matriz de eventos sin programar
+    def imprimirMatrizDeEventosSinProgramar(self):
         print("hora".center(6), end= "")
         for d in range(self._diasDelMes):
             dia = str(d+1)
@@ -80,56 +82,59 @@ class Programador:
                     for h in range(evento.horaI, evento.horaF + 1):
                         matrizDeEventosSinProgramar[d][h] = ["yp"] # marca los eventos ya programados en su dia y hora como "yp" - ya programado -                    
         self._matrizDeEventosSinProgramar = matrizDeEventosSinProgramar
-        self.imprimirMatrisDeEventosSinProgramar()
+        self.imprimirMatrizDeEventosSinProgramar()
 
-    # setea las listas de dias laborables, dias antes de cruce y dias luego de cruce de los eventos sin programar   
+    # setea las listas de dias laborables, dias no disponibles, dias antes de cruce y dias luego de cruce de los eventos sin programar   
     def analisisDiasEventos(self):
         self.matrizDeEventosSinProgramar()
-        conjuntoDiasLaborablesMes = set(self._listaDiasLaborablesMes) # prepara este conjunto para facilitar la intersección
+        conjuntoDiasLaborablesMes = set(self._listaDiasLaborablesMes) # prepara este conjunto para la intersección
         for evento in self.listaEventosSinProgramar():
             diaIniEvento = 1 if (evento.fechaI < date(2023, self._mes, 1)) else evento.fechaI.day # controla si el inicio del evento es antes del 1er dia del mes
             diaFinEvento = self._diasDelMes if (self._ultimaFecMes < evento.fechaF) else evento.fechaF.day # controla si el fin del evento es despues del ultimo dia del mes
-            listaDiasIniFinEvento = [dia for dia in range(diaIniEvento, diaFinEvento + 1)]  # como en los rangos el valor final no se incluye se suma 1 al final - dias corrientes -
+
+            listaDiasIniFinEvento = [dia for dia in range(diaIniEvento, diaFinEvento + 1)] # como en los rangos el valor final no se incluye se suma 1 al final - dias corrientes -
             fecIniCruce = fecFinCruce = fecIniNoDis = fecFinNoDis = None
 
             for d in range(self._diasDelMes):
                 dia = d + 1 # el dia es igual al indice d + 1
                 for h in range(24):
-                    if self.estaElEventoEnDiaHora(evento, dia, h) and len(self._matrizDeEventosSinProgramar[d][h]) > 1: # si el evento esta dentro de varios eventos cruzados o el dia ya esta programado
-                        if fecIniCruce is None or date(2023, self._mes, dia) < fecIniCruce: fecIniCruce = date(2023, self._mes, dia) # encuentro la menor fecha inicial de cruce
-                        if fecFinCruce is None or date(2023, self._mes, dia) > fecFinCruce: fecFinCruce = date(2023, self._mes, dia) # encuentro la mayor fecha final de cruce
+                    if self.estaElEventoEnDiaHora(evento, dia, h):
 
-                    if self.estaElEventoEnDiaHora(evento, dia, h) and self._matrizDeEventosSinProgramar[d][h] == ["yp"]: # si el evento esta dentro de varios eventos ya esta programado
-                        if fecIniNoDis is None or date(2023, self._mes, dia) < fecIniNoDis: fecIniNoDis = date(2023, self._mes, dia) # encuentro la menor fecha inicial de no disponible
-                        if fecFinNoDis is None or date(2023, self._mes, dia) > fecFinNoDis: fecFinNoDis = date(2023, self._mes, dia) # encuentro la mayor fecha final de no disponible
+                        if len(self._matrizDeEventosSinProgramar[d][h]) > 1: # si el evento no esta solo
+                            if fecIniCruce is None or date(2023, self._mes, dia) < fecIniCruce: fecIniCruce = date(2023, self._mes, dia) # encuentro la menor fecha inicial
+                            if fecFinCruce is None or date(2023, self._mes, dia) > fecFinCruce: fecFinCruce = date(2023, self._mes, dia) # encuentro la mayor fecha final
+
+                        if self._matrizDeEventosSinProgramar[d][h] == ["yp"]: # si el evento cruza oto evento ya programado
+                            if fecIniNoDis is None or date(2023, self._mes, dia) < fecIniNoDis: fecIniNoDis = date(2023, self._mes, dia) # encuentro la menor fecha inicial
+                            if fecFinNoDis is None or date(2023, self._mes, dia) > fecFinNoDis: fecFinNoDis = date(2023, self._mes, dia) # encuentro la mayor fecha final
 
             listaDiasAntesDeCruce = listaDiasIniFinEvento if fecIniCruce is None else [dia for dia in range(diaIniEvento, fecIniCruce.day)] # no se tiene en cuenta el dia inicio cruce - dias corrientes -
             listaDiasLuegoDeCruce = [] if fecFinCruce is None else [dia for dia in range(fecFinCruce.day + 1, diaFinEvento + 1)] # no se tiene en cuenta el dia final cruce - dias corrientes -
 
             listaDiasAntesDeNoDis = [] if fecIniNoDis is None else [dia for dia in range(diaIniEvento, fecIniNoDis.day)] # no se tiene en cuenta el dia inicio cruce - dias corrientes -
             listaDiasLuegoDeNoDis = [] if fecFinNoDis is None else [dia for dia in range(fecFinNoDis.day + 1, diaFinEvento + 1)] # no se tiene en cuenta el dia final cruce - dias corrientes -
-
-            self._listaEventos[evento.id].listaDiasLaborables = list(set(listaDiasIniFinEvento) & conjuntoDiasLaborablesMes) # setea la lista de dias laborables del evento
             diasNoDisponiblesDesordenados = list((set(listaDiasIniFinEvento) - set(listaDiasAntesDeNoDis) - set(listaDiasLuegoDeNoDis))& conjuntoDiasLaborablesMes)
+            
+            self._listaEventos[evento.id].listaDiasLaborables = list(set(listaDiasIniFinEvento) & conjuntoDiasLaborablesMes) # setea la lista de dias laborables del evento
             self._listaEventos[evento.id].listaDiasNoDisponib = diasNoDisponiblesDesordenados.sort # setea la lista de dias laborables del evento
             self._listaEventos[evento.id].listaDiasAntesCruce = list(set(listaDiasAntesDeCruce) & conjuntoDiasLaborablesMes) # setea la lista de dias antes de cruce
             self._listaEventos[evento.id].listaDiasLuegoCruce = list(set(listaDiasLuegoDeCruce) & conjuntoDiasLaborablesMes) # setea la lista de dias despues de cruce
     
     # recibe un evento y un booleano que indica si hay que usar toda la lista de dias laborables
     # retorna una tupla con la capacidad de horas a programar en el evento, la lista mas larga de dias programables y la duracion en horas
-    def capacidadEvento(self, evento, usarlistaDiasNoDisponibs):
+    def capacidadEvento(self, evento, calcularSolo):
         horasEvento = evento.horaF - evento.horaI + 1 # se parte que si un evento tiene la misma hora de inicio y de fin, el evento dura una hora
-        if usarlistaDiasNoDisponibs:
-#                listaDias = evento.listaDiasLaborables
-            listaDias = evento.listaDiasNoDisponib
+        if calcularSolo:
+            listaDias = evento.listaDiasLaborables
         else:
-            listaDiasPreliminar = lA if len(lA := evento.listaDiasAntesCruce) > len(lL := evento.listaDiasLuegoCruce) else lL  # se toman la lista mayor de los dias que no se cruzan
-            listaDiasNoDisponibles = evento.listaDiasNoDisponib
-            diaMenorDiasNoDisponibles = listaDiasNoDisponibles[0] if listaDiasNoDisponibles != [] else 1
-            diaMayorDiasNoDisponibles = listaDiasNoDisponibles[-1] if listaDiasNoDisponibles != [] else (self._diasDelMes - 1)
-            listaDiasAntesNoDisponible = list(set(listaDiasPreliminar) - set(range(1, diaMenorDiasNoDisponibles))) 
-            listaDiasLuegoNoDisponible = list(set(listaDiasPreliminar) - set(range((diaMayorDiasNoDisponibles + 1), self._diasDelMes)))
-            listaDias = listaDiasAntesNoDisponible if len(listaDiasAntesNoDisponible) > len(listaDiasLuegoNoDisponible) else listaDiasLuegoNoDisponible                                  
+            listaDias = lA if len(lA := evento.listaDiasAntesCruce) > len(lL := evento.listaDiasLuegoCruce) else lL  # se toman la lista mayor de los dias que no se cruzan
+
+        if evento.listaDiasNoDisponib != []:
+            diaMenorNoDisponible = evento.listaDiasNoDisponib()[0]
+            diaMayorNoDisponible = evento.listaDiasNoDisponib()[-1]        
+            listaDiasAntes = listaDias[:listaDias.index(diaMenorNoDisponible)]                                   
+            listaDiasLuego = listaDias[listaDias.index(diaMayorNoDisponible)+1:]
+            listaDias = listaDiasAntes if len(listaDiasAntes) >= len(listaDiasLuego) else listaDiasLuego
 
         capacidad = horasEvento * len(listaDias)
         return (capacidad, listaDias, horasEvento)

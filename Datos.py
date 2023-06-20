@@ -37,4 +37,3 @@ class Datos:
                                 Evento(6, 2675820, 13, 13 , date(2023,mes,2), date(2023,mes,31)) , \
                                 Evento(7, 2675821, 14, 14 , date(2023,mes,2), date(2023,mes,31)) , \
                                 ]
-
