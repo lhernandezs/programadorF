@@ -111,13 +111,13 @@ class Programador:
             listaDiasAntesDeCruce = listaDiasIniFinEvento if fecIniCruce is None else [dia for dia in range(diaIniEvento, fecIniCruce.day)] # no se tiene en cuenta el dia inicio cruce - dias corrientes -
             listaDiasLuegoDeCruce = [] if fecFinCruce is None else [dia for dia in range(fecFinCruce.day + 1, diaFinEvento + 1)] # no se tiene en cuenta el dia final cruce - dias corrientes -
 
-            listaDiasAntesDeNoDis = [] if fecIniNoDis is None else [dia for dia in range(diaIniEvento, fecIniNoDis.day)] # no se tiene en cuenta el dia inicio cruce - dias corrientes -
-            listaDiasLuegoDeNoDis = [] if fecFinNoDis is None else [dia for dia in range(fecFinNoDis.day + 1, diaFinEvento + 1)] # no se tiene en cuenta el dia final cruce - dias corrientes -
+            listaDiasAntesDeNoDis = listaDiasIniFinEvento if fecIniNoDis is None else [dia for dia in range(diaIniEvento, fecIniNoDis.day)] # no se tiene en cuenta el dia inicio cruce - dias corrientes -
+            listaDiasLuegoDeNoDis = listaDiasIniFinEvento if fecFinNoDis is None else [dia for dia in range(fecFinNoDis.day + 1, diaFinEvento + 1)] # no se tiene en cuenta el dia final cruce - dias corrientes -
             diasNoDisponiblesDesordenados = list((set(listaDiasIniFinEvento) - set(listaDiasAntesDeNoDis) - set(listaDiasLuegoDeNoDis))& conjuntoDiasLaborablesMes)
             
             self._listaEventos[evento.id].listaDiasLaborables = list(set(listaDiasIniFinEvento) & conjuntoDiasLaborablesMes) # setea la lista de dias laborables del evento
             diasNoDisponiblesDesordenados = list((set(listaDiasIniFinEvento) - set(listaDiasAntesDeNoDis) - set(listaDiasLuegoDeNoDis))& conjuntoDiasLaborablesMes)
-            self._listaEventos[evento.id].listaDiasNoDisponib = diasNoDisponiblesDesordenados.sort # setea la lista de dias laborables del evento
+            self._listaEventos[evento.id].listaDiasNoDisponib = sorted(diasNoDisponiblesDesordenados) # setea la lista de dias laborables del evento
             self._listaEventos[evento.id].listaDiasAntesCruce = list(set(listaDiasAntesDeCruce) & conjuntoDiasLaborablesMes) # setea la lista de dias antes de cruce
             self._listaEventos[evento.id].listaDiasLuegoCruce = list(set(listaDiasLuegoDeCruce) & conjuntoDiasLaborablesMes) # setea la lista de dias despues de cruce
     
@@ -131,11 +131,16 @@ class Programador:
             listaDias = lA if len(lA := evento.listaDiasAntesCruce) > len(lL := evento.listaDiasLuegoCruce) else lL  # se toman la lista mayor de los dias que no se cruzan
 
         if evento.listaDiasNoDisponib != []:
-            diaMenorNoDisponible = evento.listaDiasNoDisponib()[0]
-            diaMayorNoDisponible = evento.listaDiasNoDisponib()[-1]        
-            listaDiasAntes = listaDias[:listaDias.index(diaMenorNoDisponible)]                                   
-            listaDiasLuego = listaDias[listaDias.index(diaMayorNoDisponible)+1:]
-            listaDias = listaDiasAntes if len(listaDiasAntes) >= len(listaDiasLuego) else listaDiasLuego
+            diaMenorNoDisponible = evento.listaDiasNoDisponib[0]
+            diaMayorNoDisponible = evento.listaDiasNoDisponib[-1]  
+            try:
+                indiceMenor = listaDias.index(diaMenorNoDisponible)
+                indiceMayor = listaDias.index(diaMayorNoDisponible)      
+                listaDiasAntes = listaDias[:indiceMenor]                                   
+                listaDiasLuego = listaDias[indiceMayor+1:]
+                listaDias = listaDiasAntes if len(listaDiasAntes) >= len(listaDiasLuego) else listaDiasLuego
+            except ValueError:
+                pass
 
         capacidad = horasEvento * len(listaDias)
         return (capacidad, listaDias, horasEvento)
