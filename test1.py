@@ -217,6 +217,7 @@
 
 # print(list(set(lista) & set(listaA)))
 
-cadena = "Perdon"
-if cadena[0] == "J":
-    print("listo")
+# cadena = "Perdon"
+# if cadena[0] == "J":
+#     print("listo")
+
