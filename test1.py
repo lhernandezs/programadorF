@@ -201,10 +201,18 @@
 # b = [5,8,9]
 # print(list(set(lista) - set(a)- set(b)))
 
-lista = [d for d in range(10,20)]
-menor = 13
-mayor = 15
-listaAbajo = lista[:lista.index(menor)]
-listaArriba = lista[lista.index(mayor):]
-print(listaAbajo)
-print(listaArriba)
+# lista = [d for d in range(10,20)]
+# menor = 13
+# mayor = 15
+# listaAbajo = lista[:lista.index(menor)]
+# listaArriba = lista[lista.index(mayor):]
+# print(listaAbajo)
+# print(listaArriba)
+
+# print([d for d in range(31,0)])
+
+lista = [d for d in range(10)]
+listaA = [d for d in [0,1]]
+listaL = [d for d in [8,9]]
+
+print(list(set(lista) & set(listaA)))

@@ -4,7 +4,7 @@ class Evento:
 
     @classmethod
     def encabezado(cls):
-        columnas = ["Evento", "Ficha", "Horas", "D In Fi", "D Labor", "D No Di", "D A Cruc", "D D Cruc", "D A Prog", "D P Prog", "Ya Prog", "H Programa"]
+        columnas = ["Evento", "Ficha", "Horas", "D In Fi", "D Labor", "D A NoD", "D L NoD", "D A Cruc", "D D Cruc", "D A Prog", "D P Prog", "Ya Prog", "H Programa"]
         encabez = "|"
         for nombreCol in columnas:
             encabez += nombreCol.center(10) + "|"
@@ -18,7 +18,8 @@ class Evento:
         self.__fechaI = fechaI
         self.__fechaF = fechaF
         self.__listaDiasLaborables = []        
-        self.__listaDiasNoDisponib = []
+        self.__listaDiasAntesNoDis = []
+        self.__listaDiasLuegoNoDis = []
         self.__listaDiasAntesCruce = []
         self.__listaDiasLuegoCruce = []
         self.__listaDiasAProgramar = []
@@ -75,11 +76,18 @@ class Evento:
         self.__listaDiasLaborables = listaDiasLaborables
 
     @property 
-    def listaDiasNoDisponib(self): 
-        return self.__listaDiasNoDisponib 
-    @listaDiasNoDisponib.setter 
-    def listaDiasNoDisponib(self, listaDiasNoDisponib): 
-        self.__listaDiasNoDisponib = listaDiasNoDisponib
+    def listaDiasAntesNoDis(self): 
+        return self.__listaDiasAntesNoDis 
+    @listaDiasAntesNoDis.setter 
+    def listaDiasAntesNoDis(self, listaDiasAntesNoDis): 
+        self.__listaDiasAntesNoDis = listaDiasAntesNoDis
+
+    @property 
+    def listaDiasLuegoNoDis(self): 
+        return self.__listaDiasLuegoNoDis 
+    @listaDiasLuegoNoDis.setter 
+    def listaDiasLuegoNoDis(self, listaDiasLuegoNoDis): 
+        self.__listaDiasLuegoNoDis = listaDiasLuegoNoDis
 
     @property 
     def listaDiasAntesCruce(self): 
@@ -123,14 +131,16 @@ class Evento:
         cadenaVacia = " " * 10
         
         dLa = self.listaDiasLaborables
-        dDi = self.listaDiasNoDisponib
+        dAn = self.listaDiasAntesNoDis
+        dLn = self.listaDiasLuegoNoDis
         dAc = self.listaDiasAntesCruce
         dLc = self.listaDiasLuegoCruce
         dAp = self.listaDiasAProgramar
         dPp = self.listaDiasPorProgram
 
         diasLaborables = (f"{dLa[0]:2d} a {dLa[-1]:2d}").center(10) if dLa != [] else cadenaVacia
-        diasNoDisponib = (f"{dDi[0]:2d} a {dDi[-1]:2d}").center(10) if dDi != [] else cadenaVacia
+        diasAntesNoDis = (f"{dAn[0]:2d} a {dAn[-1]:2d}").center(10) if dAn != [] else cadenaVacia
+        diasLuegoNoDis = (f"{dLn[0]:2d} a {dLn[-1]:2d}").center(10) if dLn != [] else cadenaVacia
         diasAntesCruce = (f"{dAc[0]:2d} a {dAc[-1]:2d}").center(10) if dAc != [] else cadenaVacia
         diasLuegoCruce = (f"{dLc[0]:2d} a {dLc[-1]:2d}").center(10) if dLc != [] else cadenaVacia
         diasAProgramar = (f"{dAp[0]:2d} a {dAp[-1]:2d}").center(10) if dAp != [] else cadenaVacia
@@ -141,6 +151,6 @@ class Evento:
 
         horasProgramadas = (self.horaF - self.horaI + 1) * len(dAp)
 
-        return f"|{str(self.id).center(10)}|{str(self.ficha).center(10)}|{horas}|{fechas}|{diasLaborables}|{diasNoDisponib}|{diasAntesCruce}|{diasLuegoCruce}|{diasAProgramar}|{diasPorProgram}|{si if self.fichaYaProgramada else no}|{str(horasProgramadas).center(10)}|"
+        return f"|{str(self.id).center(10)}|{str(self.ficha).center(10)}|{horas}|{fechas}|{diasLaborables}|{diasAntesNoDis}|{diasLuegoNoDis}|{diasAntesCruce}|{diasLuegoCruce}|{diasAProgramar}|{diasPorProgram}|{si if self.fichaYaProgramada else no}|{str(horasProgramadas).center(10)}|"
     
 
