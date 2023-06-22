@@ -125,7 +125,7 @@ class Evento:
         self.__fichaYaProgramada = fichaYaProgramada
 
     def __str__(self):
-        horas = (f"{self.horaI:2d} - {self.horaF:2d}").center(10)
+        horas = (f"{self.horaI:2d} - {(self.horaF + 1):2d}").center(10)
         fechas = (f"{self.fechaI.day:2d} a {self.fechaF.day:2d}").center(10)
 
         cadenaVacia = " " * 10
