@@ -211,8 +211,12 @@
 
 # print([d for d in range(31,0)])
 
-lista = [d for d in range(10)]
-listaA = [d for d in [0,1]]
-listaL = [d for d in [8,9]]
+# lista = [d for d in range(10)]
+# listaA = [d for d in [0,1]]
+# listaL = [d for d in [8,9]]
 
-print(list(set(lista) & set(listaA)))
+# print(list(set(lista) & set(listaA)))
+
+cadena = "Perdon"
+if cadena[0] == "J":
+    print("listo")
