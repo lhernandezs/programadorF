@@ -221,3 +221,10 @@
 # if cadena[0] == "J":
 #     print("listo")
 
+lista = [x*2 for x in range(10)]
+print(lista)
+indice3 = lista.index(6)
+indice5 = lista.index(12)
+print(indice3)
+print(indice5)
+print(lista[indice3:indice5])
