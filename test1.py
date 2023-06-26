@@ -201,13 +201,17 @@
 # b = [5,8,9]
 # print(list(set(lista) - set(a)- set(b)))
 
-# lista = [d for d in range(10,20)]
-# menor = 13
-# mayor = 15
-# listaAbajo = lista[:lista.index(menor)]
-# listaArriba = lista[lista.index(mayor):]
-# print(listaAbajo)
-# print(listaArriba)
+lista = [d for d in range(10,20)]
+menor = 13
+mayor = 15
+listaAbajo = lista[:lista.index(menor)]
+listaArriba = lista[lista.index(mayor):]
+lista2 = lista[lista.index(menor):lista.index(mayor)]
+diferencia = lista.index(mayor) - lista.index(menor)
+print(listaAbajo)
+print(listaArriba)
+print(lista2)
+print(diferencia)
 
 # print([d for d in range(31,0)])
 
@@ -221,10 +225,10 @@
 # if cadena[0] == "J":
 #     print("listo")
 
-lista = [x*2 for x in range(10)]
-print(lista)
-indice3 = lista.index(6)
-indice5 = lista.index(12)
-print(indice3)
-print(indice5)
-print(lista[indice3:indice5])
+# lista = [x*2 for x in range(10)]
+# print(lista)
+# indice3 = lista.index(6)
+# indice5 = lista.index(12)
+# print(indice3)
+# print(indice5)
+# print(lista[indice3:indice5])
