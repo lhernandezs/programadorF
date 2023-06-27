@@ -121,9 +121,7 @@ class Programador:
             self._listaEventos[evento.id].listaDiasLuegoNoDis = list(set(listaDiasLuegoNoDis) & conjuntoDiasLaborablesMes) # setea la lista de dias despues de no disponble
             self._listaEventos[evento.id].listaDiasAntesCruce = list(set(listaDiasAntesCruce) & conjuntoDiasLaborablesMes) # setea la lista de dias antes de cruce
             self._listaEventos[evento.id].listaDiasLuegoCruce = list(set(listaDiasLuegoCruce) & conjuntoDiasLaborablesMes) # setea la lista de dias despues de cruce
-
-
-    
+   
     # recibe un evento y un booleano que indica si hay que usar toda la lista de dias laborables
     # retorna una tupla con la capacidad de horas a programar en el evento, la lista mas larga de dias programables y la duracion en horas
     def capacidadEvento(self, evento, calcularSolo):
@@ -200,9 +198,9 @@ class Programador:
                 
                 for dia in self._listaDiasLaborablesMes[indiceDIni:(indiceDFin + 1)]: # los dias van desde el inicial hasta el final + 1
 
-                    indiceDia = self._listaDiasLaborablesMes.index(dia)     # indice del dia en la lista de dias laborables del mes
+                    indiceDia = self._listaDiasLaborablesMes.index(dia) # indice del dia en la lista de dias laborables del mes
 
-                    d = dia-1 # indice en la matrizHorasProgramadas es igual al dia - 1
+                    d = dia - 1 # indice en la matrizHorasProgramadas es igual al dia - 1
 
                     if self._matrizHorasProgramadas[d][h] != "  ": # en la matriz busco los datos correspondiente a d y h
                                                                                                               # NO                       APUNTA                          ENTRA
@@ -220,34 +218,33 @@ class Programador:
                         elif dia in self._listaDiasLaborablesMes[(indiceDIni + 1): indiceDFin] and h == hFin  : # inferior                 izquierdo derecho               superior
                             izquier = derecho = superio = True
 
-                        elif dia == dFin and h in range((hIni + 1), hFin)                                     : # derecho                  izquierdo inferior              superior
-                            izquier = inferio = superio = True
                         elif dia == dIni and h in range((hIni + 1), hFin)                                     : # izquierdo                derecho inferior                superior
                             derecho = inferio = superio = True
+                        elif dia == dFin and h in range((hIni + 1), hFin)                                     : # derecho                  izquierdo inferior              superior
+                            izquier = inferio = superio = True
 
                         else:     
                             izquier = derecho = inferio = superio = True                                      #                          izquierdo derecho inferior      superior
 
-
                         if superio:
-                            capacidad = (indiceDFin - indiceDIni + 1) * (h - hIni)
-                            self._matrizDeRectangulos.append(["Dentro", dIni, hIni, dFin, h-1, capacidad])    # ENTRA superior a la matriz de rectangulos
+                            capacidad = (indiceDFin - indiceDIni + 1) * (h - hIni) # contar dias laborables desde el inicio hasta el fin + 1
+                            self._matrizDeRectangulos.append(["Dentr", dIni, hIni, dFin, (h - 1), capacidad])    # ENTRA superior a la matriz de rectangulos
                         if izquier:
-                            for dl in sorted(self._listaDiasLaborablesMes[(indiceDia - 1): indiceDIni], reverse = True):
-                                if self._matrizHorasProgramadas[dl][hIni] == "  ":                        
+                            for dl in sorted(self._listaDiasLaborablesMes[indiceDIni: indiceDia], reverse = True):
+                                if self._matrizHorasProgramadas[dl][h] == "  ":                        
                                     self._pila.append((dIni, hIni, dl, hFin))                                 # apunta a rectangulo izquierdo
                                     recursividadIz += 1
                                     break
                         if derecho:
                             for dl in self._listaDiasLaborablesMes[(indiceDia + 1): indiceDFin]: 
-                                if self._matrizHorasProgramadas[dl][hIni] == "  ":
+                                if self._matrizHorasProgramadas[dl][h] == "  ":
                                     self._pila.append((dl, hIni, dFin, hFin))                                 # apunta a rectangulo derecho
                                     recursividadDe += 1
                                     break
                         if inferio:
-                            for j in range (h+1, hFin):
-                                if self._matrizHorasProgramadas[d][j] == "  ":
-                                    self._pila.append((dIni, j, dFin, hFin))                                  # apunta a rectangulo inferior
+                            for hl in range (h+1, hFin):
+                                if self._matrizHorasProgramadas[d][hl] == "  ":
+                                    self._pila.append((dIni, hl, dFin, hFin))                                 # apunta a rectangulo inferior
                                     recursividadIn += 1
                                     break
 
@@ -259,7 +256,7 @@ class Programador:
             else:
                 if indiceDIni <= indiceDFin and hIni <= hFin:
                     capacidad = (indiceDFin - indiceDIni + 1) * (hFin -hIni + 1 )
-                    self._matrizDeRectangulos.append(["Fuera ", dIni, hIni, dFin, hFin, capacidad])
+                    self._matrizDeRectangulos.append(["Fuera", dIni, hIni, dFin, hFin, capacidad])
                 
                 if len(self._pila)>0:
                     self.encontrarRectangulo()
@@ -268,7 +265,7 @@ class Programador:
 
     # setea la matriz que tiene los y establece los eventos programados en sus dias y horas, marca fines de semana y festivos como NL - no laborables - 
     def setMatrizHorasProgramadas(self):
-        self._matrizHorasProgramadas = [[("  " if d+1 in self._listaDiasLaborablesMes else "NL") for h in range(24)] for d in range(self._diasDelMes)] # construir la matriz marcando los dias no laborables con "NL"
+        self._matrizHorasProgramadas = [[("  " if d + 1 in self._listaDiasLaborablesMes else "NL") for h in range(24)] for d in range(self._diasDelMes)] # construir la matriz marcando los dias no laborables con "NL"
         for evento in self._listaEventos: # colocar en la matriz anterior los eventos programados
             for h in range(24):
                 for dia in self._listaDiasLaborablesMes:
@@ -313,52 +310,62 @@ class Programador:
                 (evento, listaDias, horasEvento) = self.buscarMejorEventoProgramable()
                 if not evento is None:
                     listaDiasAProgramar = []
-                    ban = True
                     while True:
                         horasFaltantesDeLaFicha = self._maximoHorasAProgramarPorFicha - self._diccionarioFichas[evento.ficha]
-                        if  self._saldoDeHorasAProgramar < horasEvento or horasFaltantesDeLaFicha < horasEvento:
-                            self.marcarEventosDeLaFichaProgramada(evento)
-                            break # termina por agotamiento del saldo de horas a programar o por agotamiento de las horas faltantes de la ficha 
-                        if len(listaDias) > 0:
+
+                        if  horasFaltantesDeLaFicha < horasEvento: # termina porque no es posible programar un dia mas en el evento; se deben marcar los eventos de la ficha como programados
+                            self.marcarEventosDeLaFichaProgramada(evento) 
+                            break
+
+                        if self._saldoDeHorasAProgramar < horasEvento: # termina por que no hay horas en el saldo total por programar 
+                            break
+
+                        if len(listaDias) == 0: # termina porque no hay mas dias en la lista de dias para programar; revisar si se deben marcar los evento y la ficha como ya programados
+                            if self._minimoHorasAProgramarPorFicha < self._diccionarioFichas[evento.ficha]:
+                                self.marcarEventosDeLaFichaProgramada(evento)
+                            break
+
+                        else: # si paso hasta aqui, hay horas faltantes en la ficha, hay saldo total de horas y hay dias en la lista; programar un dia mas -- en el proximo ciclo se revisa si la ficha queda programada
                             dia = listaDias.pop(0)
-                            evento.listaDiasAProgramar.append(dia) # programo un dia mas
+                            evento.listaDiasAProgramar.append(dia) # programo el dia que sigue en la lista
                             self._saldoDeHorasAProgramar -= horasEvento # disminuyo las horas -generales- a programar
                             self._diccionarioFichas[evento.ficha] += horasEvento # aumento el numero de horas programadas                                                      
-                        elif self._minimoHorasAProgramarPorFicha < self._diccionarioFichas[evento.ficha]:
-                            self.marcarEventosDeLaFichaProgramada(evento)
-                            break # termina por agotamiento del saldo de horas a programar o por agotamiento de las horas faltantes de la ficha 
-                        else:
-                            break                                     
+                    
                     evento.listaDiasPorProgram = list(set(listaDias) - set(listaDiasAProgramar)) if len(listaDias) != len(listaDiasAProgramar) else []     
                 else:
                     break
+
             # 2.
             self.analisisDiasEventos() # para asegurar que trabajamos con los eventos sin programar y estan bien seteadas las lista de dias antes y luego de cruce 
-            for evento in list(filter(lambda e: len(e.listaDiasPorProgram)> 0, self._listaEventos)): # eventos con lista de dias por programar de fichas no programadas
-                self.setMatrizHorasProgramadas()
-                listaDiasPorProgramar = evento.listaDiasPorProgram[:] # copia la lista en otra lista para que se recorran los dias sin las modificacion del cuerpo del for
-                horasEvento = evento.horaF - evento.horaI + 1
-                ban = True
-                for dia in listaDiasPorProgramar:
-                    for h in range(evento.horaI, evento.horaF + 1):
-                        d = dia - 1  # el indice es igual al dia  -1
-                        if self._matrizHorasProgramadas[d][h] != "  ":
-                            ban = False
+            eventosConListaDiasPorProgramar = list(filter(lambda e: len(e.listaDiasPorProgram)> 0, self._listaEventos)) # eventos con lista de dias por programar de fichas programadas o no
+            banHayHoras = True
+            while len(eventosConListaDiasPorProgramar) > 0 and banHayHoras:
+                evento = eventosConListaDiasPorProgramar.pop()
+                ban = True # la bandera me sirve para mirar si la lista de dias por programar del evento esta libre de programación
+                self.setMatrizHorasProgramadas() # coloco los eventos programados en la matriz
+                for h in range(evento.horaI, (evento.horaF + 1)):
+                    for dia in evento.listaDiasPorProgram:
+                        d = dia - 1  # el indice en la matriz es igual al dia - 1
+                        if self._matrizHorasProgramadas[d][h] != "  ": ban = False # colocamos la bandera en falso porque en las horas del evento hay dias que ya están programados - no utlizaremos la lista
+
                 if ban:
+                    listaDiasPorProgramar = evento.listaDiasPorProgram[:] # copia la lista en otra lista para que se recorran los dias sin las modificacion del cuerpo del for
                     for dia in listaDiasPorProgramar:
-#                        horasFaltantesDeLaFicha = self._maximoHorasAProgramarPorFicha - self._diccionarioFichas[evento.ficha]
-#                        if  not (self._saldoDeHorasAProgramar < horasEvento or horasFaltantesDeLaFicha < horasEvento):
-                        if  not (self._saldoDeHorasAProgramar < horasEvento):
+                        horasEvento = evento.horaF - evento.horaI + 1
+                        if  self._saldoDeHorasAProgramar >= horasEvento: # solo controlo que haya saldo de horas totales por programar -- no importa si la ficha se pasa del tope
                             evento.listaDiasAProgramar.append(dia)
                             evento.listaDiasPorProgram.remove(dia)
                             self._saldoDeHorasAProgramar -= horasEvento
                             self._diccionarioFichas[evento.ficha] += horasEvento
-#             # 3. 
+                        else:
+                            banHayHoras = False
+                    
+            # 3. 
             for (ficha, horasProgramadas) in list(filter(lambda item: item[1] < self._minimoHorasAProgramarPorFicha, self._diccionarioFichas.items())): # devuelve tuplas ficha - horas programadas del diccionario de fichas cuando la ficha este programada por debajo del minimo de horas a programar
                 horasAProgramar = self._minimoHorasAProgramarPorFicha - horasProgramadas # calcula el mínimo de horas que le faltan por programar para alcanzar el minimo de horas por Ficha
                 if horasAProgramar > self._saldoDeHorasAProgramar: # si las hora que hacen falta por programar a la ficha son mas que el saldo de horas a programar se deben quitar horas a otra ficha
                     fichaADesprogramar = max(self._diccionarioFichas, key=self._diccionarioFichas.get) # se consigue la ficha con mayor numero de horas programadas
-                    eventoADesprogramar = sorted(list(filter(lambda e: e.ficha == fichaADesprogramar and not e.listaDiasAProgramar is None, self._listaEventos)), key =lambda e: len(e.listaDiasAProgramar))[0] # se consigue el evento con mas dias programados de la ficha a desprogramar
+                    eventoADesprogramar = sorted(list(filter(lambda e: e.ficha == fichaADesprogramar and len(e.listaDiasAProgramar) > 0, self._listaEventos)), key =lambda e: len(e.listaDiasAProgramar))[-1] # se consigue el evento con mas dias programados de la ficha a desprogramar
                     horasEventoADesprogramar = eventoADesprogramar.horaF - eventoADesprogramar.horaI + 1
                     diasMaxAReducir = (horasAProgramar // horasEventoADesprogramar) + 1 
                     diasAReducir = 0
@@ -371,40 +378,77 @@ class Programador:
                     self._diccionarioFichas[fichaADesprogramar] -= horasEventoADesprogramar * diasAReducir # disminuir las horas en el diccionario para la ficha
                     self._saldoDeHorasAProgramar += horasEventoADesprogramar * diasAReducir # aumentar el saldo de horas a Programar
                 # crea un evento para la ficha en el mejor rectangula No programados - incluir este evento en self._listaEventos
-                while True:
+                ban = True
+                while ban:
                     self._matrizDeRectangulos = [] # reinicio la matriz de rectangulos
                     mejores = self.mejoresRectangulosNoProgramados()
-                    if len(mejores) > 0 or self._saldoDeHorasAProgramar <= 5:
+                    if len(mejores) > 0 and self._saldoDeHorasAProgramar > 0:
                         (indicador, dIni, hIni, dFin, hFin, capacidad) = mejores.pop(0) # extrae el rectangulo de mayor capacidad
                         id = len(self._listaEventos) # el id del nuevo evento será el numero de eventos actual - los id de los eventos empiezan en cero -
-                        #OJO: revisar los diasAProgramar
-                        diasAProgramarTentativo = horasAProgramar // (hFin - hIni + 1) # dias que le faltan por programar a la ficha segun las horas del rectangulo que se encontro
-                        if  self._saldoDeHorasAProgramar >= self._maximoHorasAProgramarPorFicha: # en este caso se tratará de programar todos los dias del rectangulo
-                            if ((self._listaDiasLaborablesMes.index(dFin) - self._listaDiasLaborablesMes.index(dIni)) + 1) >= diasAProgramarTentativo: # si hay dias suficientes en el rectangulo
-                                diasAProgramar = diasAProgramarTentativo # se toma solo los dias necesarios
-                            else:
-                                diasAProgramar = (self._listaDiasLaborablesMes.index(dFin) - self._listaDiasLaborablesMes.index(dIni)) + 1 # se toman todos los dias del rectangulo
-                        else:
-                            diasAProgramar = self._saldoDeHorasAProgramar // (hFin-hIni + 1) # todas las horas faltantes por programar se programan en el rectangulo
-
-                        diaFin = self._listaDiasLaborablesMes[self._listaDiasLaborablesMes.index(dIni) + diasAProgramar]
-                        listaDiasLaborables = sorted(list(set(self._listaDiasLaborablesMes) & set(range(dIni, diaFin)))) # setear los dias laborables del evento
-                        listaDiasAProgramar = sorted(list(set(self._listaDiasLaborablesMes) & set(range(dIni, diaFin)))) # setear los dias programados hasta el minimo de horas a programar por ficha
-
-                        nuevoEvento = Evento(id, ficha, hIni, hFin, date(2023, self._mes, dIni), date(2023, self._mes, diaFin)) 
-                        self._listaEventos.append(nuevoEvento) 
-                        self._listaEventos[id].listaDiasLaborables = listaDiasLaborables
-                        self._listaEventos[id].listaDiasAProgramar = listaDiasAProgramar
-
+                        evento = Evento(id, ficha, hIni, hFin, date(2023, self._mes, dIni), date(2023, self._mes, dFin)) 
+                        self._listaEventos.append(evento) 
                         self.analisisDiasEventos() # esto para inicializar la matriz de eventos de los eventos sin programar
+                        listaDias = self._listaDiasLaborablesMes[self._listaDiasLaborablesMes.index(dIni) : self._listaDiasLaborablesMes.index(dFin) + 1 ]
+                        horasEvento = hFin - hIni + 1
+                        while True:
+                            horasFaltantesDeLaFicha = self._maximoHorasAProgramarPorFicha - self._diccionarioFichas[evento.ficha]
 
-                        horasProgramadas = diasAProgramar * (hFin - hIni + 1)
-                        if horasProgramadas >= self._minimoHorasAProgramarPorFicha:
-                            self.marcarEventosDeLaFichaProgramada(nuevoEvento)
-                        self._diccionarioFichas[ficha] += horasProgramadas # aumentar las horas programadas en el diccionario para la ficha
-                        self._saldoDeHorasAProgramar -= horasProgramadas # disminuir el saldo de horas totales a Programar
+                            if  horasFaltantesDeLaFicha < horasEvento: # termina porque no es posible programar un dia mas en el evento; se deben marcar los eventos de la ficha como programados
+                                self.marcarEventosDeLaFichaProgramada(evento) 
+                                ban = False
+                                break
+
+                            if self._saldoDeHorasAProgramar < horasEvento: # termina por que no hay horas en el saldo total por programar 
+                                ban = False
+                                break
+
+                            if len(listaDias) == 0: # termina porque no hay mas dias en la lista de dias para programar; revisar si se deben marcar los evento y la ficha como ya programados
+                                if self._minimoHorasAProgramarPorFicha < self._diccionarioFichas[evento.ficha]:
+                                    self.marcarEventosDeLaFichaProgramada(evento)
+                                ban = False
+                                break
+
+                            else: # si paso hasta aqui, hay horas faltantes en la ficha, hay saldo total de horas y hay dias en la lista; programar un dia mas -- en el proximo ciclo se revisa si la ficha queda programada
+                                dia = listaDias.pop(0)
+                                evento.listaDiasAProgramar.append(dia) # programo el dia que sigue en la lista
+                                self._saldoDeHorasAProgramar -= horasEvento # disminuyo las horas -generales- a programar
+                                self._diccionarioFichas[evento.ficha] += horasEvento # aumento el numero de horas programadas                                                      
+                        
+                        evento.listaDiasPorProgram = list(set(listaDias) - set(evento.listaDiasAProgramar)) if len(listaDias) != len(evento.listaDiasAProgramar) else []     
                     else:
-                        break    
+                        break
+
+
+
+                       #     #OJO: revisar los diasAProgramar
+                    #     diasAProgramarTentativo = horasAProgramar // (hFin - hIni + 1) # dias que le faltan por programar a la ficha segun las horas del rectangulo que se encontro
+                    #     if  self._saldoDeHorasAProgramar >= self._maximoHorasAProgramarPorFicha: # en este caso se tratará de programar todos los dias del rectangulo
+                    #         if ((self._listaDiasLaborablesMes.index(dFin) - self._listaDiasLaborablesMes.index(dIni)) + 1) >= diasAProgramarTentativo: # si hay dias suficientes en el rectangulo
+                    #             diasAProgramar = diasAProgramarTentativo # se toma solo los dias necesarios
+                    #         else:
+                    #             diasAProgramar = (self._listaDiasLaborablesMes.index(dFin) - self._listaDiasLaborablesMes.index(dIni)) + 1 # se toman todos los dias del rectangulo
+                    #     else:
+                    #         diasAProgramar = self._saldoDeHorasAProgramar // (hFin-hIni + 1) # todas las horas faltantes por programar se programan en el rectangulo
+
+                    #     diaFin = self._listaDiasLaborablesMes[self._listaDiasLaborablesMes.index(dIni) + diasAProgramar]
+                    #     listaDiasLaborables = sorted(list(set(self._listaDiasLaborablesMes) & set(range(dIni, diaFin)))) # setear los dias laborables del evento
+                    #     listaDiasAProgramar = sorted(list(set(self._listaDiasLaborablesMes) & set(range(dIni, diaFin)))) # setear los dias programados hasta el minimo de horas a programar por ficha
+
+                    #     nuevoEvento = Evento(id, ficha, hIni, hFin, date(2023, self._mes, dIni), date(2023, self._mes, diaFin)) 
+                    #     self._listaEventos.append(nuevoEvento) 
+                    #     self._listaEventos[id].listaDiasLaborables = listaDiasLaborables
+                    #     self._listaEventos[id].listaDiasAProgramar = listaDiasAProgramar
+
+                    #     self.analisisDiasEventos() # esto para inicializar la matriz de eventos de los eventos sin programar
+
+                    #     horasProgramadas = diasAProgramar * (hFin - hIni + 1)
+                    #     if horasProgramadas >= self._minimoHorasAProgramarPorFicha:
+                    #         self.marcarEventosDeLaFichaProgramada(nuevoEvento)
+                    #     self._diccionarioFichas[ficha] += horasProgramadas # aumentar las horas programadas en el diccionario para la ficha
+                    #     self._saldoDeHorasAProgramar -= horasProgramadas # disminuir el saldo de horas totales a Programar
+                    # else:
+                    #     break    
+
             # 4. si no hubo que encontrar rectangulos tambien hay que setea la matriz de horas programadas para poder mostrar el resultado.
             self.setMatrizHorasProgramadas()
                 
