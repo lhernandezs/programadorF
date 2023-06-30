@@ -364,8 +364,10 @@ class Programador:
             for (ficha, horasProgramadas) in list(filter(lambda item: item[1] < self._minimoHorasAProgramarPorFicha, self._diccionarioFichas.items())): # devuelve tuplas ficha - horas programadas del diccionario de fichas cuando la ficha este programada por debajo del minimo de horas a programar
                 maxHorasAProgramarEnLaFicha = self._maximoHorasAProgramarPorFicha - horasProgramadas
                 maxHorasAProgramar = maxHorasAProgramarEnLaFicha if maxHorasAProgramarEnLaFicha < self._saldoDeHorasAProgramar else self._saldoDeHorasAProgramar # calcula el maximo numero de horas que se podrían programar en la ficha
-                
-                if maxHorasAProgramar > self._saldoDeHorasAProgramar: # si las horas que hacen falta por programar a la ficha son mas que el saldo de horas a programar se deben quitar horas a otra ficha
+    
+                horasAProgramar = maxHorasAProgramar if maxHorasAProgramar > self._minimoHorasAProgramarPorFicha else self._minimoHorasAProgramarPorFicha
+
+                if horasAProgramar > self._saldoDeHorasAProgramar: # si las horas que hacen falta por programar a la ficha son mas que el saldo de horas a programar se deben quitar horas a otra ficha
                     fichaADesprogramar = max(self._diccionarioFichas, key=self._diccionarioFichas.get) # se consigue la ficha con mayor numero de horas programadas
                     eventoADesprogramar = sorted(list(filter(lambda e: e.ficha == fichaADesprogramar and len(e.listaDiasAProgramar) > 0, self._listaEventos)), key =lambda e: len(e.listaDiasAProgramar))[-1] # se consigue el evento con mas dias programados de la ficha a desprogramar
                     horasEventoADesprogramar = eventoADesprogramar.horaF - eventoADesprogramar.horaI + 1
@@ -388,16 +390,17 @@ class Programador:
                     if len(mejores) > 0:
                         (indicador, dIni, hIni, dFin, hFin, capacidad) = mejores.pop(0) # extrae el rectangulo de mayor capacidad
 
-                        if capacidad >= maxHorasAProgramar:
-
-                            listaDias = []
+                        if capacidad >= horasAProgramar:
 
                             for h in range (hIni, hFin + 1):
+                                listaDias = []
+                                horasProgramadas = horasAProgramar
                                 if ban:
                                     for dia in self._listaDiasLaborablesMes[self._listaDiasLaborablesMes.index(dIni) : self._listaDiasLaborablesMes.index(dFin) + 1 ]:
                                         listaDias.append(dia)
-                                        maxHorasAProgramar -= 1
-                                        if maxHorasAProgramar == 0:
+                                        horasEvento = h - hIni + 1
+                                        horasProgramadas -= horasEvento
+                                        if horasProgramadas <= 0:
                                             id = len(self._listaEventos) # el id del nuevo evento será el numero de eventos actual - los id de los eventos empiezan en cero -
                                             evento = Evento(id, ficha, hIni, h, date(2023, self._mes, dIni), date(2023, self._mes, dia)) 
                                             self._listaEventos.append(evento) 
@@ -423,10 +426,10 @@ sys.setrecursionlimit(500000)
 recursividadTo = recursividadIz = recursividadDe = recursividadIn = 0
 
 # fijo los datos de prueba del programa
-mes = 5
-listaEventos = Datos(mes).listaEventos5
-horasAProgramar = 71
-tolerancia = 30
+mes = 7
+listaEventos = Datos(mes).listaEventos7
+horasAProgramar = 160
+tolerancia = 2
 programador = Programador(listaEventos, mes, horasAProgramar, tolerancia)
 
 # llamo al metodo de programar eventos
