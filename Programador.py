@@ -285,9 +285,9 @@ class Programador:
                      rectangulosOrdenadosPorHora.append(r)
         return rectangulosOrdenadosPorHora
 
-    # retorna True si hay fichas con cero programación o si el saldo de horas -generales- por programar es mayor que cero
+    # retorna True si noy hay fichas con cero programación o si el saldo de horas -generales- por programar es mayor que cero
     def finDeLaProgramacion(self):
-        return False if len(list(filter(lambda x: self._diccionarioFichas[x] == 0,self._diccionarioFichas.keys()))) > 0 or self._saldoDeHorasAProgramar > 0 else True
+        return True if len(list(filter(lambda x: self._diccionarioFichas[x] == 0,self._diccionarioFichas.keys()))) == 0 and self._saldoDeHorasAProgramar == 0 else False
 
     # para programar los eventos sigo la siguiente logica:
     # 1. con el objetivo de utilizar los eventos actuales: 
@@ -417,7 +417,34 @@ class Programador:
                     else:
                         break
 
-            # 4. si no hubo que encontrar rectangulos tambien hay que setea la matriz de horas programadas para poder mostrar el resultado.
+            # 4. Si el numero de horas Programadas es menor que cero
+            while self._saldoDeHorasAProgramar < 0:
+                listaFichasOrdenada = list(dict(sorted(self._diccionarioFichas.items(), key=lambda item:item[1], reverse=True)).items())
+                ban= True
+                while ban:
+                    (ficha, horasProgramadas) = listaFichasOrdenada.pop(0)
+                    l= list(filter(lambda e: e.ficha == ficha, self._listaEventos))
+                    listaEventosFicha = sorted(list(filter(lambda e: e.ficha == ficha, self._listaEventos)), key=lambda evento: len(evento.listaDiasAProgramar), reverse =True)
+                    while True:
+                        if len(listaEventosFicha) > 0:
+                            evento = listaEventosFicha.pop(0)
+                            horasEvento = evento.horaF - evento.horaI + 1
+                            if self._saldoDeHorasAProgramar % horasEvento == 0 and (len(evento.listaDiasAProgramar) * horasEvento) >= -self._saldoDeHorasAProgramar:
+                                copiaListaDiasAProgramar = evento.listaDiasAProgramar
+                                for dia in evento.listaDiasAProgramar:
+                                    if self._saldoDeHorasAProgramar < 0:
+                                        d = copiaListaDiasAProgramar.pop()
+                                        evento.listaDiasPorProgram.append(d)
+                                        self._saldoDeHorasAProgramar += horasEvento
+                                        self._diccionarioFichas[evento.ficha] -= horasEvento
+                                evento.listaDiasAProgramar = copiaListaDiasAProgramar
+                                ban = False
+                                break
+                        else:
+                            break
+
+
+            # 5. si no hubo que encontrar rectangulos tambien hay que setea la matriz de horas programadas para poder mostrar el resultado.
             self.setMatrizHorasProgramadas()
                 
 # principal 
@@ -427,9 +454,9 @@ recursividadTo = recursividadIz = recursividadDe = recursividadIn = 0
 
 # fijo los datos de prueba del programa
 mes = 7
-listaEventos = Datos(mes).listaEventos7
+listaEventos = Datos(mes).listaEventos8
 horasAProgramar = 160
-tolerancia = 2
+tolerancia = 20
 programador = Programador(listaEventos, mes, horasAProgramar, tolerancia)
 
 # llamo al metodo de programar eventos
