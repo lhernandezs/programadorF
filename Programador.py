@@ -304,7 +304,7 @@ class Programador:
     def programarEventos(self):
         iter = 1
         while not self.finDeLaProgramacion() and iter == 1:
-            iter = 0
+#            iter = 0
             # 1.
             while True:
                 (evento, listaDias, horasEvento) = self.buscarMejorEventoProgramable()
@@ -400,7 +400,7 @@ class Programador:
                                         listaDias.append(dia)
                                         horasEvento = h - hIni + 1
                                         horasProgramadas -= horasEvento
-                                        if horasProgramadas <= 0:
+                                        if horasProgramadas <= horasEvento:
                                             id = len(self._listaEventos) # el id del nuevo evento será el numero de eventos actual - los id de los eventos empiezan en cero -
                                             evento = Evento(id, ficha, hIni, h, date(2023, self._mes, dIni), date(2023, self._mes, dia)) 
                                             self._listaEventos.append(evento) 
