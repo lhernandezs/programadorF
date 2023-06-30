@@ -237,5 +237,7 @@
 # l1 = sorted(lista, key=lambda x: -len(x))
 # print(l1)
 
-for i in sorted([1,2,3], reverse=True):
-    print(i)
+# for i in sorted([1,2,3], reverse=True):
+#     print(i)
+
+print(-3%1)
