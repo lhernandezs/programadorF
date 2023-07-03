@@ -445,6 +445,7 @@ class Programador:
 
 
             # 5. si no hubo que encontrar rectangulos tambien hay que setea la matriz de horas programadas para poder mostrar el resultado.
+            # pequeño cammbio
             self.setMatrizHorasProgramadas()
                 
 # principal 

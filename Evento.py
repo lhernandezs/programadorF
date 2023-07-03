@@ -1,5 +1,6 @@
 from datetime import datetime
 
+# clase que modela los eventos
 class Evento:
 
     @classmethod

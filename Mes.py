@@ -27,6 +27,6 @@ class Mes:
         listaTuplasMes = list(filter(lambda x: x[1] not in [5,6] and x[0]!= 0, listaDiasMes)) # se elminan los sabados y domingos y se crea la lista de dias. tambien elimina los ceros de relleno en listaDiasMes
         return list(filter(lambda x: x not in Mes.FESTIVOS[self._mes], [x[0] for x in listaTuplasMes])) # retorna la lista de dias laborables del mes eliminando los festivos
 
-    # devuelve la fecha del ultimo dia del mes
+    # devuelve la fecha del ultimo dia del mes ..
     def ultimoDia(self):
         return datetime.date(2023, self._mes, 1) + relativedelta(day=31)
